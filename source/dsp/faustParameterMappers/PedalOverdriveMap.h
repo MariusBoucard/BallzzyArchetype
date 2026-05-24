@@ -10,10 +10,13 @@ namespace FaustParameterMapping {
     inline const std::unordered_map<juce::String, std::string>& getOverdriveMap()
     {
         static const std::unordered_map<juce::String, std::string> map = {
+
+
             { id::PEDAL_INPUT_OVERDRIVE_ENABLED.getParamID(), "/Overdrive/enabled" },
-            { id::PEDAL_INPUT_OVERDRIVE_TONE.getParamID(),    "/Overdrive/tone" },
-            { id::PEDAL_INPUT_OVERDRIVE_DRIVE.getParamID(),   "/Overdrive/drive" },
-            { id::PEDAL_INPUT_OVERDRIVE_LEVEL.getParamID(),   "/Overdrive/level" }
+          // TODO  { id::PEDAL_INPUT_OVERDRIVE_MIX }: /OverdrivePedalEngine/Mix__Dry_Wet_
+            { id::PEDAL_INPUT_OVERDRIVE_TONE.getParamID(),    "/OverdrivePedalEngine/Tone" },
+            { id::PEDAL_INPUT_OVERDRIVE_DRIVE.getParamID(),   "/OverdrivePedalEngine/Drive" },
+            { id::PEDAL_INPUT_OVERDRIVE_LEVEL.getParamID(),   "/OverdrivePedalEngine/Level" }
         };
         return map;
     }

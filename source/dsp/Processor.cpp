@@ -65,6 +65,8 @@ void SkeletonAudioProcessor::processBlock(juce::AudioBuffer<float>& inBuffer, ju
     inBuffer.applyGain(juce::Decibels::decibelsToGain ((float)inGain));
     updateMeter(false, inBuffer, numIn);
 
+    mInputPedalProcessor.processBlock(inBuffer, inMidiBuffer);
+
     inBuffer.applyGain(juce::Decibels::decibelsToGain ((float)outGain));
     updateMeter(true, inBuffer, numOut);
 }

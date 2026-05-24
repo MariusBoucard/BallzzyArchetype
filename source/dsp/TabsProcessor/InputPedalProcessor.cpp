@@ -13,13 +13,14 @@ InputPedalProcessor::InputPedalProcessor(juce::AudioProcessorValueTreeState& inP
     , mParameterSetup(inParameterSetup)
     , mBlockSize(256)
     , mSampleRate(44100)
-    , mFaustCompressorProcessor()
-    , mFaustFuzzProcessor()
-    , mFaustOverdriveProcessor()
-    , mEqPedalProcessor()
     , mParametersDeclaration(inParametersDeclaration)
-{
+{   // TODO : currate pour pas listen tout le monde
+    for (auto *param: mParameters.processor.getParameters()) {
+        auto paramID = static_cast<juce::AudioProcessorParameterWithID *>(param)->paramID;
+        mParameters.addParameterListener(paramID, this);
+    }
     setRateAndBufferSizeDetails(mSampleRate, mBlockSize);
+    writeFaustParametersToFile();
 }
 
 InputPedalProcessor::~InputPedalProcessor()
@@ -58,14 +59,62 @@ void InputPedalProcessor::processBlock(juce::AudioBuffer<float>& inBuffer, juce:
 
     const float inGain = mParameters.getRawParameterValue(id::INPUT_GAIN.getParamID())->load();
     const float outGain = mParameters.getRawParameterValue(id::OUTPUT_GAIN.getParamID())->load();
+    
+    const bool isEqOn = mParameters.getRawParameterValue(id::PEDAL_INPUT_EQ_ENABLED.getParamID())->load();
+    const bool isCompressorOn = mParameters.getRawParameterValue(id::PEDAL_INPUT_COMPRESSOR_ENABLED.getParamID())->load();
+    const bool isFuzzOn = mParameters.getRawParameterValue(id::PEDAL_INPUT_FUZZ_ENABLED.getParamID())->load();
+    const bool isOverdriveOn = mParameters.getRawParameterValue(id::PEDAL_INPUT_OVERDRIVE_ENABLED.getParamID())->load();
 
+    for (int ch = 0; ch < numOut; ++ch) {
+        auto* channelRead = inBuffer.getReadPointer(ch);
 
-    juce::AudioBuffer<float> dryBuffer;
-    dryBuffer.makeCopyOf(inBuffer);
-    inBuffer.applyGain(juce::Decibels::decibelsToGain ((float)inGain));
-    updateMeter(false, inBuffer, numIn);
+        for (int i = 0; i < numSamples; ++i) {
+            inputs[ch][i] = channelRead[i];
+       }
 
-    inBuffer.applyGain(juce::Decibels::decibelsToGain ((float)outGain));
-    updateMeter(true, inBuffer, numOut);
+    }
+
+    if (isCompressorOn) {
+        mFaustCompressorProcessor->compute(numSamples, inputs, postCompressor);
+        for (int ch = 0; ch < numOut; ++ch) {
+            for (int i = 0; i < numSamples; ++i) {
+                inputs[ch][i] = postCompressor[ch][i];
+            }
+        }
+    }
+
+    if (isFuzzOn) {
+        mFaustFuzzProcessor->compute(numSamples,inputs, postCompressor);
+        for (int ch = 0; ch < numOut; ++ch) {
+            for (int i = 0; i < numSamples; ++i) {
+                inputs[ch][i] = postCompressor[ch][i];
+            }
+        }
+    }
+    if (isOverdriveOn) {
+        mFaustOverdriveProcessor->compute(numSamples,inputs, postCompressor);
+        for (int ch = 0; ch < numOut; ++ch) {
+            for (int i = 0; i < numSamples; ++i) {
+                inputs[ch][i] = postCompressor[ch][i];
+            }
+        }
+    }
+    if (isEqOn) {
+        mEqPedalProcessor->compute(numSamples,inputs, postCompressor);
+        for (int ch = 0; ch < numOut; ++ch) {
+            for (int i = 0; i < numSamples; ++i) {
+                inputs[ch][i] = postCompressor[ch][i];
+            }
+        }
+    }
+
+    for (int ch = 0; ch < numOut; ++ch) {
+        auto* channelWritePtr = inBuffer.getWritePointer(ch);
+        for (int i = 0; i < numSamples; ++i) {
+            channelWritePtr[i] = inputs[ch][i];
+        }
+    }
+    
+
 }
 

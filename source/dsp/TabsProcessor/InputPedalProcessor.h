@@ -6,18 +6,21 @@
 #include "../paramsDeclaration.h"
 #include "../../service/PresetManager.h"
 //#include "../Bones/ReverbPedalFaust.h"
+#include "../../../../delayVue/source/dsp/faustParameterMappers/faustParameterMap.h"
+#include "../../../../delayVue/source/dsp/faustParameterMappers/hpLpFaustParameterMap.h"
 #include "../Bones/CompressorPedalFaust.h"
 #include "../Bones/EqPedalFaust.h"
 #include "../Bones/OverdrivePedalFaust.h"
 #include "../Bones/FuzzPedalFaust.h"
+#include "../faustParameterMappers/PedalCompressorMap.h"
+#include "../faustParameterMappers/PedalEqMap.h"
+#include "../faustParameterMappers/PedalOverdriveMap.h"
 
-
-namespace DelayPedal {
-    class mydsp;
-}
 
 //==============================================================================
-class InputPedalProcessor final : public juce::AudioProcessor {
+class InputPedalProcessor final : public juce::AudioProcessor,
+                            public juce::AudioProcessorValueTreeState::Listener
+{
 public:
     //==============================================================================
     InputPedalProcessor(juce::AudioProcessorValueTreeState &inParameters, ParameterSetup &inParameterSetup, parametersDeclaration::Parameters inParametersDeclaration);
@@ -29,22 +32,28 @@ public:
         mSampleRate = inSampleRate;
         mBlockSize = inBlockSize;
        // mParameterSetup.initParametersListener(*this);
+        if (!mFuzzUi.get())        mFuzzUi        = std::make_unique<FuzzPedal::MapUI>();
+        if (!mFaustOverdriveUi.get())        mFaustOverdriveUi        = std::make_unique<OverdrivePedal::MapUI>();
+        if (!mFaustCompressorUi.get())        mFaustCompressorUi        = std::make_unique<MapUI>();
+        if (!mEqUi.get())        mEqUi        = std::make_unique<EqPedal::MapUI>();
 
-        mFaustFuzzProcessor = new FuzzPedal::FuzzPedalEngine();
+
+
+        mFaustFuzzProcessor = std::make_unique<FuzzPedal::FuzzPedalEngine>();
         mFaustFuzzProcessor->init(mSampleRate);
-        mFaustFuzzProcessor->buildUserInterface(mFuzzUi);
+        mFaustFuzzProcessor->buildUserInterface(mFuzzUi.get());
 
-        mFaustOverdriveProcessor = new OverdrivePedal::OverdrivePedalEngine();
+        mFaustOverdriveProcessor  = std::make_unique<OverdrivePedal::OverdrivePedalEngine>();
         mFaustOverdriveProcessor->init(mSampleRate);
-        mFaustOverdriveProcessor->buildUserInterface(mFaustOverdriveUi);
+        mFaustOverdriveProcessor->buildUserInterface(mFaustOverdriveUi.get());
 
-        mFaustCompressorProcessor = new CompressorPedalEngine();
+        mFaustCompressorProcessor =  std::make_unique<CompressorPedalEngine>();
         mFaustCompressorProcessor->init(mSampleRate);
-        mFaustCompressorProcessor->buildUserInterface(mFaustCompressorUi);
+        mFaustCompressorProcessor->buildUserInterface(mFaustCompressorUi.get());
 
-        mEqPedalProcessor = new EqPedal::EqPedalEngine();
+        mEqPedalProcessor = std::make_unique<EqPedal::EqPedalEngine>();
         mEqPedalProcessor->init(mSampleRate);
-        mEqPedalProcessor->buildUserInterface(mEqUi);
+        mEqPedalProcessor->buildUserInterface(mEqUi.get());
 
         inputs = new float*[2];
         for (int channel = 0; channel < 2; ++channel) {
@@ -54,9 +63,9 @@ public:
         for (int channel = 0; channel < 2; ++channel) {
             outputs[channel] = new float[mBlockSize];
         }
-        postHpLp  = new float*[2];
+        postCompressor  = new float*[2];
         for (int channel = 0; channel < 2; ++channel) {
-            postHpLp[channel] = new float[mBlockSize];
+            postCompressor[channel] = new float[mBlockSize];
         }
 
         duckingInput = new float*[4];
@@ -70,16 +79,95 @@ public:
 
     }
 
+    void parameterChanged(const juce::String& parameterID, float newValue) override {
+        auto faustPath = FaustParameterMapping::getInputEqPath(parameterID);
+        if (!faustPath.empty()) {
+            float finalValue = newValue;
+            mEqUi->setParamValue(faustPath, finalValue);
+        }
+        auto compressorPath = FaustParameterMapping::getPedalCompressorPath(parameterID);
+        if (!compressorPath.empty()) {
+            float finalValue = newValue;
+            mFaustCompressorUi->setParamValue(compressorPath, finalValue);
+        }
+        auto fuzzPath = FaustParameterMapping::getFaustPath(parameterID);
+        if (!fuzzPath.empty()) {
+            float finalValue = newValue;
+            mFuzzUi->setParamValue(fuzzPath, finalValue);
+        }
+        auto overdrivePath = FaustParameterMapping::getOverdrivePath(parameterID);
+        if (!overdrivePath.empty()) {
+            float finalValue = newValue;
+            mFaustOverdriveUi->setParamValue(overdrivePath, finalValue);
+        }
+    }
+
+void writeFaustParametersToFile()
+{
+    std::vector<juce::String> params;
+
+    // Use smart pointers for automatic cleanup
+    std::unique_ptr<OverdrivePedal::OverdrivePedalEngine> odDsp(new OverdrivePedal::OverdrivePedalEngine());
+    std::unique_ptr<OverdrivePedal::MapUI> odUI(new OverdrivePedal::MapUI());
+
+    std::unique_ptr<FuzzPedal::FuzzPedalEngine> fuzzDsp(new FuzzPedal::FuzzPedalEngine());
+    std::unique_ptr<FuzzPedal::MapUI> fuzzUI(new FuzzPedal::MapUI());
+
+    std::unique_ptr<EqPedal::EqPedalEngine> eqDsp(new EqPedal::EqPedalEngine());
+    std::unique_ptr<EqPedal::MapUI> eqUI(new EqPedal::MapUI());
+
+    std::unique_ptr<CompressorPedalEngine> compDsp(new CompressorPedalEngine());
+    std::unique_ptr<MapUI> compUI(new MapUI());
+
+    // Build UIs
+    odDsp->buildUserInterface(odUI.get());
+    fuzzDsp->buildUserInterface(fuzzUI.get());
+    eqDsp->buildUserInterface(eqUI.get());
+    compDsp->buildUserInterface(compUI.get());
+
+    // Collect maps (assumes getFullpathMap() returns something like std::map<juce::String, someValue> or std::unordered_map)
+    // Adjust types if needed.
+    using MapType = decltype(odUI->getFullpathMap());
+        auto combinedMap = odUI->getFullpathMap();
+
+        auto mergeMap = [&](const decltype(combinedMap)& m)
+        {
+            for (const auto& kv : m)
+            {
+                if (combinedMap.find(kv.first) == combinedMap.end())
+                    combinedMap.insert(kv);
+            }
+        };
+
+        mergeMap(fuzzUI->getFullpathMap());
+        mergeMap(eqUI->getFullpathMap());
+        mergeMap(compUI->getFullpathMap());
+
+    mergeMap(odUI->getFullpathMap());
+
+
+    // Write to desktop file
+    juce::File outputFile = juce::File::getSpecialLocation(juce::File::userDesktopDirectory)
+                                .getChildFile("faust_params.txt");
+    juce::FileOutputStream stream(outputFile);
+
+    if (stream.openedOk())
+    {
+        int i = 0;
+        for (const auto& kv : combinedMap)
+        {
+            const juce::String& name = kv.first;
+            params.push_back(name);
+            stream.writeText(juce::String(i) + ": " + name + "\n", false, false, nullptr);
+            ++i;
+        }
+        stream.flush();
+    }
+}
+
 
     void releaseResources() override {
-        delete mFuzzUi;
-        delete mEqUi;
-        delete mFaustOverdriveUi;
-        delete mFaustCompressorUi;
-        delete mFaustFuzzProcessor;
-        delete mEqPedalProcessor;
-        delete mFaustOverdriveProcessor;
-        delete mFaustCompressorProcessor;
+
 
         for (int channel = 0; channel < 2; ++channel) {
             delete[] outputs[channel];
@@ -90,9 +178,9 @@ public:
         }
         delete[] inputs;
         for (int channel = 0; channel < 2; ++channel) {
-            delete[] postHpLp[channel];
+            delete[] postCompressor[channel];
         }
-        delete[] postHpLp;
+        delete[] postCompressor;
 
         for (int channel = 0; channel < 4; ++channel) {
             delete[] duckingInput[channel];
@@ -154,7 +242,10 @@ public:
         return mParameters;
     }
 
+    void parameterChanged() {
 
+
+    }
     void initState() {
     }
 
@@ -172,19 +263,19 @@ public:
     }
 
     void setOverdriveMapUI(OverdrivePedal::MapUI *inUI) {
-        mFaustOverdriveUi = inUI;
+       // mFaustOverdriveUi = inUI;
     }
     void setFuzzMapUI(FuzzPedal::MapUI *inUI) {
-        mFuzzUi = inUI;
+        //mFuzzUi.swap(std::make_unique<FuzzPedal::MapUI>(*inUI));
     }
 
 
     void setEqMapUI(EqPedal::MapUI *inUI) {
-        mEqUi = inUI;
+        //mEqUi = inUI;
     }
 
     void setCompressorMapUI(MapUI *inUI) {
-        mFaustCompressorUi = inUI;
+    //    mFaustCompressorUi = inUI;
     }
 private:
 
@@ -204,21 +295,21 @@ private:
     using AudioOutputNode = juce::AudioProcessorGraph::AudioGraphIOProcessor;
 
     // TODO : first one to be include add dsp to namespace
-    CompressorPedalEngine* mFaustCompressorProcessor;
-    MapUI* mFaustCompressorUi;
-    FuzzPedal::FuzzPedalEngine* mFaustFuzzProcessor;
-    FuzzPedal::MapUI* mFuzzUi;
+    std::unique_ptr<CompressorPedalEngine> mFaustCompressorProcessor;
+    std::unique_ptr<MapUI> mFaustCompressorUi;
+    std::unique_ptr<FuzzPedal::FuzzPedalEngine> mFaustFuzzProcessor;
+    std::unique_ptr<FuzzPedal::MapUI> mFuzzUi;
 
-    OverdrivePedal::OverdrivePedalEngine* mFaustOverdriveProcessor;
-    OverdrivePedal::MapUI* mFaustOverdriveUi;
-    EqPedal::EqPedalEngine* mEqPedalProcessor;
-    EqPedal::MapUI * mEqUi;
+    std::unique_ptr<OverdrivePedal::OverdrivePedalEngine> mFaustOverdriveProcessor;
+    std::unique_ptr<OverdrivePedal::MapUI> mFaustOverdriveUi;
+    std::unique_ptr<EqPedal::EqPedalEngine> mEqPedalProcessor;
+    std::unique_ptr<EqPedal::MapUI> mEqUi;
 
 
 
 
     float** inputs;
-    float** postHpLp;
+    float** postCompressor;
     float** outputs;
     float** duckingInput;
     float** duckingOutput;
