@@ -1,14 +1,12 @@
-//#include "JuceWebViewTutorial/PluginEditor.h"
+
 #include "gui.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <juce_events/juce_events.h>
 #include <optional>
 #include <ranges>
-//#include "JuceWebViewTutorial/PluginProcessor.h"
 #include "juce_core/juce_core.h"
 #include "juce_graphics/juce_graphics.h"
 #include "juce_gui_extra/juce_gui_extra.h"
-#include "JuceWebViewTutorial/ParameterIDs.hpp"
 #include <WebViewFiles.h>
 
 

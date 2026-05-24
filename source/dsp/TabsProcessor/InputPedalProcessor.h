@@ -1,10 +1,20 @@
 #pragma once
 #include <juce_audio_processors_headless/juce_audio_processors_headless.h>
+//#include "../../FaustResources/faustMinimal.h"
 
 #include "../ParameterSetup.h"
 #include "../paramsDeclaration.h"
 #include "../../service/PresetManager.h"
+//#include "../Bones/ReverbPedalFaust.h"
+#include "../Bones/CompressorPedalFaust.h"
+#include "../Bones/EqPedalFaust.h"
+#include "../Bones/OverdrivePedalFaust.h"
+#include "../Bones/FuzzPedalFaust.h"
 
+
+namespace DelayPedal {
+    class mydsp;
+}
 
 //==============================================================================
 class InputPedalProcessor final : public juce::AudioProcessor {
@@ -18,7 +28,23 @@ public:
     void prepareToPlay(double inSampleRate, int inBlockSize) override {
         mSampleRate = inSampleRate;
         mBlockSize = inBlockSize;
-        mParameterSetup.initParametersListener(*this);
+       // mParameterSetup.initParametersListener(*this);
+
+        mFaustFuzzProcessor = new FuzzPedal::FuzzPedalEngine();
+        mFaustFuzzProcessor->init(mSampleRate);
+        mFaustFuzzProcessor->buildUserInterface(mFuzzUi);
+
+        mFaustOverdriveProcessor = new OverdrivePedal::OverdrivePedalEngine();
+        mFaustOverdriveProcessor->init(mSampleRate);
+        mFaustOverdriveProcessor->buildUserInterface(mFaustOverdriveUi);
+
+        mFaustCompressorProcessor = new CompressorPedalEngine();
+        mFaustCompressorProcessor->init(mSampleRate);
+        mFaustCompressorProcessor->buildUserInterface(mFaustCompressorUi);
+
+        mEqPedalProcessor = new EqPedal::EqPedalEngine();
+        mEqPedalProcessor->init(mSampleRate);
+        mEqPedalProcessor->buildUserInterface(mEqUi);
 
         inputs = new float*[2];
         for (int channel = 0; channel < 2; ++channel) {
@@ -46,6 +72,14 @@ public:
 
 
     void releaseResources() override {
+        delete mFuzzUi;
+        delete mEqUi;
+        delete mFaustOverdriveUi;
+        delete mFaustCompressorUi;
+        delete mFaustFuzzProcessor;
+        delete mEqPedalProcessor;
+        delete mFaustOverdriveProcessor;
+        delete mFaustCompressorProcessor;
 
         for (int channel = 0; channel < 2; ++channel) {
             delete[] outputs[channel];
@@ -137,6 +171,21 @@ public:
         mBlockSize = bufferSize;
     }
 
+    void setOverdriveMapUI(OverdrivePedal::MapUI *inUI) {
+        mFaustOverdriveUi = inUI;
+    }
+    void setFuzzMapUI(FuzzPedal::MapUI *inUI) {
+        mFuzzUi = inUI;
+    }
+
+
+    void setEqMapUI(EqPedal::MapUI *inUI) {
+        mEqUi = inUI;
+    }
+
+    void setCompressorMapUI(MapUI *inUI) {
+        mFaustCompressorUi = inUI;
+    }
 private:
 
     //==============================================================================
@@ -153,6 +202,20 @@ private:
     juce::AudioPlayHead* mParentPlayHead;
     using AudioInputNode = juce::AudioProcessorGraph::AudioGraphIOProcessor;
     using AudioOutputNode = juce::AudioProcessorGraph::AudioGraphIOProcessor;
+
+    // TODO : first one to be include add dsp to namespace
+    CompressorPedalEngine* mFaustCompressorProcessor;
+    MapUI* mFaustCompressorUi;
+    FuzzPedal::FuzzPedalEngine* mFaustFuzzProcessor;
+    FuzzPedal::MapUI* mFuzzUi;
+
+    OverdrivePedal::OverdrivePedalEngine* mFaustOverdriveProcessor;
+    OverdrivePedal::MapUI* mFaustOverdriveUi;
+    EqPedal::EqPedalEngine* mEqPedalProcessor;
+    EqPedal::MapUI * mEqUi;
+
+
+
 
     float** inputs;
     float** postHpLp;

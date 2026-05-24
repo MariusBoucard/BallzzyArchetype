@@ -13,6 +13,10 @@ InputPedalProcessor::InputPedalProcessor(juce::AudioProcessorValueTreeState& inP
     , mParameterSetup(inParameterSetup)
     , mBlockSize(256)
     , mSampleRate(44100)
+    , mFaustCompressorProcessor()
+    , mFaustFuzzProcessor()
+    , mFaustOverdriveProcessor()
+    , mEqPedalProcessor()
     , mParametersDeclaration(inParametersDeclaration)
 {
     setRateAndBufferSizeDetails(mSampleRate, mBlockSize);

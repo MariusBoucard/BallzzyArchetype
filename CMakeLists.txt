@@ -68,6 +68,11 @@ target_sources(${PROJECT_NAME}
         #source/dsp/Bones/DuckingEngine.h
         # TODO : new faust bones soon
 
+      #  source/dsp/Bones/FuzzPedalFaust.h
+       # source/dsp/Bones/OverdrivePedalFaust.h
+        source/dsp/Bones/CompressorPedalFaust.h
+        #source/dsp/Bones/EqPedalFaust.h
+        #source/dsp/Bones/ReverbPedalFaust.h
         # UI
         source/ui/gui.cpp
         source/ui/gui.h
@@ -119,7 +124,8 @@ add_custom_target(ZipWebViewFiles
   COMMENT "Zipping WebView files..."
   VERBATIM
 )
-
+message("FAUST FAUST FAUSE COMPILE : faust -i -light -a .\\faustMinimal.h .\\DelayPedalengine.dsp  -o DelayPedalFaust.h --namespace DelayPedal -cn DelayPedal ")
+message("faust -i .\\CompressorPedalengine.dsp -a .\\faustMinimal.h -lang cpp -i -fpga-mem-th 4 -ct 1 -cn CompressorPedalEngine -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 0 -o CompressorPedalFaust.h")
 # Pass the prefix of the zipped files (e.g., "public/") to C++
 cmake_path(GET PUBLIC_PATH FILENAME ZIPPED_FILES_PREFIX)
 target_compile_definitions(${PROJECT_NAME} PRIVATE ZIPPED_FILES_PREFIX="${ZIPPED_FILES_PREFIX}/")

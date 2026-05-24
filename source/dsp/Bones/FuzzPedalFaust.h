@@ -1,11 +1,12 @@
+namespace FuzzPedal {
 /* ------------------------------------------------------------
-name: "multiheadFeedback"
+name: "FuzzPedalEngine"
 Code generated with Faust 2.83.1 (https://faust.grame.fr)
-Compilation options: -a .\\faustMinimal.h -lang cpp -i -fpga-mem-th 4 -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 0
+Compilation options: -a .\faustMinimal.h -lang cpp -i -fpga-mem-th 4 -ct 1 -cn FuzzPedalEngine -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 0
 ------------------------------------------------------------ */
 
-#ifndef  __mydsp_H__
-#define  __mydsp_H__
+#ifndef  __FuzzPedalEngine_H__
+#define  __FuzzPedalEngine_H__
 
 #include <cmath>
 #include <cstring>
@@ -18,23 +19,23 @@ Compilation options: -a .\\faustMinimal.h -lang cpp -i -fpga-mem-th 4 -ct 1 -es 
  it under the terms of the GNU Lesser General Public License as published by
  the Free Software Foundation; either version 2.1 of the License, or
  (at your option) any later version.
-
+ 
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  GNU Lesser General Public License for more details.
-
+ 
  You should have received a copy of the GNU Lesser General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-
+ 
  EXCEPTION : As a special exception, you may create a larger work
  that contains this FAUST architecture section and distribute
  that work under terms of your choice, so long as this FAUST
  architecture section is not modified.
  ***********************************************************************/
 
-#ifndef FAUST_MAPUI_H
+//#ifndef FAUST_MAPUI_H
 #define FAUST_MAPUI_H
 
 #include <vector>
@@ -50,16 +51,16 @@ Compilation options: -a .\\faustMinimal.h -lang cpp -i -fpga-mem-th 4 -ct 1 -es 
  it under the terms of the GNU Lesser General Public License as published by
  the Free Software Foundation; either version 2.1 of the License, or
  (at your option) any later version.
-
+ 
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  GNU Lesser General Public License for more details.
-
+ 
  You should have received a copy of the GNU Lesser General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-
+ 
  EXCEPTION : As a special exception, you may create a larger work
  that contains this FAUST architecture section and distribute
  that work under terms of your choice, so long as this FAUST
@@ -77,16 +78,16 @@ Compilation options: -a .\\faustMinimal.h -lang cpp -i -fpga-mem-th 4 -ct 1 -es 
  it under the terms of the GNU Lesser General Public License as published by
  the Free Software Foundation; either version 2.1 of the License, or
  (at your option) any later version.
-
+ 
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  GNU Lesser General Public License for more details.
-
+ 
  You should have received a copy of the GNU Lesser General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-
+ 
  EXCEPTION : As a special exception, you may create a larger work
  that contains this FAUST architecture section and distribute
  that work under terms of your choice, so long as this FAUST
@@ -117,7 +118,7 @@ Compilation options: -a .\\faustMinimal.h -lang cpp -i -fpga-mem-th 4 -ct 1 -es 
         #define LIBFAUST_API __declspec(dllexport)
     #else
         #define FAUST_API
-        #define LIBFAUST_API
+        #define LIBFAUST_API 
     #endif
 #else
     #ifdef FAUST_EXE
@@ -146,36 +147,36 @@ struct Soundfile;
 
 template <typename REAL>
 struct FAUST_API UIReal {
-
+    
     UIReal() {}
     virtual ~UIReal() {}
-
+    
     // -- widget's layouts
-
+    
     virtual void openTabBox(const char* label) = 0;
     virtual void openHorizontalBox(const char* label) = 0;
     virtual void openVerticalBox(const char* label) = 0;
     virtual void closeBox() = 0;
-
+    
     // -- active widgets
-
+    
     virtual void addButton(const char* label, REAL* zone) = 0;
     virtual void addCheckButton(const char* label, REAL* zone) = 0;
     virtual void addVerticalSlider(const char* label, REAL* zone, REAL init, REAL min, REAL max, REAL step) = 0;
     virtual void addHorizontalSlider(const char* label, REAL* zone, REAL init, REAL min, REAL max, REAL step) = 0;
     virtual void addNumEntry(const char* label, REAL* zone, REAL init, REAL min, REAL max, REAL step) = 0;
-
+    
     // -- passive widgets
-
+    
     virtual void addHorizontalBargraph(const char* label, REAL* zone, REAL min, REAL max) = 0;
     virtual void addVerticalBargraph(const char* label, REAL* zone, REAL min, REAL max) = 0;
-
+    
     // -- soundfiles
-
+    
     virtual void addSoundfile(const char* label, const char* filename, Soundfile** sf_zone) = 0;
-
+    
     // -- metadata declarations
-
+    
     virtual void declare(REAL* /*zone*/, const char* /*key*/, const char* /*val*/) {}
 
     // To be used by LLVM client
@@ -201,16 +202,16 @@ struct FAUST_API UI : public UIReal<FAUSTFLOAT> {
  it under the terms of the GNU Lesser General Public License as published by
  the Free Software Foundation; either version 2.1 of the License, or
  (at your option) any later version.
-
+ 
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  GNU Lesser General Public License for more details.
-
+ 
  You should have received a copy of the GNU Lesser General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-
+ 
  EXCEPTION : As a special exception, you may create a larger work
  that contains this FAUST architecture section and distribute
  that work under terms of your choice, so long as this FAUST
@@ -235,11 +236,11 @@ struct FAUST_API UI : public UIReal<FAUSTFLOAT> {
 class FAUST_API PathBuilder {
 
     protected:
-
+    
         std::vector<std::string> fControlsLevel;
         std::vector<std::string> fFullPaths;
         std::map<std::string, std::string> fFull2Short;  // filled by computeShortNames()
-
+    
         /**
          * @brief check if a character is acceptable for an ID
          *
@@ -250,7 +251,7 @@ class FAUST_API PathBuilder {
         {
             return ((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z')) || ((c >= '0') && (c <= '9'));
         }
-
+    
         /**
          * @brief remove all "/0x00" parts
          *
@@ -268,7 +269,7 @@ class FAUST_API PathBuilder {
             }
             return src;
         }
-
+    
         /**
          * @brief replace all non ID char with '_' (one '_' may replace several non ID char)
          *
@@ -292,7 +293,7 @@ class FAUST_API PathBuilder {
             }
             return dst;
         }
-
+    
         /**
          * @brief Keep only the last n slash-parts
          *
@@ -320,9 +321,9 @@ class FAUST_API PathBuilder {
             }
             return src;
         }
-
+    
         void addFullPath(const std::string& label) { fFullPaths.push_back(buildPath(label)); }
-
+    
         /**
          * @brief Compute the mapping between full path and short names
          */
@@ -332,7 +333,7 @@ class FAUST_API PathBuilder {
             std::map<std::string, std::string> unique2full;  // all full paths transformed but made unique with a prefix
             char num_buffer[16];
             int pnum = 0;
-
+            
             for (const auto& s : fFullPaths) {
                 // Using snprintf since Teensy does not have the std::to_string function
                 snprintf(num_buffer, 16, "%d", pnum++);
@@ -340,11 +341,11 @@ class FAUST_API PathBuilder {
                 uniquePaths.push_back(u);
                 unique2full[u] = s;  // remember the full path associated to a unique path
             }
-
+        
             std::map<std::string, int> uniquePath2level;                // map path to level
             for (const auto& s : uniquePaths) uniquePath2level[s] = 1;   // we init all levels to 1
             bool have_collisions = true;
-
+        
             while (have_collisions) {
                 // compute collision list
                 std::set<std::string>              collisionSet;
@@ -367,7 +368,7 @@ class FAUST_API PathBuilder {
                 }
                 for (const auto& s : collisionSet) uniquePath2level[s]++;  // increase level of colliding path
             }
-
+        
             for (const auto& it : uniquePath2level) {
                 std::string u = it.first;
                 int n = it.second;
@@ -375,7 +376,7 @@ class FAUST_API PathBuilder {
                 fFull2Short[unique2full[u]] = shortName;
             }
         }
-
+    
         std::string replaceCharList(const std::string& str, const std::vector<char>& ch1, char ch2)
         {
             auto beg = ch1.begin();
@@ -386,22 +387,22 @@ class FAUST_API PathBuilder {
             }
             return res;
         }
-
+     
     public:
-
+    
         PathBuilder() {}
         virtual ~PathBuilder() {}
-
+    
         // Return true for the first level of groups
         bool pushLabel(const std::string& label_aux)
         {
             std::string label = replaceCharList(label_aux, {'/'}, '_');
             fControlsLevel.push_back(label); return fControlsLevel.size() == 1;
         }
-
+    
         // Return true for the last level of groups
         bool popLabel() { fControlsLevel.pop_back(); return fControlsLevel.size() == 0; }
-
+    
         // Return a complete path built from a label
         std::string buildPath(const std::string& label_aux)
         {
@@ -413,15 +414,15 @@ class FAUST_API PathBuilder {
             res += label;
             return replaceCharList(res, {' ', '#', '*', ',', '?', '[', ']', '{', '}', '(', ')'}, '_');
         }
-
+    
         // Assuming shortnames have been built, return the shortname from a label
         std::string buildShortname(const std::string& label)
         {
             return (hasShortname()) ? fFull2Short[buildPath(label)] : "";
         }
-
+    
         bool hasShortname() { return fFull2Short.size() > 0; }
-
+    
 };
 
 #endif  // __PathBuilder__
@@ -441,18 +442,18 @@ class FAUST_API PathBuilder {
 
 class FAUST_API MapUI : public UI, public PathBuilder
 {
-
+    
     protected:
-
+    
         // Label zone map
         std::map<std::string, FAUSTFLOAT*> fLabelZoneMap;
-
+    
         // Shortname zone map
         std::map<std::string, FAUSTFLOAT*> fShortnameZoneMap;
-
+    
         // Full path map
         std::map<std::string, FAUSTFLOAT*> fPathZoneMap;
-
+    
         void addZoneLabel(const std::string& label, FAUSTFLOAT* zone)
         {
             std::string path = buildPath(label);
@@ -460,12 +461,12 @@ class FAUST_API MapUI : public UI, public PathBuilder
             fPathZoneMap[path] = zone;
             fLabelZoneMap[label] = zone;
         }
-
+    
     public:
-
+        
         MapUI() {}
         virtual ~MapUI() {}
-
+        
         // -- widget's layouts
         void openTabBox(const char* label)
         {
@@ -490,7 +491,7 @@ class FAUST_API MapUI : public UI, public PathBuilder
                 }
             }
         }
-
+        
         // -- active widgets
         void addButton(const char* label, FAUSTFLOAT* zone)
         {
@@ -512,7 +513,7 @@ class FAUST_API MapUI : public UI, public PathBuilder
         {
             addZoneLabel(label, zone);
         }
-
+        
         // -- passive widgets
         void addHorizontalBargraph(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT fmin, FAUSTFLOAT fmax)
         {
@@ -522,18 +523,18 @@ class FAUST_API MapUI : public UI, public PathBuilder
         {
             addZoneLabel(label, zone);
         }
-
+    
         // -- soundfiles
         virtual void addSoundfile(const char* label, const char* filename, Soundfile** sf_zone) {}
-
+        
         // -- metadata declarations
         virtual void declare(FAUSTFLOAT* zone, const char* key, const char* val)
         {}
-
+    
         //-------------------------------------------------------------------------------
         // Public API
         //-------------------------------------------------------------------------------
-
+    
         /**
          * Set the param value.
          *
@@ -548,22 +549,22 @@ class FAUST_API MapUI : public UI, public PathBuilder
                 *fPathZoneMapIter->second = value;
                 return;
             }
-
+            
             const auto fShortnameZoneMapIter = fShortnameZoneMap.find(str);
             if (fShortnameZoneMapIter != fShortnameZoneMap.end()) {
                 *fShortnameZoneMapIter->second = value;
                 return;
             }
-
+            
             const auto fLabelZoneMapIter = fLabelZoneMap.find(str);
             if (fLabelZoneMapIter != fLabelZoneMap.end()) {
                 *fLabelZoneMapIter->second = value;
                 return;
             }
-
+            
             fprintf(stderr, "ERROR : setParamValue '%s' not found\n", str.c_str());
         }
-
+        
         /**
          * Return the param value.
          *
@@ -577,33 +578,33 @@ class FAUST_API MapUI : public UI, public PathBuilder
             if (fPathZoneMapIter != fPathZoneMap.end()) {
                 return *fPathZoneMapIter->second;
             }
-
+            
             const auto fShortnameZoneMapIter = fShortnameZoneMap.find(str);
             if (fShortnameZoneMapIter != fShortnameZoneMap.end()) {
                 return *fShortnameZoneMapIter->second;
             }
-
+            
             const auto fLabelZoneMapIter = fLabelZoneMap.find(str);
             if (fLabelZoneMapIter != fLabelZoneMap.end()) {
                 return *fLabelZoneMapIter->second;
             }
-
+            
             fprintf(stderr, "ERROR : getParamValue '%s' not found\n", str.c_str());
             return 0;
         }
-
-        // map access
+    
+        // map access 
         std::map<std::string, FAUSTFLOAT*>& getFullpathMap() { return fPathZoneMap; }
         std::map<std::string, FAUSTFLOAT*>& getShortnameMap() { return fShortnameZoneMap; }
         std::map<std::string, FAUSTFLOAT*>& getLabelMap() { return fLabelZoneMap; }
-
+            
         /**
          * Return the number of parameters in the UI.
          *
          * @return the number of parameters
          */
         int getParamsCount() const { return int(fPathZoneMap.size()); }
-
+        
         /**
          * Return the param path.
          *
@@ -621,7 +622,7 @@ class FAUST_API MapUI : public UI, public PathBuilder
                 return it->first;
             }
         }
-
+        
         const char* getParamAddress1(int index) const
         {
             if (index < 0 || index > int(fPathZoneMap.size())) {
@@ -632,7 +633,7 @@ class FAUST_API MapUI : public UI, public PathBuilder
                 return it->first.c_str();
             }
         }
-
+    
         /**
          * Return the param shortname.
          *
@@ -650,7 +651,7 @@ class FAUST_API MapUI : public UI, public PathBuilder
                 return it->first;
             }
         }
-
+        
         const char* getParamShortname1(int index) const
         {
             if (index < 0 || index > int(fShortnameZoneMap.size())) {
@@ -661,7 +662,7 @@ class FAUST_API MapUI : public UI, public PathBuilder
                 return it->first.c_str();
             }
         }
-
+    
         /**
          * Return the param label.
          *
@@ -679,7 +680,7 @@ class FAUST_API MapUI : public UI, public PathBuilder
                 return it->first;
             }
         }
-
+        
         const char* getParamLabel1(int index) const
         {
             if (index < 0 || index > int(fLabelZoneMap.size())) {
@@ -690,7 +691,7 @@ class FAUST_API MapUI : public UI, public PathBuilder
                 return it->first.c_str();
             }
         }
-
+    
         /**
          * Return the param path.
          *
@@ -705,7 +706,7 @@ class FAUST_API MapUI : public UI, public PathBuilder
             }
             return "";
         }
-
+    
         /**
          * Return the param memory zone.
          *
@@ -719,12 +720,12 @@ class FAUST_API MapUI : public UI, public PathBuilder
             if (fPathZoneMapIter != fPathZoneMap.end()) {
                 return fPathZoneMapIter->second;
             }
-
+            
             const auto fShortnameZoneMapIter = fShortnameZoneMap.find(str);
             if (fShortnameZoneMapIter != fShortnameZoneMap.end()) {
                 return fShortnameZoneMapIter->second;
             }
-
+            
             const auto fLabelZoneMapIter = fLabelZoneMap.find(str);
             if (fLabelZoneMapIter != fLabelZoneMap.end()) {
                 return fLabelZoneMapIter->second;
@@ -732,7 +733,7 @@ class FAUST_API MapUI : public UI, public PathBuilder
 
             return nullptr;
         }
-
+    
         /**
          * Return the param memory zone.
          *
@@ -740,7 +741,7 @@ class FAUST_API MapUI : public UI, public PathBuilder
          *
          * @return the param path
          */
-        FAUSTFLOAT* getParamZone(int index) const
+        FAUSTFLOAT* getParamZone(int index) const 
         {
             if (index < 0 || index > int(fPathZoneMap.size())) {
                 return nullptr;
@@ -750,17 +751,17 @@ class FAUST_API MapUI : public UI, public PathBuilder
                 return it->second;
             }
         }
-
+    
         static bool endsWith(const std::string& str, const std::string& end)
         {
             size_t l1 = str.length();
             size_t l2 = end.length();
             return (l1 >= l2) && (0 == str.compare(l1 - l2, l2, end));
         }
-
+    
 };
 
-#endif // FAUST_MAPUI_H
+//#endif // FAUST_MAPUI_H
 /**************************  END  MapUI.h **************************/
 /************************** BEGIN meta.h *******************************
  FAUST Architecture File
@@ -770,16 +771,16 @@ class FAUST_API MapUI : public UI, public PathBuilder
  it under the terms of the GNU Lesser General Public License as published by
  the Free Software Foundation; either version 2.1 of the License, or
  (at your option) any later version.
-
+ 
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  GNU Lesser General Public License for more details.
-
+ 
  You should have received a copy of the GNU Lesser General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-
+ 
  EXCEPTION : As a special exception, you may create a larger work
  that contains this FAUST architecture section and distribute
  that work under terms of your choice, so long as this FAUST
@@ -808,16 +809,16 @@ struct FAUST_API Meta {
  it under the terms of the GNU Lesser General Public License as published by
  the Free Software Foundation; either version 2.1 of the License, or
  (at your option) any later version.
-
+ 
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  GNU Lesser General Public License for more details.
-
+ 
  You should have received a copy of the GNU Lesser General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-
+ 
  EXCEPTION : As a special exception, you may create a larger work
  that contains this FAUST architecture section and distribute
  that work under terms of your choice, so long as this FAUST
@@ -844,17 +845,17 @@ struct FAUST_API Meta;
  */
 
 struct FAUST_API dsp_memory_manager {
-
+    
     enum MemType { kInt32, kInt32_ptr, kFloat, kFloat_ptr, kDouble, kDouble_ptr, kQuad, kQuad_ptr, kFixedPoint, kFixedPoint_ptr, kObj, kObj_ptr, kSound, kSound_ptr };
 
     virtual ~dsp_memory_manager() = default;
-
+    
     /**
      * Inform the Memory Manager with the number of expected memory zones.
      * @param count - the number of expected memory zones
      */
     virtual void begin(size_t count) {}
-
+    
     /**
      * Give the Memory Manager information on a given memory zone.
      * @param name - the memory zone name
@@ -865,25 +866,25 @@ struct FAUST_API dsp_memory_manager {
      * @param writes - the number of Write access to the zone used to compute one frame
      */
     virtual void info(const char* name, MemType type, size_t size, size_t size_bytes, size_t reads, size_t writes) {}
-
+  
     /**
      * Inform the Memory Manager that all memory zones have been described,
      * to possibly start a 'compute the best allocation strategy' step.
      */
     virtual void end() {}
-
+    
     /**
      * Allocate a memory zone.
      * @param size - the memory zone size in bytes
      */
     virtual void* allocate(size_t size) = 0;
-
+    
     /**
      * Destroy a memory zone.
      * @param ptr - the memory zone pointer to be deallocated
      */
     virtual void destroy(void* ptr) = 0;
-
+    
 };
 
 /**
@@ -899,10 +900,10 @@ class FAUST_API dsp {
 
         /* Return instance number of audio inputs */
         virtual int getNumInputs() = 0;
-
+    
         /* Return instance number of audio outputs */
         virtual int getNumOutputs() = 0;
-
+    
         /**
          * Trigger the ui_interface parameter with instance specific calls
          * to 'openTabBox', 'addButton', 'addVerticalSlider'... in order to build the UI.
@@ -910,10 +911,10 @@ class FAUST_API dsp {
          * @param ui_interface - the user interface builder
          */
         virtual void buildUserInterface(UI* ui_interface) = 0;
-
+    
         /* Return the sample rate currently used by the instance */
         virtual int getSampleRate() = 0;
-
+    
         /**
          * Global init, calls the following methods:
          * - static class 'classInit': static tables initialization
@@ -929,40 +930,40 @@ class FAUST_API dsp {
          * @param sample_rate - the sampling rate in Hz
          */
         virtual void instanceInit(int sample_rate) = 0;
-
+    
         /**
          * Init instance constant state.
          *
          * @param sample_rate - the sampling rate in Hz
          */
         virtual void instanceConstants(int sample_rate) = 0;
-
+    
         /* Init default control parameters values */
         virtual void instanceResetUserInterface() = 0;
-
+    
         /* Init instance state (like delay lines...) but keep the control parameter values */
         virtual void instanceClear() = 0;
-
+ 
         /**
          * Return a clone of the instance.
          *
          * @return a copy of the instance on success, otherwise a null pointer.
          */
         virtual ::dsp* clone() = 0;
-
+    
         /**
          * Trigger the Meta* m parameter with instance specific calls to 'declare' (key, value) metadata.
          *
          * @param m - the Meta* meta user
          */
         virtual void metadata(Meta* m) = 0;
-
+    
         /**
          * Read all controllers (buttons, sliders, etc.), and update the DSP state to be used by 'frame' or 'compute'.
          * This method will be filled with the -ec (--external-control) option.
          */
         virtual void control() {}
-
+    
         /**
          * DSP instance computation to process one single frame.
          *
@@ -975,7 +976,7 @@ class FAUST_API dsp {
          * @param outputs - the output audio buffers as an array of FAUSTFLOAT samples (eiher float, double or quad)
          */
         virtual void frame(FAUSTFLOAT* inputs, FAUSTFLOAT* outputs) {}
-
+        
         /**
          * DSP instance computation to be called with successive in/out audio buffers.
          *
@@ -990,7 +991,7 @@ class FAUST_API dsp {
          * (containing either float, double or quad samples)
          */
         virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) = 0;
-
+    
         /**
          * Alternative DSP instance computation method for use by subclasses, incorporating an additional `date_usec` parameter,
          * which specifies the timestamp of the first sample in the audio buffers.
@@ -1002,7 +1003,7 @@ class FAUST_API dsp {
          * @param outputs - the output audio buffers as an array of non-interleaved FAUSTFLOAT samples (either float, double or quad)
          */
         virtual void compute(double /*date_usec*/, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) { compute(count, inputs, outputs); }
-
+       
 };
 
 /**
@@ -1036,7 +1037,7 @@ class FAUST_API decorator_dsp : public ::dsp {
         virtual void frame(FAUSTFLOAT* inputs, FAUSTFLOAT* outputs) override { fDSP->frame(inputs, outputs); }
         virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) override { fDSP->compute(count, inputs, outputs); }
         virtual void compute(double date_usec, int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) override { fDSP->compute(date_usec, count, inputs, outputs); }
-
+    
 };
 
 /**
@@ -1045,47 +1046,47 @@ class FAUST_API decorator_dsp : public ::dsp {
  */
 
 class FAUST_API dsp_factory {
-
+    
     protected:
-
+    
         // So that to force sub-classes to use deleteDSPFactory(dsp_factory* factory);
         virtual ~dsp_factory() = default;
-
+    
     public:
-
+    
         /* Return factory name */
         virtual std::string getName() = 0;
-
+    
         /* Return factory SHA key */
         virtual std::string getSHAKey() = 0;
-
+    
         /* Return factory expanded DSP code */
         virtual std::string getDSPCode() = 0;
-
+    
         /* Return factory compile options */
         virtual std::string getCompileOptions() = 0;
-
+    
         /* Get the Faust DSP factory list of library dependancies */
         virtual std::vector<std::string> getLibraryList() = 0;
-
+    
         /* Get the list of all used includes */
         virtual std::vector<std::string> getIncludePathnames() = 0;
-
+    
         /* Get warning messages list for a given compilation */
         virtual std::vector<std::string> getWarningMessages() = 0;
-
+    
         /* Create a new DSP instance, to be deleted with C++ 'delete' */
         virtual ::dsp* createDSPInstance() = 0;
-
+    
         /* Static tables initialization, possibly implemened in sub-classes*/
         virtual void classInit(int sample_rate) {};
-
+    
         /* Set a custom memory manager to be used when creating instances */
         virtual void setMemoryManager(dsp_memory_manager* manager) = 0;
-
+    
         /* Return the currently set custom memory manager */
         virtual dsp_memory_manager* getMemoryManager() = 0;
-
+    
 };
 
 // Denormal handling
@@ -1095,11 +1096,11 @@ class FAUST_API dsp_factory {
 #endif
 
 class FAUST_API ScopedNoDenormals {
-
+    
     private:
-
+    
         intptr_t fpsr = 0;
-
+        
         void setFpStatusRegister(intptr_t fpsr_aux) noexcept
         {
         #if defined (__arm64__) || defined (__aarch64__)
@@ -1111,7 +1112,7 @@ class FAUST_API ScopedNoDenormals {
             _mm_setcsr(fpsr_w);
         #endif
         }
-
+        
         void getFpStatusRegister() noexcept
         {
         #if defined (__arm64__) || defined (__aarch64__)
@@ -1120,9 +1121,9 @@ class FAUST_API ScopedNoDenormals {
             fpsr = static_cast<intptr_t>(_mm_getcsr());
         #endif
         }
-
+    
     public:
-
+    
         ScopedNoDenormals() noexcept
         {
         #if defined (__arm64__) || defined (__aarch64__)
@@ -1139,7 +1140,7 @@ class FAUST_API ScopedNoDenormals {
             getFpStatusRegister();
             setFpStatusRegister(fpsr | mask);
         }
-
+        
         ~ScopedNoDenormals() noexcept
         {
             setFpStatusRegister(fpsr);
@@ -1158,18 +1159,18 @@ class FAUST_API ScopedNoDenormals {
 
 #ifndef FAUSTFLOAT
 #define FAUSTFLOAT float
-#endif
+#endif 
 
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <math.h>
 
-#ifndef FAUSTCLASS
-#define FAUSTCLASS mydsp
+#ifndef FAUSTCLASS 
+#define FAUSTCLASS FuzzPedalEngine
 #endif
 
-#ifdef __APPLE__
+#ifdef __APPLE__ 
 #define exp10f __exp10f
 #define exp10 __exp10
 #endif
@@ -1180,123 +1181,50 @@ class FAUST_API ScopedNoDenormals {
 #define RESTRICT __restrict__
 #endif
 
-static float mydsp_faustpower2_f(float value) {
+static float FuzzPedalEngine_faustpower2_f(float value) {
 	return value * value;
 }
 
-class mydsp : public dsp {
-
+class FuzzPedalEngine : public dsp {
+	
  private:
-
+	
+	FAUSTFLOAT fCheckbox0;
 	int fSampleRate;
 	float fConst0;
 	float fConst1;
 	float fConst2;
 	FAUSTFLOAT fHslider0;
 	float fRec0[2];
-	FAUSTFLOAT fHslider1;
-	float fRec1[2];
-	FAUSTFLOAT fCheckbox0;
-	FAUSTFLOAT fHslider2;
-	float fRec3[2];
 	float fConst3;
 	FAUSTFLOAT fCheckbox1;
-	FAUSTFLOAT fHslider3;
-	float fRec5[2];
-	FAUSTFLOAT fHslider4;
-	int IOTA0;
-	float fVec0[1048576];
-	int iConst4;
-	FAUSTFLOAT fHslider5;
-	float fRec7[2];
-	float fRec8[2];
-	int iRec9[2];
-	int iRec10[2];
-	float fRec6[3];
+	FAUSTFLOAT fHslider1;
+	float fRec3[2];
+	float fRec5[3];
 	float fRec4[3];
-	float fRec2[2];
-	FAUSTFLOAT fCheckbox2;
-	FAUSTFLOAT fHslider6;
-	float fRec11[2];
-	FAUSTFLOAT fHslider7;
-	float fRec12[2];
-	FAUSTFLOAT fCheckbox3;
-	FAUSTFLOAT fHslider8;
-	float fRec14[2];
-	FAUSTFLOAT fCheckbox4;
-	FAUSTFLOAT fHslider9;
-	float fRec16[2];
-	FAUSTFLOAT fHslider10;
-	float fVec1[1048576];
-	FAUSTFLOAT fHslider11;
-	float fRec18[2];
-	float fRec19[2];
-	int iRec20[2];
-	int iRec21[2];
-	float fRec17[3];
-	float fRec15[3];
-	float fRec13[2];
-	FAUSTFLOAT fCheckbox5;
-	FAUSTFLOAT fHslider12;
-	float fRec22[2];
-	FAUSTFLOAT fHslider13;
-	float fRec23[2];
-	FAUSTFLOAT fCheckbox6;
-	FAUSTFLOAT fHslider14;
-	float fRec25[2];
-	FAUSTFLOAT fCheckbox7;
-	FAUSTFLOAT fHslider15;
-	float fRec27[2];
-	FAUSTFLOAT fHslider16;
-	float fVec2[1048576];
-	FAUSTFLOAT fHslider17;
-	float fRec29[2];
-	float fRec30[2];
-	int iRec31[2];
-	int iRec32[2];
-	float fRec28[3];
-	float fRec26[3];
-	float fRec24[2];
-	FAUSTFLOAT fCheckbox8;
-	FAUSTFLOAT fHslider18;
-	float fRec33[2];
-	FAUSTFLOAT fHslider19;
-	float fRec34[2];
-	FAUSTFLOAT fCheckbox9;
-	FAUSTFLOAT fHslider20;
-	float fRec36[2];
-	FAUSTFLOAT fCheckbox10;
-	FAUSTFLOAT fHslider21;
-	float fRec38[2];
-	FAUSTFLOAT fHslider22;
-	float fVec3[1048576];
-	FAUSTFLOAT fHslider23;
-	float fRec40[2];
-	float fRec41[2];
-	int iRec42[2];
-	int iRec43[2];
-	float fRec39[3];
-	float fRec37[3];
-	float fRec35[2];
-	FAUSTFLOAT fCheckbox11;
-
+	float fRec2[3];
+	float fRec1[3];
+	float fRec9[3];
+	float fRec8[3];
+	float fRec7[3];
+	float fRec6[3];
+	
  public:
-	mydsp() {
+	FuzzPedalEngine() {
 	}
-
-	mydsp(const mydsp&) = default;
-
-	virtual ~mydsp() = default;
-
-	mydsp& operator=(const mydsp&) = default;
-
-	void metadata(Meta* m) {
+	
+	FuzzPedalEngine(const FuzzPedalEngine&) = default;
+	
+	virtual ~FuzzPedalEngine() = default;
+	
+	FuzzPedalEngine& operator=(const FuzzPedalEngine&) = default;
+	
+	void metadata(Meta* m) { 
+		m->declare("basics.lib/bypass1:author", "Julius Smith");
 		m->declare("basics.lib/name", "Faust Basic Element Library");
 		m->declare("basics.lib/version", "1.22.0");
-		m->declare("compile_options", "-a .\\faustMinimal.h -lang cpp -i -fpga-mem-th 4 -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 0");
-		m->declare("delays.lib/name", "Faust Delay Library");
-		m->declare("delays.lib/version", "1.2.0");
-		m->declare("filename", "multiheadFeedback.dsp");
+		m->declare("compile_options", "-a .\faustMinimal.h -lang cpp -i -fpga-mem-th 4 -ct 1 -cn FuzzPedalEngine -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 0");
+		m->declare("filename", "FuzzPedalEngine.dsp");
 		m->declare("filters.lib/fir:author", "Julius O. Smith III");
 		m->declare("filters.lib/fir:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/fir:license", "MIT-style STK-4.3 license");
@@ -1323,13 +1251,11 @@ class mydsp : public dsp {
 		m->declare("maths.lib/license", "LGPL with exception");
 		m->declare("maths.lib/name", "Faust Math Library");
 		m->declare("maths.lib/version", "2.9.0");
-		m->declare("name", "multiheadFeedback");
+		m->declare("name", "FuzzPedalEngine");
 		m->declare("platform.lib/name", "Generic Platform Library");
 		m->declare("platform.lib/version", "1.3.0");
 		m->declare("signals.lib/name", "Faust Signal Routing Library");
 		m->declare("signals.lib/version", "1.6.0");
-		m->declare("spats.lib/name", "Faust Spatialization Library");
-		m->declare("spats.lib/version", "1.2.1");
 	}
 
 	virtual int getNumInputs() {
@@ -1338,516 +1264,153 @@ class mydsp : public dsp {
 	virtual int getNumOutputs() {
 		return 2;
 	}
-
+	
 	static void classInit(int sample_rate) {
 	}
-
+	
 	virtual void instanceConstants(int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<float>(1.92e+05f, std::max<float>(1.0f, static_cast<float>(fSampleRate)));
 		fConst1 = 44.1f / fConst0;
 		fConst2 = 1.0f - fConst1;
 		fConst3 = 3.1415927f / fConst0;
-		iConst4 = static_cast<int>(4.0f * fConst0);
 	}
-
+	
 	virtual void instanceResetUserInterface() {
-		fHslider0 = static_cast<FAUSTFLOAT>(0.5f);
-		fHslider1 = static_cast<FAUSTFLOAT>(0.5f);
 		fCheckbox0 = static_cast<FAUSTFLOAT>(0.0f);
-		fHslider2 = static_cast<FAUSTFLOAT>(2e+01f);
+		fHslider0 = static_cast<FAUSTFLOAT>(2e+04f);
 		fCheckbox1 = static_cast<FAUSTFLOAT>(0.0f);
-		fHslider3 = static_cast<FAUSTFLOAT>(2e+04f);
-		fHslider4 = static_cast<FAUSTFLOAT>(0.3f);
-		fHslider5 = static_cast<FAUSTFLOAT>(0.8f);
-		fCheckbox2 = static_cast<FAUSTFLOAT>(0.0f);
-		fHslider6 = static_cast<FAUSTFLOAT>(0.5f);
-		fHslider7 = static_cast<FAUSTFLOAT>(0.5f);
-		fCheckbox3 = static_cast<FAUSTFLOAT>(0.0f);
-		fHslider8 = static_cast<FAUSTFLOAT>(2e+01f);
-		fCheckbox4 = static_cast<FAUSTFLOAT>(0.0f);
-		fHslider9 = static_cast<FAUSTFLOAT>(2e+04f);
-		fHslider10 = static_cast<FAUSTFLOAT>(0.3f);
-		fHslider11 = static_cast<FAUSTFLOAT>(0.6f);
-		fCheckbox5 = static_cast<FAUSTFLOAT>(0.0f);
-		fHslider12 = static_cast<FAUSTFLOAT>(0.5f);
-		fHslider13 = static_cast<FAUSTFLOAT>(0.5f);
-		fCheckbox6 = static_cast<FAUSTFLOAT>(0.0f);
-		fHslider14 = static_cast<FAUSTFLOAT>(2e+01f);
-		fCheckbox7 = static_cast<FAUSTFLOAT>(0.0f);
-		fHslider15 = static_cast<FAUSTFLOAT>(2e+04f);
-		fHslider16 = static_cast<FAUSTFLOAT>(0.3f);
-		fHslider17 = static_cast<FAUSTFLOAT>(0.4f);
-		fCheckbox8 = static_cast<FAUSTFLOAT>(0.0f);
-		fHslider18 = static_cast<FAUSTFLOAT>(0.5f);
-		fHslider19 = static_cast<FAUSTFLOAT>(0.5f);
-		fCheckbox9 = static_cast<FAUSTFLOAT>(0.0f);
-		fHslider20 = static_cast<FAUSTFLOAT>(2e+01f);
-		fCheckbox10 = static_cast<FAUSTFLOAT>(0.0f);
-		fHslider21 = static_cast<FAUSTFLOAT>(2e+04f);
-		fHslider22 = static_cast<FAUSTFLOAT>(0.3f);
-		fHslider23 = static_cast<FAUSTFLOAT>(0.2f);
-		fCheckbox11 = static_cast<FAUSTFLOAT>(0.0f);
+		fHslider1 = static_cast<FAUSTFLOAT>(2e+01f);
 	}
-
+	
 	virtual void instanceClear() {
 		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
 			fRec0[l0] = 0.0f;
 		}
 		for (int l1 = 0; l1 < 2; l1 = l1 + 1) {
-			fRec1[l1] = 0.0f;
+			fRec3[l1] = 0.0f;
 		}
-		for (int l2 = 0; l2 < 2; l2 = l2 + 1) {
-			fRec3[l2] = 0.0f;
+		for (int l2 = 0; l2 < 3; l2 = l2 + 1) {
+			fRec5[l2] = 0.0f;
 		}
-		for (int l3 = 0; l3 < 2; l3 = l3 + 1) {
-			fRec5[l3] = 0.0f;
+		for (int l3 = 0; l3 < 3; l3 = l3 + 1) {
+			fRec4[l3] = 0.0f;
 		}
-		IOTA0 = 0;
-		for (int l4 = 0; l4 < 1048576; l4 = l4 + 1) {
-			fVec0[l4] = 0.0f;
+		for (int l4 = 0; l4 < 3; l4 = l4 + 1) {
+			fRec2[l4] = 0.0f;
 		}
-		for (int l5 = 0; l5 < 2; l5 = l5 + 1) {
-			fRec7[l5] = 0.0f;
+		for (int l5 = 0; l5 < 3; l5 = l5 + 1) {
+			fRec1[l5] = 0.0f;
 		}
-		for (int l6 = 0; l6 < 2; l6 = l6 + 1) {
-			fRec8[l6] = 0.0f;
+		for (int l6 = 0; l6 < 3; l6 = l6 + 1) {
+			fRec9[l6] = 0.0f;
 		}
-		for (int l7 = 0; l7 < 2; l7 = l7 + 1) {
-			iRec9[l7] = 0;
+		for (int l7 = 0; l7 < 3; l7 = l7 + 1) {
+			fRec8[l7] = 0.0f;
 		}
-		for (int l8 = 0; l8 < 2; l8 = l8 + 1) {
-			iRec10[l8] = 0;
+		for (int l8 = 0; l8 < 3; l8 = l8 + 1) {
+			fRec7[l8] = 0.0f;
 		}
 		for (int l9 = 0; l9 < 3; l9 = l9 + 1) {
 			fRec6[l9] = 0.0f;
 		}
-		for (int l10 = 0; l10 < 3; l10 = l10 + 1) {
-			fRec4[l10] = 0.0f;
-		}
-		for (int l11 = 0; l11 < 2; l11 = l11 + 1) {
-			fRec2[l11] = 0.0f;
-		}
-		for (int l12 = 0; l12 < 2; l12 = l12 + 1) {
-			fRec11[l12] = 0.0f;
-		}
-		for (int l13 = 0; l13 < 2; l13 = l13 + 1) {
-			fRec12[l13] = 0.0f;
-		}
-		for (int l14 = 0; l14 < 2; l14 = l14 + 1) {
-			fRec14[l14] = 0.0f;
-		}
-		for (int l15 = 0; l15 < 2; l15 = l15 + 1) {
-			fRec16[l15] = 0.0f;
-		}
-		for (int l16 = 0; l16 < 1048576; l16 = l16 + 1) {
-			fVec1[l16] = 0.0f;
-		}
-		for (int l17 = 0; l17 < 2; l17 = l17 + 1) {
-			fRec18[l17] = 0.0f;
-		}
-		for (int l18 = 0; l18 < 2; l18 = l18 + 1) {
-			fRec19[l18] = 0.0f;
-		}
-		for (int l19 = 0; l19 < 2; l19 = l19 + 1) {
-			iRec20[l19] = 0;
-		}
-		for (int l20 = 0; l20 < 2; l20 = l20 + 1) {
-			iRec21[l20] = 0;
-		}
-		for (int l21 = 0; l21 < 3; l21 = l21 + 1) {
-			fRec17[l21] = 0.0f;
-		}
-		for (int l22 = 0; l22 < 3; l22 = l22 + 1) {
-			fRec15[l22] = 0.0f;
-		}
-		for (int l23 = 0; l23 < 2; l23 = l23 + 1) {
-			fRec13[l23] = 0.0f;
-		}
-		for (int l24 = 0; l24 < 2; l24 = l24 + 1) {
-			fRec22[l24] = 0.0f;
-		}
-		for (int l25 = 0; l25 < 2; l25 = l25 + 1) {
-			fRec23[l25] = 0.0f;
-		}
-		for (int l26 = 0; l26 < 2; l26 = l26 + 1) {
-			fRec25[l26] = 0.0f;
-		}
-		for (int l27 = 0; l27 < 2; l27 = l27 + 1) {
-			fRec27[l27] = 0.0f;
-		}
-		for (int l28 = 0; l28 < 1048576; l28 = l28 + 1) {
-			fVec2[l28] = 0.0f;
-		}
-		for (int l29 = 0; l29 < 2; l29 = l29 + 1) {
-			fRec29[l29] = 0.0f;
-		}
-		for (int l30 = 0; l30 < 2; l30 = l30 + 1) {
-			fRec30[l30] = 0.0f;
-		}
-		for (int l31 = 0; l31 < 2; l31 = l31 + 1) {
-			iRec31[l31] = 0;
-		}
-		for (int l32 = 0; l32 < 2; l32 = l32 + 1) {
-			iRec32[l32] = 0;
-		}
-		for (int l33 = 0; l33 < 3; l33 = l33 + 1) {
-			fRec28[l33] = 0.0f;
-		}
-		for (int l34 = 0; l34 < 3; l34 = l34 + 1) {
-			fRec26[l34] = 0.0f;
-		}
-		for (int l35 = 0; l35 < 2; l35 = l35 + 1) {
-			fRec24[l35] = 0.0f;
-		}
-		for (int l36 = 0; l36 < 2; l36 = l36 + 1) {
-			fRec33[l36] = 0.0f;
-		}
-		for (int l37 = 0; l37 < 2; l37 = l37 + 1) {
-			fRec34[l37] = 0.0f;
-		}
-		for (int l38 = 0; l38 < 2; l38 = l38 + 1) {
-			fRec36[l38] = 0.0f;
-		}
-		for (int l39 = 0; l39 < 2; l39 = l39 + 1) {
-			fRec38[l39] = 0.0f;
-		}
-		for (int l40 = 0; l40 < 1048576; l40 = l40 + 1) {
-			fVec3[l40] = 0.0f;
-		}
-		for (int l41 = 0; l41 < 2; l41 = l41 + 1) {
-			fRec40[l41] = 0.0f;
-		}
-		for (int l42 = 0; l42 < 2; l42 = l42 + 1) {
-			fRec41[l42] = 0.0f;
-		}
-		for (int l43 = 0; l43 < 2; l43 = l43 + 1) {
-			iRec42[l43] = 0;
-		}
-		for (int l44 = 0; l44 < 2; l44 = l44 + 1) {
-			iRec43[l44] = 0;
-		}
-		for (int l45 = 0; l45 < 3; l45 = l45 + 1) {
-			fRec39[l45] = 0.0f;
-		}
-		for (int l46 = 0; l46 < 3; l46 = l46 + 1) {
-			fRec37[l46] = 0.0f;
-		}
-		for (int l47 = 0; l47 < 2; l47 = l47 + 1) {
-			fRec35[l47] = 0.0f;
-		}
 	}
-
+	
 	virtual void init(int sample_rate) {
 		classInit(sample_rate);
 		instanceInit(sample_rate);
 	}
-
+	
 	virtual void instanceInit(int sample_rate) {
 		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
-
-	virtual mydsp* clone() {
-		return new mydsp(*this);
+	
+	virtual FuzzPedalEngine* clone() {
+		return new FuzzPedalEngine(*this);
 	}
-
+	
 	virtual int getSampleRate() {
 		return fSampleRate;
 	}
-
+	
 	virtual void buildUserInterface(UI* ui_interface) {
-		ui_interface->openVerticalBox("multiheadFeedback");
-		ui_interface->openVerticalBox("Head 0");
-		ui_interface->declare(&fHslider21, "0", "");
-		ui_interface->declare(&fHslider21, "unit", "Hz");
-		ui_interface->addHorizontalSlider("Filters/LPF", &fHslider21, FAUSTFLOAT(2e+04f), FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+04f), FAUSTFLOAT(1.0f));
-		ui_interface->declare(&fCheckbox10, "1", "");
-		ui_interface->addCheckButton("Filters/LP Bp", &fCheckbox10);
-		ui_interface->declare(&fHslider20, "2", "");
-		ui_interface->declare(&fHslider20, "unit", "Hz");
-		ui_interface->addHorizontalSlider("Filters/HPF", &fHslider20, FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+04f), FAUSTFLOAT(1.0f));
-		ui_interface->declare(&fCheckbox9, "3", "");
-		ui_interface->addCheckButton("Filters/HP Bp", &fCheckbox9);
-		ui_interface->declare(&fHslider23, "0", "");
-		ui_interface->declare(&fHslider23, "unit", "s");
-		ui_interface->addHorizontalSlider("Time", &fHslider23, FAUSTFLOAT(0.2f), FAUSTFLOAT(0.0f), FAUSTFLOAT(4.0f), FAUSTFLOAT(0.001f));
-		ui_interface->declare(&fHslider22, "1", "");
-		ui_interface->addHorizontalSlider("Feedback", &fHslider22, FAUSTFLOAT(0.3f), FAUSTFLOAT(0.0f), FAUSTFLOAT(0.95f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider18, "2", "");
-		ui_interface->addHorizontalSlider("Pan", &fHslider18, FAUSTFLOAT(0.5f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider19, "3", "");
-		ui_interface->addHorizontalSlider("Level", &fHslider19, FAUSTFLOAT(0.5f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fCheckbox11, "4", "");
-		ui_interface->addCheckButton("On", &fCheckbox11);
-		ui_interface->closeBox();
-		ui_interface->openVerticalBox("Head 1");
-		ui_interface->declare(&fHslider15, "0", "");
-		ui_interface->declare(&fHslider15, "unit", "Hz");
-		ui_interface->addHorizontalSlider("Filters/LPF", &fHslider15, FAUSTFLOAT(2e+04f), FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+04f), FAUSTFLOAT(1.0f));
-		ui_interface->declare(&fCheckbox7, "1", "");
-		ui_interface->addCheckButton("Filters/LP Bp", &fCheckbox7);
-		ui_interface->declare(&fHslider14, "2", "");
-		ui_interface->declare(&fHslider14, "unit", "Hz");
-		ui_interface->addHorizontalSlider("Filters/HPF", &fHslider14, FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+04f), FAUSTFLOAT(1.0f));
-		ui_interface->declare(&fCheckbox6, "3", "");
-		ui_interface->addCheckButton("Filters/HP Bp", &fCheckbox6);
-		ui_interface->declare(&fHslider17, "0", "");
-		ui_interface->declare(&fHslider17, "unit", "s");
-		ui_interface->addHorizontalSlider("Time", &fHslider17, FAUSTFLOAT(0.4f), FAUSTFLOAT(0.0f), FAUSTFLOAT(4.0f), FAUSTFLOAT(0.001f));
-		ui_interface->declare(&fHslider16, "1", "");
-		ui_interface->addHorizontalSlider("Feedback", &fHslider16, FAUSTFLOAT(0.3f), FAUSTFLOAT(0.0f), FAUSTFLOAT(0.95f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider12, "2", "");
-		ui_interface->addHorizontalSlider("Pan", &fHslider12, FAUSTFLOAT(0.5f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider13, "3", "");
-		ui_interface->addHorizontalSlider("Level", &fHslider13, FAUSTFLOAT(0.5f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fCheckbox8, "4", "");
-		ui_interface->addCheckButton("On", &fCheckbox8);
-		ui_interface->closeBox();
-		ui_interface->openVerticalBox("Head 2");
-		ui_interface->declare(&fHslider9, "0", "");
-		ui_interface->declare(&fHslider9, "unit", "Hz");
-		ui_interface->addHorizontalSlider("Filters/LPF", &fHslider9, FAUSTFLOAT(2e+04f), FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+04f), FAUSTFLOAT(1.0f));
-		ui_interface->declare(&fCheckbox4, "1", "");
-		ui_interface->addCheckButton("Filters/LP Bp", &fCheckbox4);
-		ui_interface->declare(&fHslider8, "2", "");
-		ui_interface->declare(&fHslider8, "unit", "Hz");
-		ui_interface->addHorizontalSlider("Filters/HPF", &fHslider8, FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+04f), FAUSTFLOAT(1.0f));
-		ui_interface->declare(&fCheckbox3, "3", "");
-		ui_interface->addCheckButton("Filters/HP Bp", &fCheckbox3);
-		ui_interface->declare(&fHslider11, "0", "");
-		ui_interface->declare(&fHslider11, "unit", "s");
-		ui_interface->addHorizontalSlider("Time", &fHslider11, FAUSTFLOAT(0.6f), FAUSTFLOAT(0.0f), FAUSTFLOAT(4.0f), FAUSTFLOAT(0.001f));
-		ui_interface->declare(&fHslider10, "1", "");
-		ui_interface->addHorizontalSlider("Feedback", &fHslider10, FAUSTFLOAT(0.3f), FAUSTFLOAT(0.0f), FAUSTFLOAT(0.95f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider6, "2", "");
-		ui_interface->addHorizontalSlider("Pan", &fHslider6, FAUSTFLOAT(0.5f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider7, "3", "");
-		ui_interface->addHorizontalSlider("Level", &fHslider7, FAUSTFLOAT(0.5f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fCheckbox5, "4", "");
-		ui_interface->addCheckButton("On", &fCheckbox5);
-		ui_interface->closeBox();
-		ui_interface->openVerticalBox("Head 3");
-		ui_interface->declare(&fHslider3, "0", "");
-		ui_interface->declare(&fHslider3, "unit", "Hz");
-		ui_interface->addHorizontalSlider("Filters/LPF", &fHslider3, FAUSTFLOAT(2e+04f), FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+04f), FAUSTFLOAT(1.0f));
-		ui_interface->declare(&fCheckbox1, "1", "");
-		ui_interface->addCheckButton("Filters/LP Bp", &fCheckbox1);
-		ui_interface->declare(&fHslider2, "2", "");
-		ui_interface->declare(&fHslider2, "unit", "Hz");
-		ui_interface->addHorizontalSlider("Filters/HPF", &fHslider2, FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+04f), FAUSTFLOAT(1.0f));
-		ui_interface->declare(&fCheckbox0, "3", "");
-		ui_interface->addCheckButton("Filters/HP Bp", &fCheckbox0);
-		ui_interface->declare(&fHslider5, "0", "");
-		ui_interface->declare(&fHslider5, "unit", "s");
-		ui_interface->addHorizontalSlider("Time", &fHslider5, FAUSTFLOAT(0.8f), FAUSTFLOAT(0.0f), FAUSTFLOAT(4.0f), FAUSTFLOAT(0.001f));
-		ui_interface->declare(&fHslider4, "1", "");
-		ui_interface->addHorizontalSlider("Feedback", &fHslider4, FAUSTFLOAT(0.3f), FAUSTFLOAT(0.0f), FAUSTFLOAT(0.95f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider0, "2", "");
-		ui_interface->addHorizontalSlider("Pan", &fHslider0, FAUSTFLOAT(0.5f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fHslider1, "3", "");
-		ui_interface->addHorizontalSlider("Level", &fHslider1, FAUSTFLOAT(0.5f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.01f));
-		ui_interface->declare(&fCheckbox2, "4", "");
-		ui_interface->addCheckButton("On", &fCheckbox2);
-		ui_interface->closeBox();
+		ui_interface->openVerticalBox("FuzzPedalEngine");
+		ui_interface->declare(&fHslider0, "0", "");
+		ui_interface->declare(&fHslider0, "unit", "Hz");
+		ui_interface->addHorizontalSlider("Filters/LPF", &fHslider0, FAUSTFLOAT(2e+04f), FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+04f), FAUSTFLOAT(1.0f));
+		ui_interface->declare(&fHslider1, "2", "");
+		ui_interface->declare(&fHslider1, "unit", "Hz");
+		ui_interface->addHorizontalSlider("Filters/HPF", &fHslider1, FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+04f), FAUSTFLOAT(1.0f));
+		ui_interface->declare(&fCheckbox1, "4", "");
+		ui_interface->addCheckButton("Filters/BypassHp", &fCheckbox1);
+		ui_interface->declare(&fCheckbox0, "4", "");
+		ui_interface->addCheckButton("Filters/BypassLp", &fCheckbox0);
 		ui_interface->closeBox();
 	}
-
+	
 	virtual void compute(int count, FAUSTFLOAT** RESTRICT inputs, FAUSTFLOAT** RESTRICT outputs) {
 		FAUSTFLOAT* input0 = inputs[0];
 		FAUSTFLOAT* input1 = inputs[1];
 		FAUSTFLOAT* output0 = outputs[0];
 		FAUSTFLOAT* output1 = outputs[1];
-		float fSlow0 = fConst1 * static_cast<float>(fHslider0);
-		float fSlow1 = fConst1 * static_cast<float>(fHslider1);
-		int iSlow2 = static_cast<int>(static_cast<float>(fCheckbox0));
-		float fSlow3 = fConst1 * static_cast<float>(fHslider2);
-		int iSlow4 = static_cast<int>(static_cast<float>(fCheckbox1));
-		float fSlow5 = fConst1 * static_cast<float>(fHslider3);
-		float fSlow6 = static_cast<float>(fHslider4);
-		int iSlow7 = static_cast<int>(fConst0 * static_cast<float>(fHslider5));
-		float fSlow8 = static_cast<float>(fCheckbox2);
-		float fSlow9 = fConst1 * static_cast<float>(fHslider6);
-		float fSlow10 = fConst1 * static_cast<float>(fHslider7);
-		int iSlow11 = static_cast<int>(static_cast<float>(fCheckbox3));
-		float fSlow12 = fConst1 * static_cast<float>(fHslider8);
-		int iSlow13 = static_cast<int>(static_cast<float>(fCheckbox4));
-		float fSlow14 = fConst1 * static_cast<float>(fHslider9);
-		float fSlow15 = static_cast<float>(fHslider10);
-		int iSlow16 = static_cast<int>(fConst0 * static_cast<float>(fHslider11));
-		float fSlow17 = static_cast<float>(fCheckbox5);
-		float fSlow18 = fConst1 * static_cast<float>(fHslider12);
-		float fSlow19 = fConst1 * static_cast<float>(fHslider13);
-		int iSlow20 = static_cast<int>(static_cast<float>(fCheckbox6));
-		float fSlow21 = fConst1 * static_cast<float>(fHslider14);
-		int iSlow22 = static_cast<int>(static_cast<float>(fCheckbox7));
-		float fSlow23 = fConst1 * static_cast<float>(fHslider15);
-		float fSlow24 = static_cast<float>(fHslider16);
-		int iSlow25 = static_cast<int>(fConst0 * static_cast<float>(fHslider17));
-		float fSlow26 = static_cast<float>(fCheckbox8);
-		float fSlow27 = fConst1 * static_cast<float>(fHslider18);
-		float fSlow28 = fConst1 * static_cast<float>(fHslider19);
-		int iSlow29 = static_cast<int>(static_cast<float>(fCheckbox9));
-		float fSlow30 = fConst1 * static_cast<float>(fHslider20);
-		int iSlow31 = static_cast<int>(static_cast<float>(fCheckbox10));
-		float fSlow32 = fConst1 * static_cast<float>(fHslider21);
-		float fSlow33 = static_cast<float>(fHslider22);
-		int iSlow34 = static_cast<int>(fConst0 * static_cast<float>(fHslider23));
-		float fSlow35 = static_cast<float>(fCheckbox11);
+		int iSlow0 = static_cast<int>(static_cast<float>(fCheckbox0));
+		float fSlow1 = fConst1 * static_cast<float>(fHslider0);
+		int iSlow2 = static_cast<int>(static_cast<float>(fCheckbox1));
+		float fSlow3 = fConst1 * static_cast<float>(fHslider1);
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
-			fRec0[0] = fSlow0 + fConst2 * fRec0[1];
-			fRec1[0] = fSlow1 + fConst2 * fRec1[1];
-			fRec3[0] = fSlow3 + fConst2 * fRec3[1];
-			float fTemp0 = std::tan(fConst3 * fRec3[0]);
+			fRec0[0] = fSlow1 + fConst2 * fRec0[1];
+			float fTemp0 = std::tan(fConst3 * fRec0[0]);
 			float fTemp1 = 1.0f / fTemp0;
-			float fTemp2 = (fTemp1 + 1.4142135f) / fTemp0 + 1.0f;
-			float fTemp3 = mydsp_faustpower2_f(fTemp0);
-			fRec5[0] = fSlow5 + fConst2 * fRec5[1];
-			float fTemp4 = std::tan(fConst3 * fRec5[0]);
-			float fTemp5 = 1.0f / fTemp4;
-			float fTemp6 = (fTemp5 + 1.4142135f) / fTemp4 + 1.0f;
-			float fTemp7 = static_cast<float>(input0[i0]) + static_cast<float>(input1[i0]);
-			float fTemp8 = fTemp7 + fSlow6 * fRec2[1];
-			fVec0[IOTA0 & 1048575] = fTemp8;
-			float fTemp9 = ((fRec7[1] != 0.0f) ? (((fRec8[1] > 0.0f) & (fRec8[1] < 1.0f)) ? fRec7[1] : 0.0f) : (((fRec8[1] == 0.0f) & (iSlow7 != iRec9[1])) ? 0.0009765625f : (((fRec8[1] == 1.0f) & (iSlow7 != iRec10[1])) ? -0.0009765625f : 0.0f)));
-			fRec7[0] = fTemp9;
-			fRec8[0] = std::max<float>(0.0f, std::min<float>(1.0f, fRec8[1] + fTemp9));
-			iRec9[0] = (((fRec8[1] >= 1.0f) & (iRec10[1] != iSlow7)) ? iSlow7 : iRec9[1]);
-			iRec10[0] = (((fRec8[1] <= 0.0f) & (iRec9[1] != iSlow7)) ? iSlow7 : iRec10[1]);
-			float fTemp10 = fVec0[(IOTA0 - std::min<int>(iConst4, std::max<int>(0, iRec9[0]))) & 1048575];
-			float fTemp11 = fTemp10 + fRec8[0] * (fVec0[(IOTA0 - std::min<int>(iConst4, std::max<int>(0, iRec10[0]))) & 1048575] - fTemp10);
-			fRec6[0] = fTemp11 - (fRec6[2] * ((fTemp5 + -1.4142135f) / fTemp4 + 1.0f) + 2.0f * fRec6[1] * (1.0f - 1.0f / mydsp_faustpower2_f(fTemp4))) / fTemp6;
-			float fTemp12 = ((iSlow4) ? fTemp11 : (fRec6[2] + fRec6[0] + 2.0f * fRec6[1]) / fTemp6);
-			fRec4[0] = fTemp12 - (fRec4[2] * ((fTemp1 + -1.4142135f) / fTemp0 + 1.0f) + 2.0f * fRec4[1] * (1.0f - 1.0f / fTemp3)) / fTemp2;
-			fRec2[0] = ((iSlow2) ? fTemp12 : (fRec4[2] + (fRec4[0] - 2.0f * fRec4[1])) / (fTemp3 * fTemp2));
-			fRec11[0] = fSlow9 + fConst2 * fRec11[1];
-			fRec12[0] = fSlow10 + fConst2 * fRec12[1];
-			fRec14[0] = fSlow12 + fConst2 * fRec14[1];
-			float fTemp13 = std::tan(fConst3 * fRec14[0]);
-			float fTemp14 = 1.0f / fTemp13;
-			float fTemp15 = (fTemp14 + 1.4142135f) / fTemp13 + 1.0f;
-			float fTemp16 = mydsp_faustpower2_f(fTemp13);
-			fRec16[0] = fSlow14 + fConst2 * fRec16[1];
-			float fTemp17 = std::tan(fConst3 * fRec16[0]);
-			float fTemp18 = 1.0f / fTemp17;
-			float fTemp19 = (fTemp18 + 1.4142135f) / fTemp17 + 1.0f;
-			float fTemp20 = fTemp7 + fSlow15 * fRec13[1];
-			fVec1[IOTA0 & 1048575] = fTemp20;
-			float fTemp21 = ((fRec18[1] != 0.0f) ? (((fRec19[1] > 0.0f) & (fRec19[1] < 1.0f)) ? fRec18[1] : 0.0f) : (((fRec19[1] == 0.0f) & (iSlow16 != iRec20[1])) ? 0.0009765625f : (((fRec19[1] == 1.0f) & (iSlow16 != iRec21[1])) ? -0.0009765625f : 0.0f)));
-			fRec18[0] = fTemp21;
-			fRec19[0] = std::max<float>(0.0f, std::min<float>(1.0f, fRec19[1] + fTemp21));
-			iRec20[0] = (((fRec19[1] >= 1.0f) & (iRec21[1] != iSlow16)) ? iSlow16 : iRec20[1]);
-			iRec21[0] = (((fRec19[1] <= 0.0f) & (iRec20[1] != iSlow16)) ? iSlow16 : iRec21[1]);
-			float fTemp22 = fVec1[(IOTA0 - std::min<int>(iConst4, std::max<int>(0, iRec20[0]))) & 1048575];
-			float fTemp23 = fTemp22 + fRec19[0] * (fVec1[(IOTA0 - std::min<int>(iConst4, std::max<int>(0, iRec21[0]))) & 1048575] - fTemp22);
-			fRec17[0] = fTemp23 - (fRec17[2] * ((fTemp18 + -1.4142135f) / fTemp17 + 1.0f) + 2.0f * fRec17[1] * (1.0f - 1.0f / mydsp_faustpower2_f(fTemp17))) / fTemp19;
-			float fTemp24 = ((iSlow13) ? fTemp23 : (fRec17[2] + fRec17[0] + 2.0f * fRec17[1]) / fTemp19);
-			fRec15[0] = fTemp24 - (fRec15[2] * ((fTemp14 + -1.4142135f) / fTemp13 + 1.0f) + 2.0f * fRec15[1] * (1.0f - 1.0f / fTemp16)) / fTemp15;
-			fRec13[0] = ((iSlow11) ? fTemp24 : (fRec15[2] + (fRec15[0] - 2.0f * fRec15[1])) / (fTemp16 * fTemp15));
-			fRec22[0] = fSlow18 + fConst2 * fRec22[1];
-			fRec23[0] = fSlow19 + fConst2 * fRec23[1];
-			fRec25[0] = fSlow21 + fConst2 * fRec25[1];
-			float fTemp25 = std::tan(fConst3 * fRec25[0]);
-			float fTemp26 = 1.0f / fTemp25;
-			float fTemp27 = (fTemp26 + 1.4142135f) / fTemp25 + 1.0f;
-			float fTemp28 = mydsp_faustpower2_f(fTemp25);
-			fRec27[0] = fSlow23 + fConst2 * fRec27[1];
-			float fTemp29 = std::tan(fConst3 * fRec27[0]);
-			float fTemp30 = 1.0f / fTemp29;
-			float fTemp31 = (fTemp30 + 1.4142135f) / fTemp29 + 1.0f;
-			float fTemp32 = fTemp7 + fSlow24 * fRec24[1];
-			fVec2[IOTA0 & 1048575] = fTemp32;
-			float fTemp33 = ((fRec29[1] != 0.0f) ? (((fRec30[1] > 0.0f) & (fRec30[1] < 1.0f)) ? fRec29[1] : 0.0f) : (((fRec30[1] == 0.0f) & (iSlow25 != iRec31[1])) ? 0.0009765625f : (((fRec30[1] == 1.0f) & (iSlow25 != iRec32[1])) ? -0.0009765625f : 0.0f)));
-			fRec29[0] = fTemp33;
-			fRec30[0] = std::max<float>(0.0f, std::min<float>(1.0f, fRec30[1] + fTemp33));
-			iRec31[0] = (((fRec30[1] >= 1.0f) & (iRec32[1] != iSlow25)) ? iSlow25 : iRec31[1]);
-			iRec32[0] = (((fRec30[1] <= 0.0f) & (iRec31[1] != iSlow25)) ? iSlow25 : iRec32[1]);
-			float fTemp34 = fVec2[(IOTA0 - std::min<int>(iConst4, std::max<int>(0, iRec31[0]))) & 1048575];
-			float fTemp35 = fTemp34 + fRec30[0] * (fVec2[(IOTA0 - std::min<int>(iConst4, std::max<int>(0, iRec32[0]))) & 1048575] - fTemp34);
-			fRec28[0] = fTemp35 - (fRec28[2] * ((fTemp30 + -1.4142135f) / fTemp29 + 1.0f) + 2.0f * fRec28[1] * (1.0f - 1.0f / mydsp_faustpower2_f(fTemp29))) / fTemp31;
-			float fTemp36 = ((iSlow22) ? fTemp35 : (fRec28[2] + fRec28[0] + 2.0f * fRec28[1]) / fTemp31);
-			fRec26[0] = fTemp36 - (fRec26[2] * ((fTemp26 + -1.4142135f) / fTemp25 + 1.0f) + 2.0f * fRec26[1] * (1.0f - 1.0f / fTemp28)) / fTemp27;
-			fRec24[0] = ((iSlow20) ? fTemp36 : (fRec26[2] + (fRec26[0] - 2.0f * fRec26[1])) / (fTemp28 * fTemp27));
-			fRec33[0] = fSlow27 + fConst2 * fRec33[1];
-			fRec34[0] = fSlow28 + fConst2 * fRec34[1];
-			fRec36[0] = fSlow30 + fConst2 * fRec36[1];
-			float fTemp37 = std::tan(fConst3 * fRec36[0]);
-			float fTemp38 = 1.0f / fTemp37;
-			float fTemp39 = (fTemp38 + 1.4142135f) / fTemp37 + 1.0f;
-			float fTemp40 = mydsp_faustpower2_f(fTemp37);
-			fRec38[0] = fSlow32 + fConst2 * fRec38[1];
-			float fTemp41 = std::tan(fConst3 * fRec38[0]);
-			float fTemp42 = 1.0f / fTemp41;
-			float fTemp43 = (fTemp42 + 1.4142135f) / fTemp41 + 1.0f;
-			float fTemp44 = fTemp7 + fSlow33 * fRec35[1];
-			fVec3[IOTA0 & 1048575] = fTemp44;
-			float fTemp45 = ((fRec40[1] != 0.0f) ? (((fRec41[1] > 0.0f) & (fRec41[1] < 1.0f)) ? fRec40[1] : 0.0f) : (((fRec41[1] == 0.0f) & (iSlow34 != iRec42[1])) ? 0.0009765625f : (((fRec41[1] == 1.0f) & (iSlow34 != iRec43[1])) ? -0.0009765625f : 0.0f)));
-			fRec40[0] = fTemp45;
-			fRec41[0] = std::max<float>(0.0f, std::min<float>(1.0f, fRec41[1] + fTemp45));
-			iRec42[0] = (((fRec41[1] >= 1.0f) & (iRec43[1] != iSlow34)) ? iSlow34 : iRec42[1]);
-			iRec43[0] = (((fRec41[1] <= 0.0f) & (iRec42[1] != iSlow34)) ? iSlow34 : iRec43[1]);
-			float fTemp46 = fVec3[(IOTA0 - std::min<int>(iConst4, std::max<int>(0, iRec42[0]))) & 1048575];
-			float fTemp47 = fTemp46 + fRec41[0] * (fVec3[(IOTA0 - std::min<int>(iConst4, std::max<int>(0, iRec43[0]))) & 1048575] - fTemp46);
-			fRec39[0] = fTemp47 - (fRec39[2] * ((fTemp42 + -1.4142135f) / fTemp41 + 1.0f) + 2.0f * fRec39[1] * (1.0f - 1.0f / mydsp_faustpower2_f(fTemp41))) / fTemp43;
-			float fTemp48 = ((iSlow31) ? fTemp47 : (fRec39[2] + fRec39[0] + 2.0f * fRec39[1]) / fTemp43);
-			fRec37[0] = fTemp48 - (fRec37[2] * ((fTemp38 + -1.4142135f) / fTemp37 + 1.0f) + 2.0f * fRec37[1] * (1.0f - 1.0f / fTemp40)) / fTemp39;
-			fRec35[0] = ((iSlow29) ? fTemp48 : (fRec37[2] + (fRec37[0] - 2.0f * fRec37[1])) / (fTemp40 * fTemp39));
-			output0[i0] = static_cast<FAUSTFLOAT>(fSlow35 * fRec35[0] * fRec34[0] * (1.0f - fRec33[0]) + fSlow26 * fRec24[0] * fRec23[0] * (1.0f - fRec22[0]) + fSlow17 * fRec13[0] * fRec12[0] * (1.0f - fRec11[0]) + fSlow8 * fRec2[0] * fRec1[0] * (1.0f - fRec0[0]));
-			output1[i0] = static_cast<FAUSTFLOAT>(fSlow35 * fRec35[0] * fRec33[0] * fRec34[0] + fSlow26 * fRec24[0] * fRec22[0] * fRec23[0] + fSlow17 * fRec13[0] * fRec11[0] * fRec12[0] + fSlow8 * fRec2[0] * fRec0[0] * fRec1[0]);
+			float fTemp2 = (fTemp1 + 0.76536685f) / fTemp0 + 1.0f;
+			float fTemp3 = 1.0f - 1.0f / FuzzPedalEngine_faustpower2_f(fTemp0);
+			float fTemp4 = (fTemp1 + -0.76536685f) / fTemp0 + 1.0f;
+			float fTemp5 = (fTemp1 + 1.847759f) / fTemp0 + 1.0f;
+			float fTemp6 = (fTemp1 + -1.847759f) / fTemp0 + 1.0f;
+			fRec3[0] = fSlow3 + fConst2 * fRec3[1];
+			float fTemp7 = std::tan(fConst3 * fRec3[0]);
+			float fTemp8 = 1.0f / fTemp7;
+			float fTemp9 = (fTemp8 + 0.76536685f) / fTemp7 + 1.0f;
+			float fTemp10 = FuzzPedalEngine_faustpower2_f(fTemp7);
+			float fTemp11 = fTemp10 * fTemp9;
+			float fTemp12 = 1.0f - 1.0f / fTemp10;
+			float fTemp13 = (fTemp8 + -0.76536685f) / fTemp7 + 1.0f;
+			float fTemp14 = (fTemp8 + 1.847759f) / fTemp7 + 1.0f;
+			float fTemp15 = fTemp10 * fTemp14;
+			float fTemp16 = (fTemp8 + -1.847759f) / fTemp7 + 1.0f;
+			float fTemp17 = static_cast<float>(input0[i0]);
+			fRec5[0] = ((iSlow2) ? 0.0f : fTemp17) - (fRec5[2] * fTemp16 + 2.0f * fRec5[1] * fTemp12) / fTemp14;
+			fRec4[0] = (fRec5[2] + (fRec5[0] - 2.0f * fRec5[1])) / fTemp15 - (fRec4[2] * fTemp13 + 2.0f * fTemp12 * fRec4[1]) / fTemp9;
+			float fTemp18 = ((iSlow2) ? fTemp17 : (fRec4[2] + (fRec4[0] - 2.0f * fRec4[1])) / fTemp11);
+			fRec2[0] = ((iSlow0) ? 0.0f : fTemp18) - (fRec2[2] * fTemp6 + 2.0f * fRec2[1] * fTemp3) / fTemp5;
+			fRec1[0] = (fRec2[2] + fRec2[0] + 2.0f * fRec2[1]) / fTemp5 - (fRec1[2] * fTemp4 + 2.0f * fTemp3 * fRec1[1]) / fTemp2;
+			output0[i0] = static_cast<FAUSTFLOAT>(((iSlow0) ? fTemp18 : (fRec1[2] + fRec1[0] + 2.0f * fRec1[1]) / fTemp2));
+			float fTemp19 = static_cast<float>(input1[i0]);
+			fRec9[0] = ((iSlow2) ? 0.0f : fTemp19) - (fTemp16 * fRec9[2] + 2.0f * fTemp12 * fRec9[1]) / fTemp14;
+			fRec8[0] = (fRec9[2] + (fRec9[0] - 2.0f * fRec9[1])) / fTemp15 - (fTemp13 * fRec8[2] + 2.0f * fTemp12 * fRec8[1]) / fTemp9;
+			float fTemp20 = ((iSlow2) ? fTemp19 : (fRec8[2] + (fRec8[0] - 2.0f * fRec8[1])) / fTemp11);
+			fRec7[0] = ((iSlow0) ? 0.0f : fTemp20) - (fTemp6 * fRec7[2] + 2.0f * fTemp3 * fRec7[1]) / fTemp5;
+			fRec6[0] = (fRec7[2] + fRec7[0] + 2.0f * fRec7[1]) / fTemp5 - (fTemp4 * fRec6[2] + 2.0f * fTemp3 * fRec6[1]) / fTemp2;
+			output1[i0] = static_cast<FAUSTFLOAT>(((iSlow0) ? fTemp20 : (fRec6[2] + fRec6[0] + 2.0f * fRec6[1]) / fTemp2));
 			fRec0[1] = fRec0[0];
-			fRec1[1] = fRec1[0];
 			fRec3[1] = fRec3[0];
+			fRec5[2] = fRec5[1];
 			fRec5[1] = fRec5[0];
-			IOTA0 = IOTA0 + 1;
-			fRec7[1] = fRec7[0];
-			fRec8[1] = fRec8[0];
-			iRec9[1] = iRec9[0];
-			iRec10[1] = iRec10[0];
-			fRec6[2] = fRec6[1];
-			fRec6[1] = fRec6[0];
 			fRec4[2] = fRec4[1];
 			fRec4[1] = fRec4[0];
+			fRec2[2] = fRec2[1];
 			fRec2[1] = fRec2[0];
-			fRec11[1] = fRec11[0];
-			fRec12[1] = fRec12[0];
-			fRec14[1] = fRec14[0];
-			fRec16[1] = fRec16[0];
-			fRec18[1] = fRec18[0];
-			fRec19[1] = fRec19[0];
-			iRec20[1] = iRec20[0];
-			iRec21[1] = iRec21[0];
-			fRec17[2] = fRec17[1];
-			fRec17[1] = fRec17[0];
-			fRec15[2] = fRec15[1];
-			fRec15[1] = fRec15[0];
-			fRec13[1] = fRec13[0];
-			fRec22[1] = fRec22[0];
-			fRec23[1] = fRec23[0];
-			fRec25[1] = fRec25[0];
-			fRec27[1] = fRec27[0];
-			fRec29[1] = fRec29[0];
-			fRec30[1] = fRec30[0];
-			iRec31[1] = iRec31[0];
-			iRec32[1] = iRec32[0];
-			fRec28[2] = fRec28[1];
-			fRec28[1] = fRec28[0];
-			fRec26[2] = fRec26[1];
-			fRec26[1] = fRec26[0];
-			fRec24[1] = fRec24[0];
-			fRec33[1] = fRec33[0];
-			fRec34[1] = fRec34[0];
-			fRec36[1] = fRec36[0];
-			fRec38[1] = fRec38[0];
-			fRec40[1] = fRec40[0];
-			fRec41[1] = fRec41[0];
-			iRec42[1] = iRec42[0];
-			iRec43[1] = iRec43[0];
-			fRec39[2] = fRec39[1];
-			fRec39[1] = fRec39[0];
-			fRec37[2] = fRec37[1];
-			fRec37[1] = fRec37[0];
-			fRec35[1] = fRec35[0];
+			fRec1[2] = fRec1[1];
+			fRec1[1] = fRec1[0];
+			fRec9[2] = fRec9[1];
+			fRec9[1] = fRec9[0];
+			fRec8[2] = fRec8[1];
+			fRec8[1] = fRec8[0];
+			fRec7[2] = fRec7[1];
+			fRec7[1] = fRec7[0];
+			fRec6[2] = fRec6[1];
+			fRec6[1] = fRec6[0];
 		}
 	}
 
@@ -1856,3 +1419,4 @@ class mydsp : public dsp {
 // END-FAUSTDSP
 
 #endif
+} // namespace FuzzPedal

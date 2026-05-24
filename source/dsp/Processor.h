@@ -4,6 +4,10 @@
 #include "ParameterSetup.h"
 #include "paramsDeclaration.h"
 #include "../service/PresetManager.h"
+#include "TabsProcessor/AmpProcessor.h"
+#include "TabsProcessor/InputPedalProcessor.h"
+#include "TabsProcessor/OutputPedalProcessor.h"
+#include "TabsProcessor/PostEqProcessor.h"
 
 
 //==============================================================================
@@ -17,6 +21,11 @@ public:
     PresetManager& getPresetManager() { return mPresetManager; }
 
     void prepareToPlay(double inSampleRate, int inBlockSize) override {
+        mAmpProcessor.prepareToPlay(inSampleRate, inBlockSize);
+        mInputPedalProcessor.prepareToPlay(inSampleRate, inBlockSize);
+        mOutputPedalProcessor.prepareToPlay(inSampleRate, inBlockSize);
+        mPostEqProcessor.prepareToPlay(inSampleRate, inBlockSize);
+
         mSampleRate = inSampleRate;
         mBlockSize = inBlockSize;
         mParameterSetup.initParametersListener(*this);
@@ -83,7 +92,7 @@ public:
     bool hasEditor() const override { return false; }
 
     //==============================================================================
-    const juce::String getName() const override { return "BallzzyDelayProcessor"; }
+    const juce::String getName() const override { return "BallzzyArchetypeProcessor"; }
     bool acceptsMidi() const override { return false; }
     bool producesMidi() const override { return false; }
     double getTailLengthSeconds() const override { return 0; }
@@ -127,10 +136,8 @@ public:
 
     void getStateInformation(juce::MemoryBlock &destData) override {
     }
-
     void setStateInformation(const void *data, int sizeInBytes) override {
-        juce::MemoryInputStream stream(data, static_cast<size_t>(sizeInBytes), false);
-        auto newState = juce::ValueTree::readFromStream(stream);
+
     }
 
     void setRateAndBufferSizeDetails(double sampleRate, int bufferSize) {
@@ -150,6 +157,10 @@ private:
     std::atomic<float> mRmsLevelRight{0.0f};
     std::atomic<float> mRmsOutputLevelLeft{0.0f};
     std::atomic<float> mRmsOutputLevelRight{0.0f};
+    InputPedalProcessor mInputPedalProcessor;
+    OutputPedalProcessor mOutputPedalProcessor;
+    AmpProcessor mAmpProcessor;
+    PostEqProcessor mPostEqProcessor;
 
     juce::AudioPlayHead* mParentPlayHead;
     using AudioInputNode = juce::AudioProcessorGraph::AudioGraphIOProcessor;

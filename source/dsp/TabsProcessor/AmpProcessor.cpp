@@ -7,7 +7,7 @@
 #include "../../service/PresetManager.h"
 
 AmpProcessor::AmpProcessor(juce::AudioProcessorValueTreeState& inParameters,
-    ParameterSetup& inParameterSetup, parametersDeclaration::Parameters inParametersDeclaration, PresetManager& inPresetManager)
+    ParameterSetup& inParameterSetup, parametersDeclaration::Parameters inParametersDeclaration)
     : AudioProcessor(BusesProperties().withInput("Input", juce::AudioChannelSet::stereo())
         .withOutput("Output", juce::AudioChannelSet::stereo()))
     , mParameters(inParameters)

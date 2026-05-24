@@ -9,7 +9,7 @@
 class AmpProcessor final : public juce::AudioProcessor {
 public:
     //==============================================================================
-    AmpProcessor(juce::AudioProcessorValueTreeState &inParameters, ParameterSetup &inParameterSetup, parametersDeclaration::Parameters inParametersDeclaration,PresetManager& inPresetManager);
+    AmpProcessor(juce::AudioProcessorValueTreeState &inParameters, ParameterSetup &inParameterSetup, parametersDeclaration::Parameters inParametersDeclaration);
 
     ~AmpProcessor() override;
 
