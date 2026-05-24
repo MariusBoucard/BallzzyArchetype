@@ -1,0 +1,3 @@
+[submodule "ui/vue-front"]
+	path = ui/vue-front
+	url = git@github.com:MariusBoucard/ballzzyDelay-VueFront.git

@@ -1,0 +1,166 @@
+#pragma once
+#include <juce_audio_processors_headless/juce_audio_processors_headless.h>
+
+#include "../ParameterSetup.h"
+#include "../paramsDeclaration.h"
+#include "../../service/PresetManager.h"
+
+
+//==============================================================================
+class OutputPedalProcessor final : public juce::AudioProcessor {
+public:
+    //==============================================================================
+    OutputPedalProcessor(juce::AudioProcessorValueTreeState &inParameters, ParameterSetup &inParameterSetup, parametersDeclaration::Parameters inParametersDeclaration);
+
+    ~OutputPedalProcessor() override;
+
+    void prepareToPlay(double inSampleRate, int inBlockSize) override {
+        mSampleRate = inSampleRate;
+        mBlockSize = inBlockSize;
+        mParameterSetup.initParametersListener(*this);
+
+        inputs = new float*[2];
+        for (int channel = 0; channel < 2; ++channel) {
+            inputs[channel] = new float[mBlockSize];
+        }
+        outputs = new float*[2];
+        for (int channel = 0; channel < 2; ++channel) {
+            outputs[channel] = new float[mBlockSize];
+        }
+        postHpLp  = new float*[2];
+        for (int channel = 0; channel < 2; ++channel) {
+            postHpLp[channel] = new float[mBlockSize];
+        }
+
+        duckingInput = new float*[4];
+        for (int channel = 0; channel < 4; ++channel) {
+            duckingInput[channel] = new float[mBlockSize];
+        }
+        duckingOutput = new float*[2];
+        for (int channel = 0; channel < 2; ++channel) {
+            duckingOutput[channel] = new float[mBlockSize];
+        }
+
+    }
+
+
+    void releaseResources() override {
+
+        for (int channel = 0; channel < 2; ++channel) {
+            delete[] outputs[channel];
+        }
+        delete [] outputs;
+        for (int channel = 0; channel < 2; ++channel) {
+            delete[] inputs[channel];
+        }
+        delete[] inputs;
+        for (int channel = 0; channel < 2; ++channel) {
+            delete[] postHpLp[channel];
+        }
+        delete[] postHpLp;
+
+        for (int channel = 0; channel < 4; ++channel) {
+            delete[] duckingInput[channel];
+        }
+        delete[] duckingInput;
+        for (int channel = 0; channel < 2; ++channel) {
+            delete[] duckingOutput[channel];
+        }
+        delete[] duckingOutput;
+    }
+    juce::AudioProcessorValueTreeState& getState() { return mParameters;}
+    void processBlock(juce::AudioBuffer<float> &buffer, juce::MidiBuffer &) override;
+
+    void updateMeter(bool isOutput, juce::AudioBuffer<float>& buffer, int numChannels);
+
+    //==============================================================================
+    juce::AudioProcessorEditor *createEditor() override {
+        return nullptr;
+    }
+
+    bool hasEditor() const override { return false; }
+
+    //==============================================================================
+    const juce::String getName() const override { return "BallzzyDelayProcessor"; }
+    bool acceptsMidi() const override { return false; }
+    bool producesMidi() const override { return false; }
+    double getTailLengthSeconds() const override { return 0; }
+
+    //==============================================================================
+    int getNumPrograms() override { return 1; }
+    int getCurrentProgram() override { return 0; }
+
+    void setCurrentProgram(int) override {
+    }
+
+    const juce::String getProgramName(int) override { return "None"; }
+
+    void changeProgramName(int, const juce::String &) override {
+    }
+
+
+    double getRmsLevelLeft() const {
+        auto a = mRmsLevelLeft.load();
+        return a;
+    }
+    double getRmsLevelRight() const { return mRmsLevelRight.load(); }
+    double getRmsOutputLevelLeft() const { return mRmsOutputLevelLeft.load(); }
+    double getRmsOutputLevelRight() const { return mRmsOutputLevelRight.load(); }
+
+    //==============================================================================
+    bool isBusesLayoutSupported(const BusesLayout &layouts) const override {
+        const auto &mainInLayout = layouts.getChannelSet(true, 0);
+        const auto &mainOutLayout = layouts.getChannelSet(false, 0);
+
+        return (mainInLayout == mainOutLayout && (!mainInLayout.isDisabled()));
+    }
+
+    juce::AudioProcessorValueTreeState&  getCustomParameterTree() {
+        return mParameters;
+    }
+
+
+    void initState() {
+    }
+
+    void getStateInformation(juce::MemoryBlock &destData) override {
+    }
+
+    void setStateInformation(const void *data, int sizeInBytes) override {
+        juce::MemoryInputStream stream(data, static_cast<size_t>(sizeInBytes), false);
+        auto newState = juce::ValueTree::readFromStream(stream);
+    }
+
+    void setRateAndBufferSizeDetails(double sampleRate, int bufferSize) {
+        mSampleRate = sampleRate;
+        mBlockSize = bufferSize;
+    }
+
+private:
+
+    //==============================================================================
+    juce::AudioProcessorValueTreeState &mParameters;
+    ParameterSetup &mParameterSetup;
+    parametersDeclaration::Parameters mParametersDeclaration;
+
+private:
+    std::atomic<float> mRmsLevelLeft{0.0f};
+    std::atomic<float> mRmsLevelRight{0.0f};
+    std::atomic<float> mRmsOutputLevelLeft{0.0f};
+    std::atomic<float> mRmsOutputLevelRight{0.0f};
+
+    juce::AudioPlayHead* mParentPlayHead;
+    using AudioInputNode = juce::AudioProcessorGraph::AudioGraphIOProcessor;
+    using AudioOutputNode = juce::AudioProcessorGraph::AudioGraphIOProcessor;
+
+    float** inputs;
+    float** postHpLp;
+    float** outputs;
+    float** duckingInput;
+    float** duckingOutput;
+
+    int mBlockSize;
+    double mSampleRate;
+    //==============================================================================
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OutputPedalProcessor)
+};
