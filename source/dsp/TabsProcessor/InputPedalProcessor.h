@@ -1,19 +1,16 @@
 #pragma once
 #include <juce_audio_processors_headless/juce_audio_processors_headless.h>
-//#include "../../FaustResources/faustMinimal.h"
 
 #include "../ParameterSetup.h"
 #include "../paramsDeclaration.h"
 #include "../../service/PresetManager.h"
-//#include "../Bones/ReverbPedalFaust.h"
-#include "../../../../delayVue/source/dsp/faustParameterMappers/faustParameterMap.h"
-#include "../../../../delayVue/source/dsp/faustParameterMappers/hpLpFaustParameterMap.h"
 #include "../Bones/CompressorPedalFaust.h"
 #include "../Bones/EqPedalFaust.h"
 #include "../Bones/OverdrivePedalFaust.h"
 #include "../Bones/FuzzPedalFaust.h"
 #include "../faustParameterMappers/PedalCompressorMap.h"
 #include "../faustParameterMappers/PedalEqMap.h"
+#include "../faustParameterMappers/PedalFuzzMap.h"
 #include "../faustParameterMappers/PedalOverdriveMap.h"
 
 
@@ -94,7 +91,7 @@ public:
             float finalValue = newValue;
             mFaustCompressorUi->setParamValue(compressorPath, finalValue);
         }
-        auto fuzzPath = FaustParameterMapping::getFaustPath(parameterID);
+        auto fuzzPath = FaustParameterMapping::getFuzzPath(parameterID);
         if (!fuzzPath.empty()) {
             float finalValue = newValue;
             mFuzzUi->setParamValue(fuzzPath, finalValue);
@@ -266,21 +263,6 @@ void writeFaustParametersToFile()
         mBlockSize = bufferSize;
     }
 
-    void setOverdriveMapUI(OverdrivePedal::MapUI *inUI) {
-       // mFaustOverdriveUi = inUI;
-    }
-    void setFuzzMapUI(FuzzPedal::MapUI *inUI) {
-        //mFuzzUi.swap(std::make_unique<FuzzPedal::MapUI>(*inUI));
-    }
-
-
-    void setEqMapUI(EqPedal::MapUI *inUI) {
-        //mEqUi = inUI;
-    }
-
-    void setCompressorMapUI(MapUI *inUI) {
-    //    mFaustCompressorUi = inUI;
-    }
 private:
 
     //==============================================================================

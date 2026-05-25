@@ -18,11 +18,6 @@ namespace id {
     // ==========================================================================
     // Input eq
     const juce::ParameterID PEDAL_INPUT_EQ_ENABLED { "PEDAL_INPUT_EQ_ENABLED", 1};
-    // TODO : remove outdated
-    const juce::ParameterID PEDAL_INPUT_EQ_FREQ { "PEDAL_INPUT_EQ_FREQ", 1};
-    const juce::ParameterID PEDAL_INPUT_EQ_GAIN { "PEDAL_INPUT_EQ_GAIN", 1};
-    const juce::ParameterID PEDAL_INPUT_EQ_Q { "PEDAL_INPUT_EQ_Q", 1};
-
     // TODO : pas de param bindings pour eux !!!
     const juce:: ParameterID  PEDAL_INPUT_EQ_GAIN_BAND_1 { "PEDAL_INPUT_EQ_GAIN_BAND_1", 1};
     const juce:: ParameterID PEDAL_INPUT_EQ_GAIN_BAND_2  { "PEDAL_INPUT_EQ_GAIN_BAND_2", 1};

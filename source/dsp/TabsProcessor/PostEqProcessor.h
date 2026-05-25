@@ -1,14 +1,17 @@
 #pragma once
 #include <juce_audio_processors_headless/juce_audio_processors_headless.h>
 #include "../ParameterSetup.h"
+#include "../Bones/CompressorPedalFaust.h" // CHIANT C EST POUR LE DSP QU'on fait ca;...
 #include "../paramsDeclaration.h"
 #include "../../service/PresetManager.h"
-
-
+#include "../faustParameterMappers/PostEqMap.h"
+#include "../Bones/EqPedalFaust.h"
 
 
 //==============================================================================
-class PostEqProcessor final : public juce::AudioProcessor {
+class PostEqProcessor final : public juce::AudioProcessor,
+                            public juce::AudioProcessorValueTreeState::Listener
+{
 public:
     //==============================================================================
     PostEqProcessor(juce::AudioProcessorValueTreeState &inParameters, ParameterSetup &inParameterSetup, parametersDeclaration::Parameters inParametersDeclaration);
@@ -19,7 +22,14 @@ public:
         mSampleRate = inSampleRate;
         mBlockSize = inBlockSize;
         mParameterSetup.initParametersListener(*this);
+        if (!mEqUi.get())        mEqUi        = std::make_unique<EqPedal::MapUI>();
+        for (int ch = 0; ch < MAX_CHANNELS; ++ch)
+        {
 
+            mEqPedalProcessors[ch] = std::make_unique<EqPedal::EqPedalEngine>();
+            mEqPedalProcessors[ch]->init(mSampleRate);
+            mEqPedalProcessors[ch]->buildUserInterface(mEqUi.get());
+        }
         inputs = new float*[2];
         for (int channel = 0; channel < 2; ++channel) {
             inputs[channel] = new float[mBlockSize];
@@ -94,6 +104,14 @@ public:
     void setCurrentProgram(int) override {
     }
 
+    void parameterChanged(const juce::String& parameterID, float newValue) override {
+        auto faustPath = FaustParameterMapping::getPostAmpEqPath(parameterID);
+        if (!faustPath.empty()) {
+            float finalValue = newValue;
+            mEqUi->setParamValue(faustPath, finalValue);
+        }
+    }
+
     const juce::String getProgramName(int) override { return "None"; }
 
     void changeProgramName(int, const juce::String &) override {
@@ -114,10 +132,6 @@ public:
         const auto &mainOutLayout = layouts.getChannelSet(false, 0);
 
         return (mainInLayout == mainOutLayout && (!mainInLayout.isDisabled()));
-    }
-
-    juce::AudioProcessorValueTreeState&  getCustomParameterTree() {
-        return mParameters;
     }
 
 
@@ -145,6 +159,12 @@ private:
     parametersDeclaration::Parameters mParametersDeclaration;
 
 private:
+    static constexpr int MAX_CHANNELS = 2;
+
+    std::array<std::unique_ptr<dsp>, MAX_CHANNELS> mEqPedalProcessors;
+
+    std::unique_ptr<EqPedal::MapUI> mEqUi;
+
     std::atomic<float> mRmsLevelLeft{0.0f};
     std::atomic<float> mRmsLevelRight{0.0f};
     std::atomic<float> mRmsOutputLevelLeft{0.0f};
@@ -163,5 +183,5 @@ private:
     int mBlockSize;
     double mSampleRate;
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PostEqProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PostEqProcessor);
 };

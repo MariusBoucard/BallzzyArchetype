@@ -14,6 +14,10 @@ PostEqProcessor::PostEqProcessor(juce::AudioProcessorValueTreeState& inParameter
     , mSampleRate(44100)
     , mParametersDeclaration(inParametersDeclaration)
 {
+    for (auto *param: mParameters.processor.getParameters()) {
+        auto paramID = static_cast<juce::AudioProcessorParameterWithID *>(param)->paramID;
+        mParameters.addParameterListener(paramID, this);
+    }
     setRateAndBufferSizeDetails(mSampleRate, mBlockSize);
 }
 
@@ -43,24 +47,31 @@ void PostEqProcessor::updateMeter(bool isOutput, juce::AudioBuffer<float>& buffe
 void PostEqProcessor::processBlock(juce::AudioBuffer<float>& inBuffer, juce::MidiBuffer& inMidiBuffer)
 {
     juce::ScopedNoDenormals noDenormals;
-    const int numSamples = inBuffer.getNumSamples();
-    const int numIn = getTotalNumInputChannels();
-    const int numOut = getTotalNumOutputChannels();
+    const int numSamples  = inBuffer.getNumSamples();
+    const int numChannels = inBuffer.getNumChannels();
 
-    if (numSamples > mBlockSize) {
-        return;
-    }
+    if (numSamples > mBlockSize) return;
 
-    const float inGain = mParameters.getRawParameterValue(id::INPUT_GAIN.getParamID())->load();
-    const float outGain = mParameters.getRawParameterValue(id::OUTPUT_GAIN.getParamID())->load();
+    const bool isEqOn         = mParameters.getRawParameterValue(id::AMP_POST_EQ_ENABLED.getParamID())->load();
+    for (int ch = 0; ch < numChannels; ++ch)
+        std::copy_n(inBuffer.getReadPointer(ch), numSamples, inputs[ch]);
 
+    FAUSTFLOAT* monoIn [1];
+    FAUSTFLOAT* monoOut[1];
 
-    juce::AudioBuffer<float> dryBuffer;
-    dryBuffer.makeCopyOf(inBuffer);
-    inBuffer.applyGain(juce::Decibels::decibelsToGain ((float)inGain));
-    updateMeter(false, inBuffer, numIn);
+    // Each channel gets its OWN processor instance → no state bleed
+    auto processMono = [&](std::array<std::unique_ptr<dsp>, MAX_CHANNELS>& processors) {
+        for (int ch = 0; ch < numChannels; ++ch) {
+            monoIn [0] = inputs[ch];
+            monoOut[0] = outputs[ch];
+            processors[ch]->compute(numSamples, monoIn, monoOut);     // <-- per-channel instance
+            std::copy_n(outputs[ch], numSamples, inputs[ch]);
+        }
+    };
 
-    inBuffer.applyGain(juce::Decibels::decibelsToGain ((float)outGain));
-    updateMeter(true, inBuffer, numOut);
+    if (isEqOn)        processMono(mEqPedalProcessors);
+
+    for (int ch = 0; ch < numChannels; ++ch)
+        std::copy_n(inputs[ch], numSamples, inBuffer.getWritePointer(ch));
 }
 

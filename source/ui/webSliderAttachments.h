@@ -11,9 +11,7 @@ public:
                                                         webGateEnabledRelay{id::GATE_ENABLED.getParamID()},
                                                         webGateGainRelay{id::GATE_GAIN.getParamID()},
                                                         webPedalInputEqEnabledRelay{id::PEDAL_INPUT_EQ_ENABLED.getParamID()},
-                                                        webPedalInputEqFreqRelay{id::PEDAL_INPUT_EQ_FREQ.getParamID()},
-                                                        webPedalInputEqGainRelay{id::PEDAL_INPUT_EQ_GAIN.getParamID()},
-                                                        webPedalInputEqQRelay{id::PEDAL_INPUT_EQ_Q.getParamID()},
+
                                                         webPedalInputOverdriveEnabledRelay{id::PEDAL_INPUT_OVERDRIVE_ENABLED.getParamID()},
                                                         webPedalInputOverdriveToneRelay{id::PEDAL_INPUT_OVERDRIVE_TONE.getParamID()},
                                                         webPedalInputOverdriveDriveRelay{id::PEDAL_INPUT_OVERDRIVE_DRIVE.getParamID()},
@@ -23,6 +21,7 @@ public:
                                                         webPedalInputFuzzLevelRelay{id::PEDAL_INPUT_FUZZ_LEVEL.getParamID()},
                                                         webPedalInputFuzzDriveRelay{id::PEDAL_INPUT_FUZZ_DRIVE.getParamID()},
                                                         webPedalInputCompressorEnabledRelay{id::PEDAL_INPUT_COMPRESSOR_ENABLED.getParamID()},
+                                                        webPedalInputCompressorRatioRelay{id::PEDAL_INPUT_COMPRESSOR_RATIO.getParamID()},
                                                         webPedalInputCompressorThresholdRelay{id::PEDAL_INPUT_COMPRESSOR_THRESHOLD.getParamID()},
                                                         webPedalInputCompressorAttackRelay{id::PEDAL_INPUT_COMPRESSOR_ATTACK.getParamID()},
                                                         webPedalInputCompressorReleaseRelay{id::PEDAL_INPUT_COMPRESSOR_RELEASE.getParamID()},
@@ -83,17 +82,6 @@ public:
             webPedalInputEqEnabledToggleAttachment = std::make_unique<juce::WebToggleButtonParameterAttachment>(
                 *param, webPedalInputEqEnabledRelay, nullptr);
 
-        if (auto *param = state.getParameter(id::PEDAL_INPUT_EQ_FREQ.getParamID()))
-            webPedalInputEqFreqSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
-                *param, webPedalInputEqFreqRelay, nullptr);
-
-        if (auto *param = state.getParameter(id::PEDAL_INPUT_EQ_GAIN.getParamID()))
-            webPedalInputEqGainSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
-                *param, webPedalInputEqGainRelay, nullptr);
-
-        if (auto *param = state.getParameter(id::PEDAL_INPUT_EQ_Q.getParamID()))
-            webPedalInputEqQSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
-                *param, webPedalInputEqQRelay, nullptr);
 
         if (auto *param = state.getParameter(id::PEDAL_INPUT_OVERDRIVE_ENABLED.getParamID()))
             webPedalInputOverdriveEnabledToggleAttachment = std::make_unique<juce::WebToggleButtonParameterAttachment>(
@@ -256,6 +244,10 @@ public:
             webPedalOutputReverbMixSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
                 *param, webPedalOutputReverbMixRelay, nullptr);
 
+        if (auto *param = state.getParameter(id::PEDAL_INPUT_COMPRESSOR_RATIO.getParamID()))
+            webPedalInputCompressorRatioSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
+                *param, webPedalInputCompressorRatioRelay, nullptr);
+
     }
 
     juce::WebBrowserComponent::Options addSlidersOptions(juce::WebBrowserComponent::Options options) {
@@ -272,9 +264,6 @@ public:
 
                 // Input EQ Pedal
                 .withOptionsFrom(webPedalInputEqEnabledRelay)
-                .withOptionsFrom(webPedalInputEqFreqRelay)
-                .withOptionsFrom(webPedalInputEqGainRelay)
-                .withOptionsFrom(webPedalInputEqQRelay)
 
                 // Overdrive Pedal
                 .withOptionsFrom(webPedalInputOverdriveEnabledRelay)
@@ -325,7 +314,7 @@ public:
                 .withOptionsFrom(webPedalOutputDelayFeedbackRelay)
                 .withOptionsFrom(webPedalOutputDelayMixRelay)
                 .withOptionsFrom(webPedalOutputDelayPingPongRelay)
-
+        .withOptionsFrom(webPedalInputCompressorRatioRelay)
                 // Output Reverb Pedal
                 .withOptionsFrom(webPedalOutputReverbEnabledRelay)
                 .withOptionsFrom(webPedalOutputReverbMixRelay)
@@ -356,9 +345,7 @@ private:
     // ==========================================================================
 
     juce::WebToggleButtonRelay webPedalInputEqEnabledRelay;
-    juce::WebSliderRelay webPedalInputEqFreqRelay;
-    juce::WebSliderRelay webPedalInputEqGainRelay;
-    juce::WebSliderRelay webPedalInputEqQRelay;
+
 
     // ==========================================================================
     // Overdrive Pedal
@@ -381,7 +368,7 @@ private:
     // ==========================================================================
     // Compressor Pedal
     // ==========================================================================
-
+    juce::WebSliderRelay webPedalInputCompressorRatioRelay;
     juce::WebToggleButtonRelay webPedalInputCompressorEnabledRelay;
     juce::WebSliderRelay webPedalInputCompressorThresholdRelay;
     juce::WebSliderRelay webPedalInputCompressorAttackRelay;
@@ -481,7 +468,7 @@ private:
     // ==========================================================================
     // Compressor Pedal
     // ==========================================================================
-
+    std::unique_ptr<juce::WebSliderParameterAttachment> webPedalInputCompressorRatioSliderAttachment;
     std::unique_ptr<juce::WebToggleButtonParameterAttachment> webPedalInputCompressorEnabledToggleAttachment;
     std::unique_ptr<juce::WebSliderParameterAttachment> webPedalInputCompressorThresholdSliderAttachment;
     std::unique_ptr<juce::WebSliderParameterAttachment> webPedalInputCompressorAttackSliderAttachment;
