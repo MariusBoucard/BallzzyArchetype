@@ -8,12 +8,17 @@
 
 namespace FaustParameterMapping {
     inline const std::unordered_map<juce::String, std::string>& getFuzzMap()
-    {
+    {/EqPedalEngine/Master_Level
+11:
+12: /FuzzzzPedalengine/Level
+13: /FuzzzzPedalengine/Mix__Dry_Wet_
+14:
+
         static const std::unordered_map<juce::String, std::string> map = {
-            { id::PEDAL_INPUT_FUZZ_ENABLED.getParamID(), "/Fuzz/enabled" },
-            { id::PEDAL_INPUT_FUZZ_TONE.getParamID(),    "/Fuzz/tone" },
-            { id::PEDAL_INPUT_FUZZ_LEVEL.getParamID(),   "/Fuzz/level" },
-            { id::PEDAL_INPUT_FUZZ_DRIVE.getParamID(),   "/Fuzz/drive" }
+            { id::PEDAL_INPUT_FUZZ_ENABLED.getParamID(), "/FuzzzzPedalengine/Mix__Dry_Wet_" },
+            { id::PEDAL_INPUT_FUZZ_TONE.getParamID(),    "/FuzzzzPedalengine/Tone" },
+            { id::PEDAL_INPUT_FUZZ_LEVEL.getParamID(),   "/FuzzzzPedalengine/Level"},
+            { id::PEDAL_INPUT_FUZZ_DRIVE.getParamID(),   "/FuzzzzPedalengine/Drive"  }
         };
         return map;
     }

@@ -18,18 +18,35 @@ namespace id {
     // ==========================================================================
     // Input eq
     const juce::ParameterID PEDAL_INPUT_EQ_ENABLED { "PEDAL_INPUT_EQ_ENABLED", 1};
+    // TODO : remove outdated
     const juce::ParameterID PEDAL_INPUT_EQ_FREQ { "PEDAL_INPUT_EQ_FREQ", 1};
     const juce::ParameterID PEDAL_INPUT_EQ_GAIN { "PEDAL_INPUT_EQ_GAIN", 1};
     const juce::ParameterID PEDAL_INPUT_EQ_Q { "PEDAL_INPUT_EQ_Q", 1};
 
+    // TODO : pas de param bindings pour eux !!!
+    const juce:: ParameterID  PEDAL_INPUT_EQ_GAIN_BAND_1 { "PEDAL_INPUT_EQ_GAIN_BAND_1", 1};
+    const juce:: ParameterID PEDAL_INPUT_EQ_GAIN_BAND_2  { "PEDAL_INPUT_EQ_GAIN_BAND_2", 1};
+    const juce:: ParameterID PEDAL_INPUT_EQ_GAIN_BAND_3  { "PEDAL_INPUT_EQ_GAIN_BAND_3", 1};
+    const juce:: ParameterID PEDAL_INPUT_EQ_GAIN_BAND_4  { "PEDAL_INPUT_EQ_GAIN_BAND_4", 1};
+    const juce:: ParameterID PEDAL_INPUT_EQ_GAIN_BAND_5  { "PEDAL_INPUT_EQ_GAIN_BAND_5", 1};
+    const juce:: ParameterID PEDAL_INPUT_EQ_GAIN_BAND_6  { "PEDAL_INPUT_EQ_GAIN_BAND_6", 1};
+    const juce:: ParameterID PEDAL_INPUT_EQ_GAIN_BAND_7  { "PEDAL_INPUT_EQ_GAIN_BAND_7", 1};
+    const juce:: ParameterID PEDAL_INPUT_EQ_GAIN_BAND_8  { "PEDAL_INPUT_EQ_GAIN_BAND_8", 1};
+    const juce:: ParameterID PEDAL_INPUT_EQ_GAIN_BAND_9  { "PEDAL_INPUT_EQ_GAIN_BAND_9", 1};
+    const juce:: ParameterID PEDAL_INPUT_EQ_GAIN_BAND_10 { "PEDAL_INPUT_EQ_GAIN_BAND_10", 1};
+
     // Overdrive
     const juce::ParameterID PEDAL_INPUT_OVERDRIVE_ENABLED { "PEDAL_INPUT_OVERDRIVE_ENABLED", 1};
     const juce::ParameterID PEDAL_INPUT_OVERDRIVE_TONE { "PEDAL_INPUT_OVERDRIVE_TONE", 1};
+    // TODO : pas de parm binding pour lui
+    const juce::ParameterID PEDAL_INPUT_OVERDRIVE_MIX { "PEDAL_INPUT_OVERDRIVE_MIX", 1};
     const juce::ParameterID PEDAL_INPUT_OVERDRIVE_DRIVE { "PEDAL_INPUT_OVERDRIVE_DRIVE", 1};
     const juce::ParameterID PEDAL_INPUT_OVERDRIVE_LEVEL { "PEDAL_INPUT_OVERDRIVE_LEVEL", 1};
 
     // FUZZ
     const juce::ParameterID PEDAL_INPUT_FUZZ_ENABLED { "PEDAL_INPUT_FUZZ_ENABLED", 1};
+    // Todo : pas de parambinding pour lui
+    const juce::ParameterID PEDAL_INPUT_FUZZ_MIX { "PEDAL_INPUT_FUZZ_MIX", 1};
     const juce::ParameterID PEDAL_INPUT_FUZZ_TONE { "PEDAL_INPUT_FUZZ_TONE", 1};
     const juce::ParameterID PEDAL_INPUT_FUZZ_LEVEL { "PEDAL_INPUT_FUZZ_LEVEL", 1};
     const juce::ParameterID PEDAL_INPUT_FUZZ_DRIVE { "PEDAL_INPUT_FUZZ_DRIVE", 1};
@@ -38,7 +55,7 @@ namespace id {
     const juce::ParameterID PEDAL_INPUT_COMPRESSOR_THRESHOLD { "PEDAL_INPUT_COMPRESSOR_THRESHOLD", 1};
     const juce::ParameterID PEDAL_INPUT_COMPRESSOR_ATTACK { "PEDAL_INPUT_COMPRESSOR_ATTACK", 1};
     const juce::ParameterID PEDAL_INPUT_COMPRESSOR_RELEASE { "PEDAL_INPUT_COMPRESSOR_RELEASE", 1};
-    const juce::ParameterID PEDAL_INPUT_COMPRESSOR_MIX { "PEDAL_INPUT_COMPRESSOR_MIX", 1};
+    const juce::ParameterID PEDAL_INPUT_COMPRESSOR_RATIO { "PEDAL_INPUT_COMPRESSOR_RATIO", 1};
     const juce::ParameterID PEDAL_INPUT_COMPRESSOR_MAKEUP_GAIN { "PEDAL_INPUT_COMPRESSOR_MAKEUP_GAIN", 1};
 
 

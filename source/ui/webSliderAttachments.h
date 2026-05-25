@@ -26,7 +26,6 @@ public:
                                                         webPedalInputCompressorThresholdRelay{id::PEDAL_INPUT_COMPRESSOR_THRESHOLD.getParamID()},
                                                         webPedalInputCompressorAttackRelay{id::PEDAL_INPUT_COMPRESSOR_ATTACK.getParamID()},
                                                         webPedalInputCompressorReleaseRelay{id::PEDAL_INPUT_COMPRESSOR_RELEASE.getParamID()},
-                                                        webPedalInputCompressorMixRelay{id::PEDAL_INPUT_COMPRESSOR_MIX.getParamID()},
                                                         webPedalInputCompressorMakeupGainRelay{id::PEDAL_INPUT_COMPRESSOR_MAKEUP_GAIN.getParamID()},
                                                         webAmpEnabledRelay{id::AMP_ENABLED.getParamID()},
                                                         webAmpGainRelay{id::AMP_GAIN.getParamID()},
@@ -144,9 +143,6 @@ public:
             webPedalInputCompressorReleaseSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
                 *param, webPedalInputCompressorReleaseRelay, nullptr);
 
-        if (auto *param = state.getParameter(id::PEDAL_INPUT_COMPRESSOR_MIX.getParamID()))
-            webPedalInputCompressorMixSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
-                *param, webPedalInputCompressorMixRelay, nullptr);
 
         if (auto *param = state.getParameter(id::PEDAL_INPUT_COMPRESSOR_MAKEUP_GAIN.getParamID()))
             webPedalInputCompressorMakeupGainSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
@@ -297,7 +293,6 @@ public:
                 .withOptionsFrom(webPedalInputCompressorThresholdRelay)
                 .withOptionsFrom(webPedalInputCompressorAttackRelay)
                 .withOptionsFrom(webPedalInputCompressorReleaseRelay)
-                .withOptionsFrom(webPedalInputCompressorMixRelay)
                 .withOptionsFrom(webPedalInputCompressorMakeupGainRelay)
 
                 // Amp
@@ -391,7 +386,6 @@ private:
     juce::WebSliderRelay webPedalInputCompressorThresholdRelay;
     juce::WebSliderRelay webPedalInputCompressorAttackRelay;
     juce::WebSliderRelay webPedalInputCompressorReleaseRelay;
-    juce::WebSliderRelay webPedalInputCompressorMixRelay;
     juce::WebSliderRelay webPedalInputCompressorMakeupGainRelay;
 
     // ==========================================================================
@@ -492,7 +486,6 @@ private:
     std::unique_ptr<juce::WebSliderParameterAttachment> webPedalInputCompressorThresholdSliderAttachment;
     std::unique_ptr<juce::WebSliderParameterAttachment> webPedalInputCompressorAttackSliderAttachment;
     std::unique_ptr<juce::WebSliderParameterAttachment> webPedalInputCompressorReleaseSliderAttachment;
-    std::unique_ptr<juce::WebSliderParameterAttachment> webPedalInputCompressorMixSliderAttachment;
     std::unique_ptr<juce::WebSliderParameterAttachment> webPedalInputCompressorMakeupGainSliderAttachment;
 
     // ==========================================================================

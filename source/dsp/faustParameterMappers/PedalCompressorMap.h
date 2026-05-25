@@ -8,13 +8,15 @@
 
 namespace FaustParameterMapping {
     inline const std::unordered_map<juce::String, std::string>& getPedalCompressorMap() {
-        // TODO Faust link
+        // TODO Faust link19:
+    // TODO ADD RATIO    21: /Standard_Library_Compressor/Ratio
+
         static const std::unordered_map<juce::String, std::string> map = {
-            {id::PEDAL_INPUT_COMPRESSOR_ATTACK.getParamID() , "/HpLp/Filters_BypassHp"},
-            {id::PEDAL_INPUT_COMPRESSOR_RELEASE.getParamID() , "/HpLp/Filters_BypassHp"},
-            {id::PEDAL_INPUT_COMPRESSOR_THRESHOLD.getParamID() , "/HpLp/Filters_BypassHp"},
-            {id::PEDAL_INPUT_COMPRESSOR_MAKEUP_GAIN.getParamID() , "/HpLp/Filters_BypassHp"},
-            {id::PEDAL_INPUT_COMPRESSOR_ENABLED.getParamID() , "/HpLp/Filters_BypassHp"},
+            {id::PEDAL_INPUT_COMPRESSOR_ATTACK.getParamID() , "/Standard_Library_Compressor/Attack"},
+            {id::PEDAL_INPUT_COMPRESSOR_RELEASE.getParamID() , "/Standard_Library_Compressor/Release"},
+            {id::PEDAL_INPUT_COMPRESSOR_THRESHOLD.getParamID() , "/Standard_Library_Compressor/Threshold"},
+            {id::PEDAL_INPUT_COMPRESSOR_MAKEUP_GAIN.getParamID() , "/Standard_Library_Compressor/Makeup_Gain"},
+            {id::PEDAL_INPUT_COMPRESSOR_RATIO.getParamID() , "/Standard_Library_Compressor/Ratio"},
         };
         return map;
     }

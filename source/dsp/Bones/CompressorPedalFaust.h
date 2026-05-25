@@ -1,5 +1,6 @@
 /* ------------------------------------------------------------
-name: "CompressorPedalengine"
+name: "Standard Library Compressor"
+version: "2.0"
 Code generated with Faust 2.83.1 (https://faust.grame.fr)
 Compilation options: -a .\faustMinimal.h -lang cpp -i -fpga-mem-th 4 -ct 1 -cn CompressorPedalEngine -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 0
 ------------------------------------------------------------ */
@@ -34,7 +35,7 @@ Compilation options: -a .\faustMinimal.h -lang cpp -i -fpga-mem-th 4 -ct 1 -cn C
  architecture section is not modified.
  ***********************************************************************/
 
-//#ifndef FAUST_MAPUI_H
+#ifndef FAUST_MAPUI_H
 #define FAUST_MAPUI_H
 
 #include <vector>
@@ -760,7 +761,7 @@ class FAUST_API MapUI : public UI, public PathBuilder
     
 };
 
-//#endif // FAUST_MAPUI_H
+#endif // FAUST_MAPUI_H
 /**************************  END  MapUI.h **************************/
 /************************** BEGIN meta.h *******************************
  FAUST Architecture File
@@ -1186,21 +1187,14 @@ class CompressorPedalEngine : public dsp {
  private:
 	
 	FAUSTFLOAT fHslider0;
-	float fVec0[2];
-	float fRec1[2];
 	int fSampleRate;
 	float fConst0;
-	float fConst1;
-	float fConst2;
-	float fConst3;
-	float fRec0[2];
 	FAUSTFLOAT fHslider1;
-	float fConst4;
-	float fConst5;
-	float fConst6;
-	float fRec2[2];
 	FAUSTFLOAT fHslider2;
+	float fRec1[2];
 	FAUSTFLOAT fHslider3;
+	float fRec0[2];
+	FAUSTFLOAT fHslider4;
 	
  public:
 	CompressorPedalEngine() {
@@ -1213,49 +1207,41 @@ class CompressorPedalEngine : public dsp {
 	CompressorPedalEngine& operator=(const CompressorPedalEngine&) = default;
 	
 	void metadata(Meta* m) { 
+		m->declare("analyzers.lib/amp_follower_ar:author", "Jonatan Liljedahl, revised by Romain Michon");
+		m->declare("analyzers.lib/name", "Faust Analyzer Library");
+		m->declare("analyzers.lib/version", "1.3.0");
 		m->declare("basics.lib/name", "Faust Basic Element Library");
 		m->declare("basics.lib/version", "1.22.0");
 		m->declare("compile_options", "-a .\faustMinimal.h -lang cpp -i -fpga-mem-th 4 -ct 1 -cn CompressorPedalEngine -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 0");
+		m->declare("compressors.lib/compression_gain_mono:author", "Julius O. Smith III");
+		m->declare("compressors.lib/compression_gain_mono:copyright", "Copyright (C) 2014-2020 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("compressors.lib/compression_gain_mono:license", "MIT-style STK-4.3 license");
+		m->declare("compressors.lib/compressor_stereo:author", "Julius O. Smith III");
+		m->declare("compressors.lib/compressor_stereo:copyright", "Copyright (C) 2014-2020 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("compressors.lib/compressor_stereo:license", "MIT-style STK-4.3 license");
+		m->declare("compressors.lib/name", "Faust Compressor Effect Library");
+		m->declare("compressors.lib/version", "1.6.0");
 		m->declare("filename", "CompressorPedalengine.dsp");
-		m->declare("filters.lib/dcblocker:author", "Julius O. Smith III");
-		m->declare("filters.lib/dcblocker:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/dcblocker:license", "MIT-style STK-4.3 license");
-		m->declare("filters.lib/highpass:author", "Julius O. Smith III");
-		m->declare("filters.lib/highpass:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/lowpass0_highpass1", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/lowpass0_highpass1:author", "Julius O. Smith III");
-		m->declare("filters.lib/lowpass:author", "Julius O. Smith III");
-		m->declare("filters.lib/lowpass:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/lowpass:license", "MIT-style STK-4.3 license");
-		m->declare("filters.lib/name", "Faust Filters Library");
-		m->declare("filters.lib/pole:author", "Julius O. Smith III");
-		m->declare("filters.lib/pole:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/pole:license", "MIT-style STK-4.3 license");
-		m->declare("filters.lib/tf1:author", "Julius O. Smith III");
-		m->declare("filters.lib/tf1:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/tf1:license", "MIT-style STK-4.3 license");
-		m->declare("filters.lib/tf1s:author", "Julius O. Smith III");
-		m->declare("filters.lib/tf1s:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/tf1s:license", "MIT-style STK-4.3 license");
-		m->declare("filters.lib/version", "1.7.1");
-		m->declare("filters.lib/zero:author", "Julius O. Smith III");
-		m->declare("filters.lib/zero:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/zero:license", "MIT-style STK-4.3 license");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
 		m->declare("maths.lib/license", "LGPL with exception");
 		m->declare("maths.lib/name", "Faust Math Library");
 		m->declare("maths.lib/version", "2.9.0");
-		m->declare("name", "CompressorPedalengine");
+		m->declare("name", "Standard Library Compressor");
 		m->declare("platform.lib/name", "Generic Platform Library");
 		m->declare("platform.lib/version", "1.3.0");
+		m->declare("signals.lib/name", "Faust Signal Routing Library");
+		m->declare("signals.lib/onePoleSwitching:author", "Jonatan Liljedahl, revised by Dario Sanfilippo");
+		m->declare("signals.lib/onePoleSwitching:licence", "STK-4.3");
+		m->declare("signals.lib/version", "1.6.0");
+		m->declare("version", "2.0");
 	}
 
 	virtual int getNumInputs() {
-		return 1;
+		return 2;
 	}
 	virtual int getNumOutputs() {
-		return 1;
+		return 2;
 	}
 	
 	static void classInit(int sample_rate) {
@@ -1263,34 +1249,23 @@ class CompressorPedalEngine : public dsp {
 	
 	virtual void instanceConstants(int sample_rate) {
 		fSampleRate = sample_rate;
-		fConst0 = std::min<float>(1.92e+05f, std::max<float>(1.0f, static_cast<float>(fSampleRate)));
-		fConst1 = 1.0f / std::tan(4712.389f / fConst0);
-		fConst2 = 1.0f - fConst1;
-		fConst3 = 1.0f / (fConst1 + 1.0f);
-		fConst4 = 1.0f / std::tan(942.4778f / fConst0);
-		fConst5 = 1.0f - fConst4;
-		fConst6 = 1.0f / (fConst4 + 1.0f);
+		fConst0 = 1.0f / std::min<float>(1.92e+05f, std::max<float>(1.0f, static_cast<float>(fSampleRate)));
 	}
 	
 	virtual void instanceResetUserInterface() {
-		fHslider0 = static_cast<FAUSTFLOAT>(5e+01f);
-		fHslider1 = static_cast<FAUSTFLOAT>(5e+01f);
+		fHslider0 = static_cast<FAUSTFLOAT>(1e+01f);
+		fHslider1 = static_cast<FAUSTFLOAT>(-2e+01f);
 		fHslider2 = static_cast<FAUSTFLOAT>(1e+02f);
-		fHslider3 = static_cast<FAUSTFLOAT>(-12.0f);
+		fHslider3 = static_cast<FAUSTFLOAT>(4.0f);
+		fHslider4 = static_cast<FAUSTFLOAT>(0.0f);
 	}
 	
 	virtual void instanceClear() {
 		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
-			fVec0[l0] = 0.0f;
+			fRec1[l0] = 0.0f;
 		}
 		for (int l1 = 0; l1 < 2; l1 = l1 + 1) {
-			fRec1[l1] = 0.0f;
-		}
-		for (int l2 = 0; l2 < 2; l2 = l2 + 1) {
-			fRec0[l2] = 0.0f;
-		}
-		for (int l3 = 0; l3 < 2; l3 = l3 + 1) {
-			fRec2[l3] = 0.0f;
+			fRec0[l1] = 0.0f;
 		}
 	}
 	
@@ -1314,40 +1289,50 @@ class CompressorPedalEngine : public dsp {
 	}
 	
 	virtual void buildUserInterface(UI* ui_interface) {
-		ui_interface->openVerticalBox("CompressorPedalengine");
-		ui_interface->declare(&fHslider0, "1", "");
-		ui_interface->addHorizontalSlider("Drive", &fHslider0, FAUSTFLOAT(5e+01f), FAUSTFLOAT(1.0f), FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.1f));
-		ui_interface->declare(&fHslider1, "2", "");
-		ui_interface->addHorizontalSlider("Tone", &fHslider1, FAUSTFLOAT(5e+01f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.1f));
-		ui_interface->declare(&fHslider3, "3", "");
-		ui_interface->declare(&fHslider3, "unit", "dB");
-		ui_interface->addHorizontalSlider("Level", &fHslider3, FAUSTFLOAT(-12.0f), FAUSTFLOAT(-6e+01f), FAUSTFLOAT(12.0f), FAUSTFLOAT(0.1f));
-		ui_interface->declare(&fHslider2, "4", "");
-		ui_interface->addHorizontalSlider("Mix (Dry/Wet)", &fHslider2, FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.1f));
+		ui_interface->openVerticalBox("Standard Library Compressor");
+		ui_interface->declare(&fHslider0, "unit", "ms");
+		ui_interface->addHorizontalSlider("Attack", &fHslider0, FAUSTFLOAT(1e+01f), FAUSTFLOAT(0.1f), FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.1f));
+		ui_interface->declare(&fHslider4, "unit", "dB");
+		ui_interface->addHorizontalSlider("Makeup Gain", &fHslider4, FAUSTFLOAT(0.0f), FAUSTFLOAT(0.0f), FAUSTFLOAT(24.0f), FAUSTFLOAT(0.1f));
+		ui_interface->addHorizontalSlider("Ratio", &fHslider3, FAUSTFLOAT(4.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(2e+01f), FAUSTFLOAT(0.1f));
+		ui_interface->declare(&fHslider2, "unit", "ms");
+		ui_interface->addHorizontalSlider("Release", &fHslider2, FAUSTFLOAT(1e+02f), FAUSTFLOAT(1.0f), FAUSTFLOAT(1e+03f), FAUSTFLOAT(1.0f));
+		ui_interface->declare(&fHslider1, "unit", "dB");
+		ui_interface->addHorizontalSlider("Threshold", &fHslider1, FAUSTFLOAT(-2e+01f), FAUSTFLOAT(-6e+01f), FAUSTFLOAT(0.0f), FAUSTFLOAT(0.1f));
 		ui_interface->closeBox();
 	}
 	
 	virtual void compute(int count, FAUSTFLOAT** RESTRICT inputs, FAUSTFLOAT** RESTRICT outputs) {
 		FAUSTFLOAT* input0 = inputs[0];
+		FAUSTFLOAT* input1 = inputs[1];
 		FAUSTFLOAT* output0 = outputs[0];
-		float fSlow0 = std::pow(1e+01f, 0.033333335f * static_cast<float>(fHslider0));
-		float fSlow1 = 0.01f * static_cast<float>(fHslider1);
-		float fSlow2 = 1.0f - fSlow1;
-		float fSlow3 = 0.01f * static_cast<float>(fHslider2);
+		FAUSTFLOAT* output1 = outputs[1];
+		float fSlow0 = static_cast<float>(fHslider0);
+		float fSlow1 = 0.0005f * fSlow0;
+		int iSlow2 = std::fabs(fSlow1) < 1.1920929e-07f;
+		float fSlow3 = ((iSlow2) ? 0.0f : std::exp(-(fConst0 / ((iSlow2) ? 1.0f : fSlow1))));
 		float fSlow4 = 1.0f - fSlow3;
-		float fSlow5 = std::pow(1e+01f, 0.05f * static_cast<float>(fHslider3));
+		float fSlow5 = static_cast<float>(fHslider1);
+		float fSlow6 = 0.001f * static_cast<float>(fHslider2);
+		int iSlow7 = std::fabs(fSlow6) < 1.1920929e-07f;
+		float fSlow8 = ((iSlow7) ? 0.0f : std::exp(-(fConst0 / ((iSlow7) ? 1.0f : fSlow6))));
+		float fSlow9 = 0.001f * fSlow0;
+		int iSlow10 = std::fabs(fSlow9) < 1.1920929e-07f;
+		float fSlow11 = ((iSlow10) ? 0.0f : std::exp(-(fConst0 / ((iSlow10) ? 1.0f : fSlow9))));
+		float fSlow12 = 1.0f / std::max<float>(1.1920929e-07f, static_cast<float>(fHslider3)) + -1.0f;
+		float fSlow13 = std::pow(1e+01f, 0.05f * static_cast<float>(fHslider4));
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			float fTemp0 = static_cast<float>(input0[i0]);
-			float fTemp1 = std::max<float>(-0.9f, std::min<float>(0.6f, fSlow0 * (fTemp0 + 0.03f)));
-			fVec0[0] = fTemp1;
-			fRec1[0] = 0.995f * fRec1[1] + fTemp1 - fVec0[1];
-			fRec0[0] = -(fConst3 * (fConst2 * fRec0[1] - fConst1 * (fRec1[0] - fRec1[1])));
-			fRec2[0] = -(fConst6 * (fConst5 * fRec2[1] - (fRec1[0] + fRec1[1])));
-			output0[i0] = static_cast<FAUSTFLOAT>(fSlow5 * (fSlow4 * fTemp0 + fSlow3 * (fSlow2 * fRec2[0] + fSlow1 * fRec0[0])));
-			fVec0[1] = fVec0[0];
+			float fTemp1 = static_cast<float>(input1[i0]);
+			float fTemp2 = std::fabs(std::fabs(fTemp1) + std::fabs(fTemp0));
+			float fTemp3 = ((fTemp2 > fRec1[1]) ? fSlow11 : fSlow8);
+			fRec1[0] = fTemp2 * (1.0f - fTemp3) + fRec1[1] * fTemp3;
+			fRec0[0] = fSlow12 * std::max<float>(2e+01f * std::log10(std::max<float>(1.1754944e-38f, fRec1[0])) - fSlow5, 0.0f) * fSlow4 + fSlow3 * fRec0[1];
+			float fTemp4 = std::pow(1e+01f, 0.05f * fRec0[0]);
+			output0[i0] = static_cast<FAUSTFLOAT>(fSlow13 * fTemp0 * fTemp4);
+			output1[i0] = static_cast<FAUSTFLOAT>(fSlow13 * fTemp1 * fTemp4);
 			fRec1[1] = fRec1[0];
 			fRec0[1] = fRec0[0];
-			fRec2[1] = fRec2[0];
 		}
 	}
 

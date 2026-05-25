@@ -1,6 +1,6 @@
 namespace FuzzPedal {
 /* ------------------------------------------------------------
-name: "FuzzPedalEngine"
+name: "FuzzzzPedalengine"
 Code generated with Faust 2.83.1 (https://faust.grame.fr)
 Compilation options: -a .\faustMinimal.h -lang cpp -i -fpga-mem-th 4 -ct 1 -cn FuzzPedalEngine -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 0
 ------------------------------------------------------------ */
@@ -1181,33 +1181,27 @@ class FAUST_API ScopedNoDenormals {
 #define RESTRICT __restrict__
 #endif
 
-static float FuzzPedalEngine_faustpower2_f(float value) {
-	return value * value;
-}
 
 class FuzzPedalEngine : public dsp {
 	
  private:
 	
-	FAUSTFLOAT fCheckbox0;
+	FAUSTFLOAT fHslider0;
+	float fVec0[2];
+	float fRec1[2];
 	int fSampleRate;
 	float fConst0;
 	float fConst1;
 	float fConst2;
-	FAUSTFLOAT fHslider0;
-	float fRec0[2];
 	float fConst3;
-	FAUSTFLOAT fCheckbox1;
+	float fRec0[2];
 	FAUSTFLOAT fHslider1;
-	float fRec3[2];
-	float fRec5[3];
-	float fRec4[3];
-	float fRec2[3];
-	float fRec1[3];
-	float fRec9[3];
-	float fRec8[3];
-	float fRec7[3];
-	float fRec6[3];
+	float fConst4;
+	float fConst5;
+	float fConst6;
+	float fRec2[2];
+	FAUSTFLOAT fHslider2;
+	FAUSTFLOAT fHslider3;
 	
  public:
 	FuzzPedalEngine() {
@@ -1220,49 +1214,49 @@ class FuzzPedalEngine : public dsp {
 	FuzzPedalEngine& operator=(const FuzzPedalEngine&) = default;
 	
 	void metadata(Meta* m) { 
-		m->declare("basics.lib/bypass1:author", "Julius Smith");
 		m->declare("basics.lib/name", "Faust Basic Element Library");
 		m->declare("basics.lib/version", "1.22.0");
 		m->declare("compile_options", "-a .\faustMinimal.h -lang cpp -i -fpga-mem-th 4 -ct 1 -cn FuzzPedalEngine -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 0");
-		m->declare("filename", "FuzzPedalEngine.dsp");
-		m->declare("filters.lib/fir:author", "Julius O. Smith III");
-		m->declare("filters.lib/fir:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/fir:license", "MIT-style STK-4.3 license");
+		m->declare("filename", "FuzzzzPedalengine.dsp");
+		m->declare("filters.lib/dcblocker:author", "Julius O. Smith III");
+		m->declare("filters.lib/dcblocker:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/dcblocker:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/highpass:author", "Julius O. Smith III");
 		m->declare("filters.lib/highpass:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/iir:author", "Julius O. Smith III");
-		m->declare("filters.lib/iir:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/iir:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/lowpass0_highpass1", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/lowpass0_highpass1:author", "Julius O. Smith III");
 		m->declare("filters.lib/lowpass:author", "Julius O. Smith III");
 		m->declare("filters.lib/lowpass:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/lowpass:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/name", "Faust Filters Library");
-		m->declare("filters.lib/tf2:author", "Julius O. Smith III");
-		m->declare("filters.lib/tf2:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/tf2:license", "MIT-style STK-4.3 license");
-		m->declare("filters.lib/tf2s:author", "Julius O. Smith III");
-		m->declare("filters.lib/tf2s:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/tf2s:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/pole:author", "Julius O. Smith III");
+		m->declare("filters.lib/pole:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/pole:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/tf1:author", "Julius O. Smith III");
+		m->declare("filters.lib/tf1:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/tf1:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/tf1s:author", "Julius O. Smith III");
+		m->declare("filters.lib/tf1s:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/tf1s:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/version", "1.7.1");
+		m->declare("filters.lib/zero:author", "Julius O. Smith III");
+		m->declare("filters.lib/zero:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/zero:license", "MIT-style STK-4.3 license");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
 		m->declare("maths.lib/license", "LGPL with exception");
 		m->declare("maths.lib/name", "Faust Math Library");
 		m->declare("maths.lib/version", "2.9.0");
-		m->declare("name", "FuzzPedalEngine");
+		m->declare("name", "FuzzzzPedalengine");
 		m->declare("platform.lib/name", "Generic Platform Library");
 		m->declare("platform.lib/version", "1.3.0");
-		m->declare("signals.lib/name", "Faust Signal Routing Library");
-		m->declare("signals.lib/version", "1.6.0");
 	}
 
 	virtual int getNumInputs() {
-		return 2;
+		return 1;
 	}
 	virtual int getNumOutputs() {
-		return 2;
+		return 1;
 	}
 	
 	static void classInit(int sample_rate) {
@@ -1271,48 +1265,33 @@ class FuzzPedalEngine : public dsp {
 	virtual void instanceConstants(int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<float>(1.92e+05f, std::max<float>(1.0f, static_cast<float>(fSampleRate)));
-		fConst1 = 44.1f / fConst0;
+		fConst1 = 1.0f / std::tan(4712.389f / fConst0);
 		fConst2 = 1.0f - fConst1;
-		fConst3 = 3.1415927f / fConst0;
+		fConst3 = 1.0f / (fConst1 + 1.0f);
+		fConst4 = 1.0f / std::tan(942.4778f / fConst0);
+		fConst5 = 1.0f - fConst4;
+		fConst6 = 1.0f / (fConst4 + 1.0f);
 	}
 	
 	virtual void instanceResetUserInterface() {
-		fCheckbox0 = static_cast<FAUSTFLOAT>(0.0f);
-		fHslider0 = static_cast<FAUSTFLOAT>(2e+04f);
-		fCheckbox1 = static_cast<FAUSTFLOAT>(0.0f);
-		fHslider1 = static_cast<FAUSTFLOAT>(2e+01f);
+		fHslider0 = static_cast<FAUSTFLOAT>(5e+01f);
+		fHslider1 = static_cast<FAUSTFLOAT>(5e+01f);
+		fHslider2 = static_cast<FAUSTFLOAT>(1e+02f);
+		fHslider3 = static_cast<FAUSTFLOAT>(-12.0f);
 	}
 	
 	virtual void instanceClear() {
 		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
-			fRec0[l0] = 0.0f;
+			fVec0[l0] = 0.0f;
 		}
 		for (int l1 = 0; l1 < 2; l1 = l1 + 1) {
-			fRec3[l1] = 0.0f;
+			fRec1[l1] = 0.0f;
 		}
-		for (int l2 = 0; l2 < 3; l2 = l2 + 1) {
-			fRec5[l2] = 0.0f;
+		for (int l2 = 0; l2 < 2; l2 = l2 + 1) {
+			fRec0[l2] = 0.0f;
 		}
-		for (int l3 = 0; l3 < 3; l3 = l3 + 1) {
-			fRec4[l3] = 0.0f;
-		}
-		for (int l4 = 0; l4 < 3; l4 = l4 + 1) {
-			fRec2[l4] = 0.0f;
-		}
-		for (int l5 = 0; l5 < 3; l5 = l5 + 1) {
-			fRec1[l5] = 0.0f;
-		}
-		for (int l6 = 0; l6 < 3; l6 = l6 + 1) {
-			fRec9[l6] = 0.0f;
-		}
-		for (int l7 = 0; l7 < 3; l7 = l7 + 1) {
-			fRec8[l7] = 0.0f;
-		}
-		for (int l8 = 0; l8 < 3; l8 = l8 + 1) {
-			fRec7[l8] = 0.0f;
-		}
-		for (int l9 = 0; l9 < 3; l9 = l9 + 1) {
-			fRec6[l9] = 0.0f;
+		for (int l3 = 0; l3 < 2; l3 = l3 + 1) {
+			fRec2[l3] = 0.0f;
 		}
 	}
 	
@@ -1336,81 +1315,40 @@ class FuzzPedalEngine : public dsp {
 	}
 	
 	virtual void buildUserInterface(UI* ui_interface) {
-		ui_interface->openVerticalBox("FuzzPedalEngine");
-		ui_interface->declare(&fHslider0, "0", "");
-		ui_interface->declare(&fHslider0, "unit", "Hz");
-		ui_interface->addHorizontalSlider("Filters/LPF", &fHslider0, FAUSTFLOAT(2e+04f), FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+04f), FAUSTFLOAT(1.0f));
+		ui_interface->openVerticalBox("FuzzzzPedalengine");
+		ui_interface->declare(&fHslider0, "1", "");
+		ui_interface->addHorizontalSlider("Drive", &fHslider0, FAUSTFLOAT(5e+01f), FAUSTFLOAT(1.0f), FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.1f));
 		ui_interface->declare(&fHslider1, "2", "");
-		ui_interface->declare(&fHslider1, "unit", "Hz");
-		ui_interface->addHorizontalSlider("Filters/HPF", &fHslider1, FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+01f), FAUSTFLOAT(2e+04f), FAUSTFLOAT(1.0f));
-		ui_interface->declare(&fCheckbox1, "4", "");
-		ui_interface->addCheckButton("Filters/BypassHp", &fCheckbox1);
-		ui_interface->declare(&fCheckbox0, "4", "");
-		ui_interface->addCheckButton("Filters/BypassLp", &fCheckbox0);
+		ui_interface->addHorizontalSlider("Tone", &fHslider1, FAUSTFLOAT(5e+01f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.1f));
+		ui_interface->declare(&fHslider3, "3", "");
+		ui_interface->declare(&fHslider3, "unit", "dB");
+		ui_interface->addHorizontalSlider("Level", &fHslider3, FAUSTFLOAT(-12.0f), FAUSTFLOAT(-6e+01f), FAUSTFLOAT(12.0f), FAUSTFLOAT(0.1f));
+		ui_interface->declare(&fHslider2, "4", "");
+		ui_interface->addHorizontalSlider("Mix (Dry/Wet)", &fHslider2, FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1e+02f), FAUSTFLOAT(0.1f));
 		ui_interface->closeBox();
 	}
 	
 	virtual void compute(int count, FAUSTFLOAT** RESTRICT inputs, FAUSTFLOAT** RESTRICT outputs) {
 		FAUSTFLOAT* input0 = inputs[0];
-		FAUSTFLOAT* input1 = inputs[1];
 		FAUSTFLOAT* output0 = outputs[0];
-		FAUSTFLOAT* output1 = outputs[1];
-		int iSlow0 = static_cast<int>(static_cast<float>(fCheckbox0));
-		float fSlow1 = fConst1 * static_cast<float>(fHslider0);
-		int iSlow2 = static_cast<int>(static_cast<float>(fCheckbox1));
-		float fSlow3 = fConst1 * static_cast<float>(fHslider1);
+		float fSlow0 = std::pow(1e+01f, 0.033333335f * static_cast<float>(fHslider0));
+		float fSlow1 = 0.01f * static_cast<float>(fHslider1);
+		float fSlow2 = 1.0f - fSlow1;
+		float fSlow3 = 0.01f * static_cast<float>(fHslider2);
+		float fSlow4 = 1.0f - fSlow3;
+		float fSlow5 = std::pow(1e+01f, 0.05f * static_cast<float>(fHslider3));
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
-			fRec0[0] = fSlow1 + fConst2 * fRec0[1];
-			float fTemp0 = std::tan(fConst3 * fRec0[0]);
-			float fTemp1 = 1.0f / fTemp0;
-			float fTemp2 = (fTemp1 + 0.76536685f) / fTemp0 + 1.0f;
-			float fTemp3 = 1.0f - 1.0f / FuzzPedalEngine_faustpower2_f(fTemp0);
-			float fTemp4 = (fTemp1 + -0.76536685f) / fTemp0 + 1.0f;
-			float fTemp5 = (fTemp1 + 1.847759f) / fTemp0 + 1.0f;
-			float fTemp6 = (fTemp1 + -1.847759f) / fTemp0 + 1.0f;
-			fRec3[0] = fSlow3 + fConst2 * fRec3[1];
-			float fTemp7 = std::tan(fConst3 * fRec3[0]);
-			float fTemp8 = 1.0f / fTemp7;
-			float fTemp9 = (fTemp8 + 0.76536685f) / fTemp7 + 1.0f;
-			float fTemp10 = FuzzPedalEngine_faustpower2_f(fTemp7);
-			float fTemp11 = fTemp10 * fTemp9;
-			float fTemp12 = 1.0f - 1.0f / fTemp10;
-			float fTemp13 = (fTemp8 + -0.76536685f) / fTemp7 + 1.0f;
-			float fTemp14 = (fTemp8 + 1.847759f) / fTemp7 + 1.0f;
-			float fTemp15 = fTemp10 * fTemp14;
-			float fTemp16 = (fTemp8 + -1.847759f) / fTemp7 + 1.0f;
-			float fTemp17 = static_cast<float>(input0[i0]);
-			fRec5[0] = ((iSlow2) ? 0.0f : fTemp17) - (fRec5[2] * fTemp16 + 2.0f * fRec5[1] * fTemp12) / fTemp14;
-			fRec4[0] = (fRec5[2] + (fRec5[0] - 2.0f * fRec5[1])) / fTemp15 - (fRec4[2] * fTemp13 + 2.0f * fTemp12 * fRec4[1]) / fTemp9;
-			float fTemp18 = ((iSlow2) ? fTemp17 : (fRec4[2] + (fRec4[0] - 2.0f * fRec4[1])) / fTemp11);
-			fRec2[0] = ((iSlow0) ? 0.0f : fTemp18) - (fRec2[2] * fTemp6 + 2.0f * fRec2[1] * fTemp3) / fTemp5;
-			fRec1[0] = (fRec2[2] + fRec2[0] + 2.0f * fRec2[1]) / fTemp5 - (fRec1[2] * fTemp4 + 2.0f * fTemp3 * fRec1[1]) / fTemp2;
-			output0[i0] = static_cast<FAUSTFLOAT>(((iSlow0) ? fTemp18 : (fRec1[2] + fRec1[0] + 2.0f * fRec1[1]) / fTemp2));
-			float fTemp19 = static_cast<float>(input1[i0]);
-			fRec9[0] = ((iSlow2) ? 0.0f : fTemp19) - (fTemp16 * fRec9[2] + 2.0f * fTemp12 * fRec9[1]) / fTemp14;
-			fRec8[0] = (fRec9[2] + (fRec9[0] - 2.0f * fRec9[1])) / fTemp15 - (fTemp13 * fRec8[2] + 2.0f * fTemp12 * fRec8[1]) / fTemp9;
-			float fTemp20 = ((iSlow2) ? fTemp19 : (fRec8[2] + (fRec8[0] - 2.0f * fRec8[1])) / fTemp11);
-			fRec7[0] = ((iSlow0) ? 0.0f : fTemp20) - (fTemp6 * fRec7[2] + 2.0f * fTemp3 * fRec7[1]) / fTemp5;
-			fRec6[0] = (fRec7[2] + fRec7[0] + 2.0f * fRec7[1]) / fTemp5 - (fTemp4 * fRec6[2] + 2.0f * fTemp3 * fRec6[1]) / fTemp2;
-			output1[i0] = static_cast<FAUSTFLOAT>(((iSlow0) ? fTemp20 : (fRec6[2] + fRec6[0] + 2.0f * fRec6[1]) / fTemp2));
-			fRec0[1] = fRec0[0];
-			fRec3[1] = fRec3[0];
-			fRec5[2] = fRec5[1];
-			fRec5[1] = fRec5[0];
-			fRec4[2] = fRec4[1];
-			fRec4[1] = fRec4[0];
-			fRec2[2] = fRec2[1];
-			fRec2[1] = fRec2[0];
-			fRec1[2] = fRec1[1];
+			float fTemp0 = static_cast<float>(input0[i0]);
+			float fTemp1 = std::max<float>(-0.9f, std::min<float>(0.6f, fSlow0 * (fTemp0 + 0.03f)));
+			fVec0[0] = fTemp1;
+			fRec1[0] = 0.995f * fRec1[1] + fTemp1 - fVec0[1];
+			fRec0[0] = -(fConst3 * (fConst2 * fRec0[1] - fConst1 * (fRec1[0] - fRec1[1])));
+			fRec2[0] = -(fConst6 * (fConst5 * fRec2[1] - (fRec1[0] + fRec1[1])));
+			output0[i0] = static_cast<FAUSTFLOAT>(fSlow5 * (fSlow4 * fTemp0 + fSlow3 * (fSlow2 * fRec2[0] + fSlow1 * fRec0[0])));
+			fVec0[1] = fVec0[0];
 			fRec1[1] = fRec1[0];
-			fRec9[2] = fRec9[1];
-			fRec9[1] = fRec9[0];
-			fRec8[2] = fRec8[1];
-			fRec8[1] = fRec8[0];
-			fRec7[2] = fRec7[1];
-			fRec7[1] = fRec7[0];
-			fRec6[2] = fRec6[1];
-			fRec6[1] = fRec6[0];
+			fRec0[1] = fRec0[0];
+			fRec2[1] = fRec2[0];
 		}
 	}
 

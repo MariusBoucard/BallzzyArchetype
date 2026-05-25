@@ -10,6 +10,18 @@ namespace parametersDeclaration{
                 juce::AudioParameterFloat* freq   { nullptr };
                 juce::AudioParameterFloat* gain   { nullptr };
                 juce::AudioParameterFloat* q      { nullptr };
+
+                juce::AudioParameterFloat* freqBell1   { nullptr };
+                juce::AudioParameterFloat* freqBell2   { nullptr };
+                juce::AudioParameterFloat* freqBell3   { nullptr };
+                juce::AudioParameterFloat* freqBell4   { nullptr };
+                juce::AudioParameterFloat* freqBell5   { nullptr };
+                juce::AudioParameterFloat* freqBell6   { nullptr };
+                juce::AudioParameterFloat* freqBell7   { nullptr };
+                juce::AudioParameterFloat* freqBell8   { nullptr };
+                juce::AudioParameterFloat* freqBell9   { nullptr };
+                juce::AudioParameterFloat* freqBell10   { nullptr };
+
             } inputEq;
  struct overdrivePedal
         {
@@ -17,6 +29,7 @@ namespace parametersDeclaration{
             juce::AudioParameterFloat* tone   { nullptr };
             juce::AudioParameterFloat* drive  { nullptr };
             juce::AudioParameterFloat* level  { nullptr };
+            juce::AudioParameterFloat* mix   { nullptr };
         } overdrive;
 
         struct fuzzPedal
@@ -33,7 +46,7 @@ namespace parametersDeclaration{
             juce::AudioParameterFloat* threshold { nullptr };
             juce::AudioParameterFloat* attack    { nullptr };
             juce::AudioParameterFloat* release   { nullptr };
-            juce::AudioParameterFloat* mix       { nullptr };
+            juce::AudioParameterFloat* ratio       { nullptr };
             juce::AudioParameterFloat* makeupGain{ nullptr };
         } compressor;
     } inputEffects;

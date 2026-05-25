@@ -29,35 +29,59 @@ void addInputEffectLayout(juce::AudioProcessorValueTreeState::ParameterLayout& l
 
 
     auto inputEqEnabled = std::make_unique<juce::AudioParameterBool>(id::PEDAL_INPUT_EQ_ENABLED, "Input EQ enabled", true);
-    auto inputEqFreq    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_FREQ,  "Input EQ freq",  1000.0f, 20000.0f, 1000.0f);
-    auto inputEqGain    = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_EQ_GAIN,  "Input EQ gain", -24.0f, 24.0f, 0.0f);
-    auto inputEqQ       = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_EQ_Q,     "Input EQ Q",    0.1f, 10.0f, 1.0f);
+    auto inputBell1    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_1,  "Input gain band 1",  -12,12,0);
+    auto inputBell2   = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_2,  "Input gain band 2",  -12,12,0);
+    auto inputBell3    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_3,  "Input gain band 3",  -12,12,0);
+    auto inputBell4   = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_4,  "Input gain band 4",  -12,12,0);
+    auto inputBell5    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_5,  "Input gain band 5",  -12,12,0);
+    auto inputBell6    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_6,  "Input gain band 6",  -12,12,0);
+    auto inputBell7    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_7,  "Input gain band 7",  -12,12,0);
+    auto inputBell8    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_8,  "Input gain band 8",  -12,12,0);
+    auto inputBell9    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_9,  "Input gain band 9",  -12,12,0);
+    auto inputBell10    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_10,  "Input gain band 10",  -12,12,0);
 
 input_effects_params.inputEq.enabled = inputEqEnabled.get();
-input_effects_params.inputEq.freq    = inputEqFreq.get();
-input_effects_params.inputEq.gain    = inputEqGain.get();
-input_effects_params.inputEq.q       = inputEqQ.get();
-
+input_effects_params.inputEq.freqBell1 = inputBell1.get();
+    input_effects_params.inputEq.freqBell2 = inputBell2.get();
+    input_effects_params.inputEq.freqBell3 = inputBell3.get();
+    input_effects_params.inputEq.freqBell4 = inputBell4.get();
+    input_effects_params.inputEq.freqBell5 = inputBell5.get();
+    input_effects_params.inputEq.freqBell6 = inputBell6.get();
+    input_effects_params.inputEq.freqBell7 = inputBell7.get();
+    input_effects_params.inputEq.freqBell8 = inputBell8.get();
+    input_effects_params.inputEq.freqBell9 = inputBell9.get();
+    input_effects_params.inputEq.freqBell10 = inputBell10.get();
 layout.add(std::move(inputEqEnabled));
-layout.add(std::move(inputEqFreq));
-layout.add(std::move(inputEqGain));
-layout.add(std::move(inputEqQ));
+    layout.add(std::move(inputBell1));
+    layout.add(std::move(inputBell2));
+    layout.add(std::move(inputBell3));
+    layout.add(std::move(inputBell4));
+    layout.add(std::move(inputBell5));
+    layout.add(std::move(inputBell6));
+    layout.add(std::move(inputBell7));
+    layout.add(std::move(inputBell8));
+    layout.add(std::move(inputBell9));
+    layout.add(std::move(inputBell10));
+
+
 
 // Overdrive
 auto odEnabled = std::make_unique<juce::AudioParameterBool>(id::PEDAL_INPUT_OVERDRIVE_ENABLED, "Overdrive enabled", false);
 auto odTone    = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_OVERDRIVE_TONE, "Overdrive tone", 0.0f, 1.0f, 0.5f);
 auto odDrive   = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_OVERDRIVE_DRIVE,"Overdrive drive", 0.0f, 1.0f, 0.5f);
 auto odLevel   = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_OVERDRIVE_LEVEL,"Overdrive level", 0.0f, 1.0f, 0.8f);
-
+auto odMix   = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_OVERDRIVE_MIX,"Overdrive Mix", 0.0f, 1.0f, 0.8f);
 input_effects_params.overdrive.enabled = odEnabled.get();
 input_effects_params.overdrive.tone    = odTone.get();
 input_effects_params.overdrive.drive   = odDrive.get();
 input_effects_params.overdrive.level   = odLevel.get();
+    input_effects_params.overdrive.mix = odMix.get();
 
 layout.add(std::move(odEnabled));
 layout.add(std::move(odTone));
 layout.add(std::move(odDrive));
 layout.add(std::move(odLevel));
+    layout.add(std::move(odMix));
 
 // Fuzz
 auto fuzzEnabled = std::make_unique<juce::AudioParameterBool>(id::PEDAL_INPUT_FUZZ_ENABLED, "Fuzz enabled", false);
@@ -80,21 +104,21 @@ auto compEnabled = std::make_unique<juce::AudioParameterBool>(id::PEDAL_INPUT_CO
 auto compThresh  = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_COMPRESSOR_THRESHOLD, "Compressor threshold", -60.0f, 0.0f, -24.0f);
 auto compAttack  = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_COMPRESSOR_ATTACK,    "Compressor attack (ms)", 0.1f, 200.0f, 10.0f);
 auto compRelease = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_COMPRESSOR_RELEASE,   "Compressor release (ms)", 1.0f, 1000.0f, 100.0f);
-auto compMix     = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_COMPRESSOR_MIX,       "Compressor mix", 0.0f, 1.0f, 1.0f);
+auto ratio     = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_COMPRESSOR_RATIO,       "Compressor Ratio", 1.0f, 10.0f, 1.0f);
 auto compMakeup  = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_COMPRESSOR_MAKEUP_GAIN,"Compressor makeup", -12.0f, 12.0f, 0.0f);
 
 input_effects_params.compressor.enabled    = compEnabled.get();
 input_effects_params.compressor.threshold  = compThresh.get();
 input_effects_params.compressor.attack     = compAttack.get();
 input_effects_params.compressor.release    = compRelease.get();
-input_effects_params.compressor.mix        = compMix.get();
+input_effects_params.compressor.ratio        = ratio.get();
 input_effects_params.compressor.makeupGain = compMakeup.get();
 
 layout.add(std::move(compEnabled));
 layout.add(std::move(compThresh));
 layout.add(std::move(compAttack));
 layout.add(std::move(compRelease));
-layout.add(std::move(compMix));
+layout.add(std::move(ratio));
 layout.add(std::move(compMakeup));
 }
 
