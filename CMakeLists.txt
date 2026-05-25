@@ -137,6 +137,11 @@ juce_add_binary_data(WebViewFiles
     SOURCES ${TARGET_WEBVIEW_FILES_ZIP_PATH}
 )
 add_dependencies(WebViewFiles ZipWebViewFiles)
+juce_add_binary_data(BallzzyArchetypeData
+        SOURCES
+
+        Source/ressources/namModels/Fender/Fender.nam
+)
 
 # Links to all necessary dependencies. The present ones are recommended by JUCE.
 # If you use one of the additional modules, like the DSP module, you need to specify it here.
@@ -145,11 +150,15 @@ target_link_libraries(${PROJECT_NAME}
         juce::juce_audio_utils
         juce::juce_dsp
         WebViewFiles
-    PUBLIC
+        NAM
+        BallzzyArchetypeData
+
+        PUBLIC
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags
 )
+
 
 target_compile_definitions(${PROJECT_NAME}
     PUBLIC

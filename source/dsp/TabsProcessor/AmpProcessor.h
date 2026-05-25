@@ -1,5 +1,8 @@
 #pragma once
+#include <filesystem>
 #include <juce_audio_processors_headless/juce_audio_processors_headless.h>
+#include "NAM/dsp.h"
+#include "BinaryData.h"
 
 #include "../ParameterSetup.h"
 #include "../paramsDeclaration.h"
@@ -16,7 +19,8 @@ public:
     void prepareToPlay(double inSampleRate, int inBlockSize) override {
         mSampleRate = inSampleRate;
         mBlockSize = inBlockSize;
-        mParameterSetup.initParametersListener(*this);
+       // mParameterSetup.initParametersListener(*this);
+        mModel->ResetAndPrewarm(mSampleRate, mBlockSize);
 
         inputs = new float*[2];
         for (int channel = 0; channel < 2; ++channel) {
@@ -38,6 +42,63 @@ public:
         duckingOutput = new float*[2];
         for (int channel = 0; channel < 2; ++channel) {
             duckingOutput[channel] = new float[mBlockSize];
+        }
+
+    }
+    void setDirectNAMPath(const juce::File& path)
+    {
+        mDirectNAMPath = path;
+        mParameters.state.setProperty("directNAMPath", path.getFullPathName(), nullptr);
+    }
+    void loadNAMFile(const juce::File& inNAMFile)
+    {
+        try
+        {
+            mIsNAMEnabled = false;
+            mModel = nam::get_dsp(std::filesystem::path(inNAMFile.getFullPathName().toStdString()));
+            mModel->ResetAndPrewarm(mSampleRate, mBlockSize);
+            setDirectNAMPath(inNAMFile);
+            mIsNAMEnabled = true;
+        }
+        catch (const std::exception& e)
+        {
+            std::cerr << "Error loading NAM file: " << e.what() << std::endl;
+        }
+    }
+
+    juce::File createTemporaryFileFromMemory(const void* binaryData, size_t dataSize, const juce::String& fileName)
+    {
+        juce::File tempFile = juce::File::getSpecialLocation(juce::File::tempDirectory).getChildFile(fileName);
+
+        tempFile.deleteFile();
+        tempFile.create();
+
+        juce::FileOutputStream outputStream(tempFile);
+        if (outputStream.openedOk())
+        {
+            outputStream.write(binaryData, dataSize);
+            outputStream.flush();
+        }
+        else
+        {
+            DBG("Failed to create temporary file.");
+        }
+
+        return tempFile;
+    }
+
+
+    void loadDefaultNAMFile()
+    {
+        juce::File tempFile = createTemporaryFileFromMemory(BinaryData::MetalLead_nam, BinaryData::MetalLead_namSize, "metal.nam");
+
+        if (tempFile.existsAsFile())
+        {
+            loadNAMFile(tempFile);
+        }
+        else
+        {
+            DBG("Failed to create temporary file for impulse response.");
         }
 
     }
@@ -141,6 +202,8 @@ private:
     juce::AudioProcessorValueTreeState &mParameters;
     ParameterSetup &mParameterSetup;
     parametersDeclaration::Parameters mParametersDeclaration;
+    std::unique_ptr<nam::DSP> mModel;
+    juce::File mDirectNAMPath;
 
 private:
     std::atomic<float> mRmsLevelLeft{0.0f};
@@ -157,6 +220,7 @@ private:
     float** outputs;
     float** duckingInput;
     float** duckingOutput;
+    bool mIsNAMEnabled;
 
     int mBlockSize;
     double mSampleRate;
