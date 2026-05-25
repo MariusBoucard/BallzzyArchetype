@@ -110,6 +110,7 @@ juce_add_binary_data(BallzzyArchetypeData
         # Images
 
         Source/ressources/namModels/Fender/Fender.nam
+        Source/ressources/namModels/Fender/Marshall.nam
 )
 
 # Link binary data and JUCE modules to the plugin

@@ -66,8 +66,6 @@ void AmpProcessor::processBlock(juce::AudioBuffer<float>& inBuffer, juce::MidiBu
 
     // Apply input gain before NAM
     inBuffer.applyGain(juce::Decibels::decibelsToGain(inGain));
-    for (int ch = 0; ch < numChannels; ++ch)
-        std::copy_n(inBuffer.getReadPointer(ch), numSamples, inputs[ch]);
 
     if (mIsNAMEnabled && mModel && inAmpOn)
     {
@@ -87,15 +85,19 @@ void AmpProcessor::processBlock(juce::AudioBuffer<float>& inBuffer, juce::MidiBu
         // Mirror mono result to other channels
         for (int ch = 1; ch < numOut; ++ch)
             inBuffer.copyFrom(ch, 0, inBuffer, 0, 0, numSamples);
+
+        for (int ch = 0; ch < numChannels; ++ch)
+            std::copy_n(inBuffer.getReadPointer(ch), numSamples, inputs[ch]);
+
+        // Compressor is already stereo — one instance, both channels at once
+
+        mFaustToneStackProcessor->compute(numSamples, inputs, duckingInput);
+        for (int ch = 0; ch < numOut; ++ch)
+            std::copy_n(duckingInput[ch], numSamples, inputs[ch]);
+        for (int ch = 0; ch < numOut; ++ch)
+            std::copy_n(inputs[ch], numSamples, inBuffer.getWritePointer(ch));
     }
 
-    // Compressor is already stereo — one instance, both channels at once
-
-    mFaustToneStackProcessor->compute(numSamples, inputs, duckingInput);
-    for (int ch = 0; ch < numOut; ++ch)
-        std::copy_n(duckingInput[ch], numSamples, inputs[ch]);
-    for (int ch = 0; ch < numOut; ++ch)
-        std::copy_n(inputs[ch], numSamples, inBuffer.getWritePointer(ch));
 
     inBuffer.applyGain(juce::Decibels::decibelsToGain(outGain));
     // Apply output gain after NAM

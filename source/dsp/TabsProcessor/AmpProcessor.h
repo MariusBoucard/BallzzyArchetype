@@ -71,9 +71,8 @@ void writeFaustParametersToFile()
         mBlockSize = inBlockSize;
        // mParameterSetup.initParametersListener(*this);
         if (!mFaustToneStackUI.get())        mFaustToneStackUI        = std::make_unique<AmpToneStack::MapUI>();
-        if (mIsNAMEnabled) {
             mModel->ResetAndPrewarm(mSampleRate, mBlockSize);
-        }
+
         mFaustToneStackProcessor =  std::make_unique<AmpToneStack::AmpToneStack>();
         mFaustToneStackProcessor->init(mSampleRate);
         mFaustToneStackProcessor->buildUserInterface(mFaustToneStackUI.get());
@@ -152,7 +151,7 @@ void writeFaustParametersToFile()
 
     void loadDefaultNAMFile()
     {
-        juce::File tempFile = createTemporaryFileFromMemory(BinaryData::Fender_nam, BinaryData::Fender_namSize, "Fender.nam");
+        juce::File tempFile = createTemporaryFileFromMemory(BinaryData::Marshall_nam, BinaryData::Marshall_namSize, "Marshall.nam");
 
         if (tempFile.existsAsFile())
         {
