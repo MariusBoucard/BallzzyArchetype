@@ -3,25 +3,80 @@
 #include <juce_audio_processors_headless/juce_audio_processors_headless.h>
 #include "NAM/dsp.h"
 #include "BinaryData.h"
-
+#include "../Bones/CompressorPedalFaust.h"
 #include "../ParameterSetup.h"
 #include "../paramsDeclaration.h"
 #include "../../service/PresetManager.h"
+#include "../Bones/AmpToneStackFaust.h"
+#include "../faustParameterMappers/AmpStackMap.h"
 
 //==============================================================================
-class AmpProcessor final : public juce::AudioProcessor {
+class AmpProcessor final : public juce::AudioProcessor,
+                            public juce::AudioProcessorValueTreeState::Listener {
 public:
     //==============================================================================
     AmpProcessor(juce::AudioProcessorValueTreeState &inParameters, ParameterSetup &inParameterSetup, parametersDeclaration::Parameters inParametersDeclaration);
 
     ~AmpProcessor() override;
+void writeFaustParametersToFile()
+{
+    std::vector<juce::String> params;
 
+    // Use smart pointers for automatic cleanup
+    std::unique_ptr<AmpToneStack::AmpToneStack> odDsp(new AmpToneStack::AmpToneStack());
+    std::unique_ptr<AmpToneStack::MapUI> odUI(new AmpToneStack::MapUI());
+
+    // Build UIs
+    odDsp->buildUserInterface(odUI.get());
+
+    // Collect maps (assumes getFullpathMap() returns something like std::map<juce::String, someValue> or std::unordered_map)
+    // Adjust types if needed.
+    using MapType = decltype(odUI->getFullpathMap());
+        auto combinedMap = odUI->getFullpathMap();
+
+        auto mergeMap = [&](const decltype(combinedMap)& m)
+        {
+            for (const auto& kv : m)
+            {
+                if (combinedMap.find(kv.first) == combinedMap.end())
+                    combinedMap.insert(kv);
+            }
+        };
+
+        mergeMap(odUI->getFullpathMap());
+
+    mergeMap(odUI->getFullpathMap());
+
+
+    // Write to desktop file
+    juce::File outputFile = juce::File::getSpecialLocation(juce::File::userDesktopDirectory)
+                                .getChildFile("faust_params.txt");
+    juce::FileOutputStream stream(outputFile);
+
+    if (stream.openedOk())
+    {
+        int i = 0;
+        for (const auto& kv : combinedMap)
+        {
+            const juce::String& name = kv.first;
+            params.push_back(name);
+            stream.writeText(juce::String(i) + ": " + name + "\n", false, false, nullptr);
+            ++i;
+        }
+        stream.flush();
+    }
+}
     void prepareToPlay(double inSampleRate, int inBlockSize) override {
         mSampleRate = inSampleRate;
         mBlockSize = inBlockSize;
        // mParameterSetup.initParametersListener(*this);
-        mModel->ResetAndPrewarm(mSampleRate, mBlockSize);
-
+        if (!mFaustToneStackUI.get())        mFaustToneStackUI        = std::make_unique<AmpToneStack::MapUI>();
+        if (mIsNAMEnabled) {
+            mModel->ResetAndPrewarm(mSampleRate, mBlockSize);
+        }
+        mFaustToneStackProcessor =  std::make_unique<AmpToneStack::AmpToneStack>();
+        mFaustToneStackProcessor->init(mSampleRate);
+        mFaustToneStackProcessor->buildUserInterface(mFaustToneStackUI.get());
         inputs = new float*[2];
         for (int channel = 0; channel < 2; ++channel) {
             inputs[channel] = new float[mBlockSize];
@@ -45,6 +100,14 @@ public:
         }
 
     }
+
+    void parameterChanged(const juce::String& parameterID, float newValue) override {
+        auto faustPath = FaustParameterMapping::getAmpStackPath(parameterID);
+        if (!faustPath.empty()) {
+            float finalValue = newValue;
+            mFaustToneStackUI->setParamValue(faustPath, finalValue);
+        }
+    }
     void setDirectNAMPath(const juce::File& path)
     {
         mDirectNAMPath = path;
@@ -56,9 +119,8 @@ public:
         {
             mIsNAMEnabled = false;
             mModel = nam::get_dsp(std::filesystem::path(inNAMFile.getFullPathName().toStdString()));
-            mModel->ResetAndPrewarm(mSampleRate, mBlockSize);
             setDirectNAMPath(inNAMFile);
-            mIsNAMEnabled = true;
+            mIsNAMEnabled = true;  // ResetAndPrewarm intentionally NOT called here
         }
         catch (const std::exception& e)
         {
@@ -90,7 +152,7 @@ public:
 
     void loadDefaultNAMFile()
     {
-        juce::File tempFile = createTemporaryFileFromMemory(BinaryData::MetalLead_nam, BinaryData::MetalLead_namSize, "metal.nam");
+        juce::File tempFile = createTemporaryFileFromMemory(BinaryData::Fender_nam, BinaryData::Fender_namSize, "Fender.nam");
 
         if (tempFile.existsAsFile())
         {
@@ -210,7 +272,8 @@ private:
     std::atomic<float> mRmsLevelRight{0.0f};
     std::atomic<float> mRmsOutputLevelLeft{0.0f};
     std::atomic<float> mRmsOutputLevelRight{0.0f};
-
+    std::unique_ptr<AmpToneStack::AmpToneStack> mFaustToneStackProcessor;
+    std::unique_ptr<AmpToneStack::MapUI> mFaustToneStackUI;
     juce::AudioPlayHead* mParentPlayHead;
     using AudioInputNode = juce::AudioProcessorGraph::AudioGraphIOProcessor;
     using AudioOutputNode = juce::AudioProcessorGraph::AudioGraphIOProcessor;

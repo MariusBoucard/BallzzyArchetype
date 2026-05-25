@@ -262,7 +262,9 @@ void writeFaustParametersToFile()
         mSampleRate = sampleRate;
         mBlockSize = bufferSize;
     }
-
+public:
+    // TODO : elle est là mais devrait moov en parametre qq part
+    static constexpr int MAX_CHANNELS = 2;
 private:
 
     //==============================================================================
@@ -284,7 +286,7 @@ private:
     std::unique_ptr<CompressorPedalEngine> mFaustCompressorProcessor;
     std::unique_ptr<MapUI> mFaustCompressorUi;
 
-    static constexpr int MAX_CHANNELS = 2;
+
     std::array<std::unique_ptr<dsp>, MAX_CHANNELS> mFaustFuzzProcessors;
     std::array<std::unique_ptr<dsp>, MAX_CHANNELS> mFaustOverdriveProcessors;
     std::array<std::unique_ptr<dsp>, MAX_CHANNELS> mEqPedalProcessors;

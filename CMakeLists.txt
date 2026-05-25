@@ -1,40 +1,146 @@
-cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
-set(CMAKE_CXX_STANDARD 20)
-# Version is needed by JUCE.
-project(BallzzyArchetype VERSION 0.1.0)
+cmake_minimum_required(VERSION 3.15)
 
-# Adds a plugin target (that's basically what the Projucer does).
+project(BallzzyArchetype VERSION 1.0.0)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Define the plugin
 juce_add_plugin(BallzzyArchetype
-    COMPANY_NAME WolfSound
-    IS_SYNTH FALSE
-    NEEDS_MIDI_INPUT FALSE
-    NEEDS_MIDI_OUTPUT FALSE
-    PLUGIN_MANUFACTURER_CODE WFSD
-    PLUGIN_CODE JWVT
-    FORMATS AU VST3 Standalone
-    PRODUCT_NAME "BallzzyArchetype"
-    # WebViews use web browser features: find necessary packages in the system to link against
-    NEEDS_WEB_BROWSER TRUE
-    # This will force JUCE to look for the WebView2 NuGet package on Windows
-    NEEDS_WEBVIEW2 TRUE
+        COMPANY_NAME "BALL"
+        COMPANY_WEBSITE "http://juce.com"
+        COMPANY_EMAIL ""
+        PLUGIN_MANUFACTURER_CODE Ball
+        PLUGIN_CODE NAmp
+        FORMATS VST3 Standalone
+        PRODUCT_NAME "Ballzzy Amp"
+        BUNDLE_ID "com.BALL.BallzzyArchetype"
+
+        VST3_CATEGORIES Fx
+        # WebViews use web browser features: find necessary packages in the system to link against
+        NEEDS_WEB_BROWSER TRUE
+        # This will force JUCE to look for the WebView2 NuGet package on Windows
+        NEEDS_WEBVIEW2 TRUE
+        IS_SYNTH FALSE
+        NEEDS_MIDI_INPUT FALSE
+        NEEDS_MIDI_OUTPUT FALSE
+        IS_MIDI_EFFECT FALSE
+        EDITOR_WANTS_KEYBOARD_FOCUS FALSE
+
+        PLUGIN_NAME "Ballzzy Amp"
+        PLUGIN_DESCRIPTION "Neural Amp Modeler Plugin"
+        VST3_AUTO_MANIFEST FALSE
 )
-set(PRODUCT_NAME "${PROJECT_NAME}")
-set(COMPANY_NAME "BALLZZY")
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-  JUCE_PRODUCT_NAME="${PRODUCT_NAME}"
-  JUCE_COMPANY_NAME="${COMPANY_NAME}"
-  JUCE_PRODUCT_VERSION="${PROJECT_VERSION}")
+        JUCE_PRODUCT_NAME="${PRODUCT_NAME}"
+        JUCE_COMPANY_NAME="${COMPANY_NAME}"
+        JUCE_PRODUCT_VERSION="${PROJECT_VERSION}")
 
-# Sets the source files of the plugin project.
+target_include_directories(${PROJECT_NAME}
+        PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        "C:/Users/Marius/.nuget/packages/microsoft.web.webview2/1.0.3485.44/build/native/include/"
+)
+# Mark JUCE headers as system headers to suppress warnings in them
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${JUCE_MODULES_DIR})
 
+# Folder where web UI data reside
+set(WEBVIEW_FILES_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ui/public")
 
-# Adding a directory with the library/application name as a subfolder of the
-# include folder is a good practice. It helps avoid name clashes later on.
-set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/JuceWebViewTutorial")
+# Copy JUCE frontend library to plugin UI files
+file(COPY "${JUCE_MODULES_DIR}/juce_gui_extra/native/javascript/" DESTINATION "${WEBVIEW_FILES_SOURCE_DIR}/js/juce/")
 
-target_sources(${PROJECT_NAME}
-    PRIVATE
-        ${SOURCES}
+# Zip WebView files
+set(WEBVIEW_FILES_ZIP_NAME "webview_files.zip")
+set(TARGET_WEBVIEW_FILES_ZIP_PATH "${CMAKE_BINARY_DIR}/${WEBVIEW_FILES_ZIP_NAME}")
+cmake_path(ABSOLUTE_PATH WEBVIEW_FILES_SOURCE_DIR NORMALIZE OUTPUT_VARIABLE PUBLIC_PATH )
+cmake_path(GET PUBLIC_PATH PARENT_PATH WORKING_DIRECTORY)
+# TODO : devrait check si pas exists // Voir comment rendre les plugins indépéndants !
+add_custom_target(ZipWebViewFiles
+        COMMAND
+        ${CMAKE_COMMAND} -E tar cvf
+        "${TARGET_WEBVIEW_FILES_ZIP_PATH}"
+        --format=zip
+        "${PUBLIC_PATH}"
+        BYPRODUCTS
+        "${TARGET_WEBVIEW_FILES_ZIP_PATH}"
+        WORKING_DIRECTORY
+        "${WORKING_DIRECTORY}"
+        COMMENT "Zipping WebView files..."
+        VERBATIM
+)
+
+message("FAUST FAUST FAUSE COMPILE : faust -i -light -a .\\faustMinimal.h .\\DelayPedalengine.dsp  -o DelayPedalFaust.h --namespace DelayPedal -cn DelayPedal ")
+message("faust -i .\\CompressorPedalengine.dsp -a .\\faustMinimal.h -lang cpp -i -fpga-mem-th 4 -ct 1 -cn CompressorPedalEngine -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 0 -o CompressorPedalFaust.h")
+# Pass the prefix of the zipped files (e.g., "public/") to C++
+cmake_path(GET PUBLIC_PATH FILENAME ZIPPED_FILES_PREFIX)
+target_compile_definitions(${PROJECT_NAME} PRIVATE ZIPPED_FILES_PREFIX="${ZIPPED_FILES_PREFIX}/")
+
+# Package web UI sources as binary data
+juce_add_binary_data(WebViewFiles
+        HEADER_NAME WebViewFiles.h
+        NAMESPACE webview_files
+        SOURCES ${TARGET_WEBVIEW_FILES_ZIP_PATH}
+)
+add_dependencies(WebViewFiles ZipWebViewFiles)
+# Sets the include directories of the plugin project.
+
+# Mark JUCE headers as system headers to suppress warnings in them
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${JUCE_MODULES_DIR})
+
+# Folder where web UI data reside
+set(WEBVIEW_FILES_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ui/public")
+
+# Copy JUCE frontend library to plugin UI files
+file(COPY "${JUCE_MODULES_DIR}/juce_gui_extra/native/javascript/" DESTINATION "${WEBVIEW_FILES_SOURCE_DIR}/js/juce/")
+
+# Zip WebView files
+set(WEBVIEW_FILES_ZIP_NAME "webview_files.zip")
+set(TARGET_WEBVIEW_FILES_ZIP_PATH "${CMAKE_BINARY_DIR}/${WEBVIEW_FILES_ZIP_NAME}")
+cmake_path(ABSOLUTE_PATH WEBVIEW_FILES_SOURCE_DIR NORMALIZE OUTPUT_VARIABLE PUBLIC_PATH )
+cmake_path(GET PUBLIC_PATH PARENT_PATH WORKING_DIRECTORY)
+target_compile_definitions(${PROJECT_NAME} PRIVATE ZIPPED_FILES_PREFIX="${ZIPPED_FILES_PREFIX}/")
+# -----------------------------------------------------------------------
+# FIX: juce_add_binary_data MUST be declared before target_link_libraries
+#      so that the BallzzyArchetypeData target exists when it is referenced.
+# -----------------------------------------------------------------------
+juce_add_binary_data(BallzzyArchetypeData
+        SOURCES
+        # Images
+
+        Source/ressources/namModels/Fender/Fender.nam
+)
+
+# Link binary data and JUCE modules to the plugin
+target_link_libraries(BallzzyArchetype
+        PRIVATE
+        BallzzyArchetypeData
+        NAM
+        WebViewFiles
+        AudioDSPTools
+        juce::juce_audio_basics
+        juce::juce_audio_devices
+        juce::juce_audio_formats
+        juce::juce_dsp
+        juce::juce_audio_plugin_client
+        juce::juce_audio_processors
+        juce::juce_audio_utils
+        juce::juce_core
+        juce::juce_data_structures
+        juce::juce_events
+        juce::juce_graphics
+        juce::juce_gui_basics
+        juce::juce_gui_extra
+        PUBLIC
+        juce::juce_recommended_config_flags
+        juce::juce_recommended_lto_flags
+        juce::juce_recommended_warning_flags
+)
+
+# Add source files
+target_sources(BallzzyArchetype
+        PRIVATE
         source/Main.cpp
         source/PluginAudioProcessor.cpp
         source/PluginAudioProcessor.h
@@ -44,7 +150,7 @@ target_sources(${PROJECT_NAME}
         source/dsp/faustParameterMappers/PedalReverbMap.h
         source/dsp/faustParameterMappers/PostEqMap.h
         source/dsp/faustParameterMappers/PedalOverdriveMap.h
-        source/dsp/faustParameterMappers/PedalReverbMap.h
+        source/dsp/faustParameterMappers/AmpStackMap.h
 
 
         source/dsp/ParameterSetup.h
@@ -68,8 +174,9 @@ target_sources(${PROJECT_NAME}
         #source/dsp/Bones/DuckingEngine.h
         # TODO : new faust bones soon
 
-      #  source/dsp/Bones/FuzzPedalFaust.h
-       # source/dsp/Bones/OverdrivePedalFaust.h
+        #  source/dsp/Bones/FuzzPedalFaust.h
+        # source/dsp/Bones/OverdrivePedalFaust.h
+        # wesh sans les bones ca marche ??!
         source/dsp/Bones/CompressorPedalFaust.h
         #source/dsp/Bones/EqPedalFaust.h
         #source/dsp/Bones/ReverbPedalFaust.h
@@ -85,105 +192,41 @@ target_sources(${PROJECT_NAME}
 
 
         # UI Compon
-     #  ${INCLUDE_DIR}/PluginEditor.h
-     #   ${INCLUDE_DIR}/PluginProcessor.h
+        #  ${INCLUDE_DIR}/PluginEditor.h
+        #   ${INCLUDE_DIR}/PluginProcessor.h
 )
-
-# Sets the include directories of the plugin project.
-target_include_directories(${PROJECT_NAME}
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-        "C:/Users/Marius/.nuget/packages/microsoft.web.webview2/1.0.3485.44/build/native/include/"
-)
-
-# Mark JUCE headers as system headers to suppress warnings in them
-target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${JUCE_MODULES_DIR})
-
-# Folder where web UI data reside
-set(WEBVIEW_FILES_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ui/public")
-
-# Copy JUCE frontend library to plugin UI files
-file(COPY "${JUCE_MODULES_DIR}/juce_gui_extra/native/javascript/" DESTINATION "${WEBVIEW_FILES_SOURCE_DIR}/js/juce/")
-
-# Zip WebView files
-set(WEBVIEW_FILES_ZIP_NAME "webview_files.zip")
-set(TARGET_WEBVIEW_FILES_ZIP_PATH "${CMAKE_BINARY_DIR}/${WEBVIEW_FILES_ZIP_NAME}")
-cmake_path(ABSOLUTE_PATH WEBVIEW_FILES_SOURCE_DIR NORMALIZE OUTPUT_VARIABLE PUBLIC_PATH )
-cmake_path(GET PUBLIC_PATH PARENT_PATH WORKING_DIRECTORY)
-# TODO : devrait check si pas exists // Voir comment rendre les plugins indépéndants !
-add_custom_target(ZipWebViewFiles
-  COMMAND
-  ${CMAKE_COMMAND} -E tar cvf
-  "${TARGET_WEBVIEW_FILES_ZIP_PATH}"
-  --format=zip
-  "${PUBLIC_PATH}"
-  BYPRODUCTS
-  "${TARGET_WEBVIEW_FILES_ZIP_PATH}"
-  WORKING_DIRECTORY
-  "${WORKING_DIRECTORY}"
-  COMMENT "Zipping WebView files..."
-  VERBATIM
-)
-message("FAUST FAUST FAUSE COMPILE : faust -i -light -a .\\faustMinimal.h .\\DelayPedalengine.dsp  -o DelayPedalFaust.h --namespace DelayPedal -cn DelayPedal ")
-message("faust -i .\\CompressorPedalengine.dsp -a .\\faustMinimal.h -lang cpp -i -fpga-mem-th 4 -ct 1 -cn CompressorPedalEngine -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 0 -o CompressorPedalFaust.h")
-# Pass the prefix of the zipped files (e.g., "public/") to C++
-cmake_path(GET PUBLIC_PATH FILENAME ZIPPED_FILES_PREFIX)
-target_compile_definitions(${PROJECT_NAME} PRIVATE ZIPPED_FILES_PREFIX="${ZIPPED_FILES_PREFIX}/")
-
-# Package web UI sources as binary data
-juce_add_binary_data(WebViewFiles
-    HEADER_NAME WebViewFiles.h
-    NAMESPACE webview_files
-    SOURCES ${TARGET_WEBVIEW_FILES_ZIP_PATH}
-)
-add_dependencies(WebViewFiles ZipWebViewFiles)
-juce_add_binary_data(BallzzyArchetypeData
-        SOURCES
-
-        Source/ressources/namModels/Fender/Fender.nam
-)
-
-# Links to all necessary dependencies. The present ones are recommended by JUCE.
-# If you use one of the additional modules, like the DSP module, you need to specify it here.
-target_link_libraries(${PROJECT_NAME}
-    PRIVATE
-        juce::juce_audio_utils
-        juce::juce_dsp
-        WebViewFiles
-        NAM
-        BallzzyArchetypeData
-
+# Preprocessor definitions
+target_compile_definitions(BallzzyArchetype
         PUBLIC
-        juce::juce_recommended_config_flags
-        juce::juce_recommended_lto_flags
-        juce::juce_recommended_warning_flags
-)
-
-
-target_compile_definitions(${PROJECT_NAME}
-    PUBLIC
-        # JUCE_WEB_BROWSER=1 is important for using WebBrowserComponent
+        JUCE_TARGET_HAS_BINARY_DATA=1
         JUCE_WEB_BROWSER=1
         JUCE_USE_CURL=0
         JUCE_VST3_CAN_REPLACE_VST2=0
         # This will enable WebView2 as the WebView backend on Windows
         JUCE_USE_WIN_WEBVIEW2_WITH_STATIC_LINKING=1
+
 )
 
-set_source_files_properties(${SOURCES} PROPERTIES COMPILE_OPTIONS "${CXX_PROJECT_WARNINGS}")
+# Add header search paths for NAM library
+target_include_directories(BallzzyArchetype
+        PRIVATE
+        "C:/Users/Marius/Documents/JUCE/libraries/NeuralAmpModelerCore"
+)
+
+# Platform-specific settings
+if(MSVC)
+    target_compile_options(BallzzyArchetype PRIVATE /bigobj)
+endif()
+
+# Custom post-build command to copy VST3 to specific location
 if(WIN32)
-    set(VST3_DESTINATION_PATH "D:/vstcreation/BallzzyArchetype.vst3/Contents/x86_64-win")
+    set(VST3_DESTINATION_PATH "D:/vstcreation/BallzzyAmp.vst3/Contents/x86_64-win")
 
     add_custom_command(TARGET BallzzyArchetype_VST3 POST_BUILD
-            # Create the necessary internal folder structure
             COMMAND ${CMAKE_COMMAND} -E make_directory "${VST3_DESTINATION_PATH}"
-
-            # Copy the VST3 file
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "$<TARGET_FILE:BallzzyArchetype_VST3>"
             "${VST3_DESTINATION_PATH}/$<TARGET_FILE_NAME:BallzzyArchetype_VST3>"
             COMMENT "Creating VST3 Bundle structure in D:/vstcreation"
     )
 endif()
-# In Visual Studio this command provides a nice grouping of source files in "filters".
-#source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/..)
