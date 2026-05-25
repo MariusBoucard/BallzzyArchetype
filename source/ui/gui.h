@@ -10,7 +10,7 @@
 class VueProcessorEditor : public juce::AudioProcessorEditor,
                            private juce::Timer {
 public:
-  explicit VueProcessorEditor(SkeletonAudioProcessor&);
+  explicit VueProcessorEditor(juce::AudioProcessor& parent, SkeletonAudioProcessor&);
   ~VueProcessorEditor() override;
 
   void resized() override;

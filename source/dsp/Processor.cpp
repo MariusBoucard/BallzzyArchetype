@@ -60,8 +60,8 @@ void SkeletonAudioProcessor::processBlock(juce::AudioBuffer<float>& inBuffer, ju
     const float outGain = mParameters.getRawParameterValue(id::OUTPUT_GAIN.getParamID())->load();
 
 
-    juce::AudioBuffer<float> dryBuffer;
-    dryBuffer.makeCopyOf(inBuffer);
+    //juce::AudioBuffer<float> dryBuffer;
+    //dryBuffer.makeCopyOf(inBuffer);
     inBuffer.applyGain(juce::Decibels::decibelsToGain ((float)inGain));
     updateMeter(false, inBuffer, numIn);
 

@@ -38,22 +38,26 @@ public:
         if (!mEqUi.get())        mEqUi        = std::make_unique<EqPedal::MapUI>();
 
 
+        for (int ch = 0; ch < MAX_CHANNELS; ++ch)
+        {
+            mFaustFuzzProcessors[ch] = std::make_unique<FuzzPedal::FuzzPedalEngine>();
+            mFaustFuzzProcessors[ch]->init(mSampleRate);
+            mFaustFuzzProcessors[ch]->buildUserInterface(mFuzzUi.get());
 
-        mFaustFuzzProcessor = std::make_unique<FuzzPedal::FuzzPedalEngine>();
-        mFaustFuzzProcessor->init(mSampleRate);
-        mFaustFuzzProcessor->buildUserInterface(mFuzzUi.get());
+            mFaustOverdriveProcessors[ch] = std::make_unique<OverdrivePedal::OverdrivePedalEngine>();
+            mFaustOverdriveProcessors[ch]->init(mSampleRate);
+            mFaustOverdriveProcessors[ch]->buildUserInterface(mFaustOverdriveUi.get());
 
-        mFaustOverdriveProcessor  = std::make_unique<OverdrivePedal::OverdrivePedalEngine>();
-        mFaustOverdriveProcessor->init(mSampleRate);
-        mFaustOverdriveProcessor->buildUserInterface(mFaustOverdriveUi.get());
+            mEqPedalProcessors[ch] = std::make_unique<EqPedal::EqPedalEngine>();
+            mEqPedalProcessors[ch]->init(mSampleRate);
+            mEqPedalProcessors[ch]->buildUserInterface(mEqUi.get());
+        }
+
 
         mFaustCompressorProcessor =  std::make_unique<CompressorPedalEngine>();
         mFaustCompressorProcessor->init(mSampleRate);
         mFaustCompressorProcessor->buildUserInterface(mFaustCompressorUi.get());
 
-        mEqPedalProcessor = std::make_unique<EqPedal::EqPedalEngine>();
-        mEqPedalProcessor->init(mSampleRate);
-        mEqPedalProcessor->buildUserInterface(mEqUi.get());
 
         inputs = new float*[2];
         for (int channel = 0; channel < 2; ++channel) {
@@ -297,12 +301,13 @@ private:
     // TODO : first one to be include add dsp to namespace
     std::unique_ptr<CompressorPedalEngine> mFaustCompressorProcessor;
     std::unique_ptr<MapUI> mFaustCompressorUi;
-    std::unique_ptr<FuzzPedal::FuzzPedalEngine> mFaustFuzzProcessor;
-    std::unique_ptr<FuzzPedal::MapUI> mFuzzUi;
 
-    std::unique_ptr<OverdrivePedal::OverdrivePedalEngine> mFaustOverdriveProcessor;
+    static constexpr int MAX_CHANNELS = 2;
+    std::array<std::unique_ptr<dsp>, MAX_CHANNELS> mFaustFuzzProcessors;
+    std::array<std::unique_ptr<dsp>, MAX_CHANNELS> mFaustOverdriveProcessors;
+    std::array<std::unique_ptr<dsp>, MAX_CHANNELS> mEqPedalProcessors;
+    std::unique_ptr<FuzzPedal::MapUI> mFuzzUi;
     std::unique_ptr<OverdrivePedal::MapUI> mFaustOverdriveUi;
-    std::unique_ptr<EqPedal::EqPedalEngine> mEqPedalProcessor;
     std::unique_ptr<EqPedal::MapUI> mEqUi;
 
 

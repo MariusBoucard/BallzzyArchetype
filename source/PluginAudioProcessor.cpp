@@ -8,6 +8,7 @@ PluginAudioProcessor::PluginAudioProcessor()
       , mPresetManager{std::make_unique<PresetManager>(mParameters)}
       , mParameterSetup(mParameters)
       , mSkeletonProcessor(mParameters, mParameterSetup, parametersDeclaration, *mPresetManager) {
+    // TODO : il a l ecoute de tous les params ??
     for (auto *param: mParameters.processor.getParameters()) {
         auto paramID = static_cast<juce::AudioProcessorParameterWithID *>(param)->paramID;
         mParameters.addParameterListener(paramID, this);

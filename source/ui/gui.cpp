@@ -95,8 +95,8 @@ std::vector<std::byte> getWebViewFileAsBytes(const juce::String& filepath) {
 }  // namespace
 
 VueProcessorEditor::VueProcessorEditor(
-    SkeletonAudioProcessor& p)
-    : AudioProcessorEditor(&p),
+    juce::AudioProcessor& parent, SkeletonAudioProcessor& p)
+    : AudioProcessorEditor(&parent),
       processorRef(p),
       webSliderAtt(p),
       webView{ createWebBrowserOptions()
@@ -106,9 +106,9 @@ VueProcessorEditor::VueProcessorEditor(
     addAndMakeVisible(webView);
 
   // This is necessary if we want to use a ResourceProvider
-  webView.goToURL(juce::WebBrowserComponent::getResourceProviderRoot());
+ // webView.goToURL(juce::WebBrowserComponent::getResourceProviderRoot());
 
-//   webView.goToURL(LOCAL_DEV_SERVER_ADDRESS);
+   webView.goToURL(LOCAL_DEV_SERVER_ADDRESS);
 
   setResizable(true, true);
 

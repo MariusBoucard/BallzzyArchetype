@@ -25,10 +25,9 @@ public:
 void addInputEffectLayout(juce::AudioProcessorValueTreeState::ParameterLayout& layout,
                      parametersDeclaration::Parameters::inputEffectsParams& input_effects_params)
 {
-    auto input_eq = std::make_unique<juce::AudioParameterBool>(id::PEDAL_INPUT_EQ_ENABLED,"Input EQ enabled", true);
 
 
-    auto inputEqEnabled = std::make_unique<juce::AudioParameterBool>(id::PEDAL_INPUT_EQ_ENABLED, "Input EQ enabled", true);
+    auto inputEqEnabled = std::make_unique<juce::AudioParameterBool>(id::PEDAL_INPUT_EQ_ENABLED, "Input EQ enabled", false);
     auto inputBell1    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_1,  "Input gain band 1",  -12,12,0);
     auto inputBell2   = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_2,  "Input gain band 2",  -12,12,0);
     auto inputBell3    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_3,  "Input gain band 3",  -12,12,0);
@@ -335,7 +334,7 @@ void parameterChanged(const juce::String& parameterID, float newValue) override
     void processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&) override;
 
     juce::AudioProcessorEditor* createEditor() override {
-        auto editor = new VueProcessorEditor(mSkeletonProcessor);
+        auto editor = new VueProcessorEditor(*this,mSkeletonProcessor);
         return editor;
     }
     bool hasEditor() const override                        { return true;   }

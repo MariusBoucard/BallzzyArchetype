@@ -16,7 +16,7 @@ public:
     {
         // ~/<UserDocuments>/YourPluginName/Presets/
         auto dir = juce::File::getSpecialLocation(juce::File::userDocumentsDirectory)
-                       .getChildFile("BallzzyDelay")
+                       .getChildFile("BallzzyArchetype")
                        .getChildFile("Presets");
         if (!dir.exists())
             dir.createDirectory();
