@@ -8,15 +8,12 @@
 
 namespace FaustParameterMapping {
     inline const std::unordered_map<juce::String, std::string>& getPedalDelayMap() {
-        // TODO Faust link
+    // Attention au passage en mode sync comme on map sur le temps TODO !!!
         static const std::unordered_map<juce::String, std::string> map = {
-            {id::PEDAL_OUTPUT_DELAY_ENABLED.getParamID() , "/HpLp/Filters_BypassHp"},
-{id::PEDAL_OUTPUT_DELAY_FEEDBACK.getParamID() , "/HpLp/Filters_BypassHp"},
-{id::PEDAL_OUTPUT_DELAY_MIX.getParamID() , "/HpLp/Filters_BypassHp"},
-{id::PEDAL_OUTPUT_DELAY_PING_PONG.getParamID() , "/HpLp/Filters_BypassHp"},
-{id::PEDAL_OUTPUT_DELAY_TIME.getParamID() , "/HpLp/Filters_BypassHp"},
-{id::PEDAL_OUTPUT_DELAY_SYNC_TIME_ENABLED.getParamID() , "/HpLp/Filters_BypassHp"},
-{id::PEDAL_OUTPUT_DELAY_TIME_SYNC.getParamID() , "/HpLp/Filters_BypassHp"},
+            {id::PEDAL_OUTPUT_DELAY_FEEDBACK.getParamID() , "/Stereo_Delay_Effect/Feedback"},
+            {id::PEDAL_OUTPUT_DELAY_MIX.getParamID() , "/Stereo_Delay_Effect/Mix"},
+            {id::PEDAL_OUTPUT_DELAY_PING_PONG.getParamID() , "/Stereo_Delay_Effect/Ping_Pong"},
+            {id::PEDAL_OUTPUT_DELAY_TIME.getParamID() , "/Stereo_Delay_Effect/Delay_Time"},
         };
         return map;
     }

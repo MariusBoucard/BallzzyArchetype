@@ -61,11 +61,11 @@ void AmpProcessor::processBlock(juce::AudioBuffer<float>& inBuffer, juce::MidiBu
     const bool inAmpOn = mParameters.getRawParameterValue(id::AMP_ENABLED.getParamID())->load();
     // TODO pour test on bypass pas la toneStack
     //  if (!inAmpOn) return;
-    //const float inGain  = mParameters.getRawParameterValue(id::INPUT_GAIN.getParamID())->load();
-    //const float outGain = mParameters.getRawParameterValue(id::OUTPUT_GAIN.getParamID())->load();
+    const float inGain  = mParameters.getRawParameterValue(id::AMP_GAIN.getParamID())->load();
+    const float outGain = mParameters.getRawParameterValue(id::AMP_OUTPUT_GAIN.getParamID())->load();
 
     // Apply input gain before NAM
-    //inBuffer.applyGain(juce::Decibels::decibelsToGain(inGain));
+    inBuffer.applyGain(juce::Decibels::decibelsToGain(inGain));
     for (int ch = 0; ch < numChannels; ++ch)
         std::copy_n(inBuffer.getReadPointer(ch), numSamples, inputs[ch]);
 
@@ -96,6 +96,8 @@ void AmpProcessor::processBlock(juce::AudioBuffer<float>& inBuffer, juce::MidiBu
         std::copy_n(duckingInput[ch], numSamples, inputs[ch]);
     for (int ch = 0; ch < numOut; ++ch)
         std::copy_n(inputs[ch], numSamples, inBuffer.getWritePointer(ch));
+
+    inBuffer.applyGain(juce::Decibels::decibelsToGain(outGain));
     // Apply output gain after NAM
    // updateMeter(true, inBuffer, numOut);
 }

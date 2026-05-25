@@ -1,41 +1,52 @@
 import("stdfaust.lib");
 
 // ==========================================
-// 1. UI PARAMETERS
+// 1. UI DEFINITIONS
 // ==========================================
-// Room Size: Controls the feedback level (0 = tiny closet, 1 = massive hall)
-size_ctrl  = hslider("[1] Room Size", 0.5, 0.0, 1.0, 0.01);
+rev_group(x) = hgroup("Filtered Room Reverb", x);
 
-// Damping: Absorbs high frequencies over time (0 = bright/reflective, 1 = dark/carpeted)
-damp_ctrl  = hslider("[2] Damping", 0.3, 0.0, 1.0, 0.01);
-
-// Mix: Dry/Wet balance (0 = completely dry, 100 = completely wet)
-mix_ctrl   = hslider("[3] Mix (Dry/Wet)", 30, 0, 100, 0.1);
-
-// Level: Master output volume
-level_ctrl = hslider("[4] Level [unit:dB]", 0, -24, 12, 0.1) : ba.db2linear;
+rev_mix  = rev_group(vslider("1. Mix", 0.3, 0, 1, 0.01));
+rev_dec  = rev_group(vslider("2. Decay [unit:s]", 1.5, 0.1, 10.0, 0.1));
+hp_freq  = rev_group(vslider("3. High Pass [unit:Hz]", 200, 20, 2000, 1));
+lp_freq  = rev_group(vslider("4. Low Pass [unit:Hz]", 5000, 1000, 20000, 1));
 
 
 // ==========================================
-// 2. DSP ARCHITECTURE
+// 2. REVERB TAIL FILTERING
 // ==========================================
-// re.stereo_freeverb expects exactly 4 parameters:
-// stereo_freeverb(combfeedback, allpassfeedback, damping, spatialspread)
-// It natively accepts 2 inputs and provides 2 outputs.
-reverb_engine = re.stereo_freeverb(size_ctrl, 0.5, damp_ctrl, 23);
+// This filter block applies a 2nd-order High-Pass and Low-Pass filter
+// sequentially. We will feed the wet reverb signal into this.
+wet_filter = fi.highpass(2, hp_freq) : fi.lowpass(2, lp_freq);
 
 
 // ==========================================
-// 3. MAIN PROCESS (Mono In -> Stereo Out)
+// 3. REVERB ENGINE CONFIGURATION
 // ==========================================
-wet_amount = mix_ctrl / 100.0;
-dry_amount = 1.0 - wet_amount;
-
-// We split the mono input 'x' into a stereo pair (x, x), pass it through
-// the reverb, and cleanly mix the dry and wet signals at the end.
-process(x) = x, x : reverb_engine : mix_stereo
+reverb_engine = re.zita_rev1_stereo(rdtime, f1, f2, t60dc, t60wm, fsmax)
 with {
-    mix_stereo(wet_L, wet_R) =
-        ((x * dry_amount) + (wet_L * wet_amount)) * level_ctrl,
-        ((x * dry_amount) + (wet_R * wet_amount)) * level_ctrl;
+    rdtime = 0.03;       // Pre-delay in seconds (30ms for a room)
+    f1     = 200;        // Crossover frequency between low and mid decay
+    t60dc  = rev_dec;    // Low-frequency decay time (tied to UI)
+    t60wm  = rev_dec;    // Mid-frequency decay time (tied to UI)
+    f2     = 6000;       // High-frequency damping frequency
+    fsmax  = 48000;      // Maximum internal sample rate
 };
+
+
+// ==========================================
+// 4. MAIN PROCESS (Mono Input -> Stereo Output)
+// ==========================================
+// Mix helper function to blend dry and filtered wet signals
+mix_channel(dry, wet) = (dry * (1.0 - rev_mix)) + (wet * rev_mix);
+
+// 1. Split a mono input 'x' into 4 paths: dryL, dryR, and 2 paths for the reverb engine.
+// 2. Pass the reverb paths through the engine.
+// 3. Filter ONLY the wet channels.
+// 4. Merge the dry channels and the filtered wet channels together.
+process(x) = x, x, x, x
+           : ( _, _, reverb_engine )
+           : ( _, _, wet_filter, wet_filter )
+           : mix_routing;
+
+// Rearranges the 4 streams (dryL, dryR, wetL, wetR) into the final stereo pair
+mix_routing(dL, dR, wL, wR) = mix_channel(dL, wL), mix_channel(dR, wR);

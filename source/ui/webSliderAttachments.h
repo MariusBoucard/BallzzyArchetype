@@ -52,7 +52,10 @@ public:
                                                         webPedalOutputDelayMixRelay{id::PEDAL_OUTPUT_DELAY_MIX.getParamID()},
                                                         webPedalOutputDelayPingPongRelay{id::PEDAL_OUTPUT_DELAY_PING_PONG.getParamID()},
                                                         webPedalOutputReverbEnabledRelay{id::PEDAL_OUTPUT_REVERB_ENABLED.getParamID()},
-                                                        webPedalOutputReverbMixRelay{id::PEDAL_OUTPUT_REVERB_MIX.getParamID()}
+                                                        webPedalOutputReverbMixRelay{id::PEDAL_OUTPUT_REVERB_MIX.getParamID()},
+                                                        webPedalOutputReverbDecayTimeRelay{id::PEDAL_OUTPUT_REVERB_DECAY.getParamID()},
+                                                        webPedalOutputReverbLpFreqRelay(id::PEDAL_OUTPUT_REVERB_LF_FREQ.getParamID()),
+                                                        webPedalOutputReverbHpFreqRelay(id::PEDAL_OUTPUT_REVERB_HP_FREQ.getParamID())
     {}
 
     void createAttachments() {
@@ -248,6 +251,18 @@ public:
             webPedalInputCompressorRatioSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
                 *param, webPedalInputCompressorRatioRelay, nullptr);
 
+        if (auto *param = state.getParameter(id::PEDAL_OUTPUT_REVERB_DECAY.getParamID()))
+            webPedalOutputReverbDecayTimeSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
+                *param, webPedalOutputReverbDecayTimeRelay, nullptr);
+
+        if (auto *param = state.getParameter(id::PEDAL_OUTPUT_REVERB_LF_FREQ.getParamID()))
+            webPedalOutputReverbLpFreqSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
+                *param, webPedalOutputReverbLpFreqRelay, nullptr);
+
+        if (auto *param = state.getParameter(id::PEDAL_OUTPUT_REVERB_HP_FREQ.getParamID()))
+            webPedalOutputReverbHpFreqSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
+                *param, webPedalOutputReverbHpFreqRelay, nullptr);
+
     }
 
     juce::WebBrowserComponent::Options addSlidersOptions(juce::WebBrowserComponent::Options options) {
@@ -318,7 +333,9 @@ public:
                 // Output Reverb Pedal
                 .withOptionsFrom(webPedalOutputReverbEnabledRelay)
                 .withOptionsFrom(webPedalOutputReverbMixRelay)
-               ;
+                .withOptionsFrom(webPedalOutputReverbDecayTimeRelay)
+                .withOptionsFrom(webPedalOutputReverbHpFreqRelay)
+                .withOptionsFrom(webPedalOutputReverbLpFreqRelay);
     }
 
 private:
@@ -421,7 +438,9 @@ private:
 
     juce::WebToggleButtonRelay webPedalOutputReverbEnabledRelay;
     juce::WebSliderRelay webPedalOutputReverbMixRelay;
-
+    juce::WebSliderRelay webPedalOutputReverbDecayTimeRelay;
+    juce::WebSliderRelay webPedalOutputReverbLpFreqRelay;
+    juce::WebSliderRelay webPedalOutputReverbHpFreqRelay;
 
     // ==========================================================================
     // Global Parameters
@@ -521,4 +540,7 @@ private:
 
     std::unique_ptr<juce::WebToggleButtonParameterAttachment> webPedalOutputReverbEnabledToggleAttachment;
     std::unique_ptr<juce::WebSliderParameterAttachment> webPedalOutputReverbMixSliderAttachment;
+    std::unique_ptr<juce::WebSliderParameterAttachment> webPedalOutputReverbDecayTimeSliderAttachment;
+    std::unique_ptr<juce::WebSliderParameterAttachment> webPedalOutputReverbLpFreqSliderAttachment;
+    std::unique_ptr<juce::WebSliderParameterAttachment> webPedalOutputReverbHpFreqSliderAttachment;
 };

@@ -13,7 +13,12 @@ OutputPedalProcessor::OutputPedalProcessor(juce::AudioProcessorValueTreeState& i
     , mSampleRate(44100)
     , mParametersDeclaration(inParametersDeclaration)
 {
+    for (auto *param: mParameters.processor.getParameters()) {
+        auto paramID = static_cast<juce::AudioProcessorParameterWithID *>(param)->paramID;
+        mParameters.addParameterListener(paramID, this);
+    }
     setRateAndBufferSizeDetails(mSampleRate, mBlockSize);
+    writeFaustParametersToFile();
 }
 
 OutputPedalProcessor::~OutputPedalProcessor()
@@ -43,23 +48,30 @@ void OutputPedalProcessor::processBlock(juce::AudioBuffer<float>& inBuffer, juce
 {
     juce::ScopedNoDenormals noDenormals;
     const int numSamples = inBuffer.getNumSamples();
-    const int numIn = getTotalNumInputChannels();
-    const int numOut = getTotalNumOutputChannels();
+
+    const int numChannels = inBuffer.getNumChannels();
 
     if (numSamples > mBlockSize) {
         return;
     }
+    const bool isDelayOn         = mParameters.getRawParameterValue(id::PEDAL_OUTPUT_DELAY_ENABLED.getParamID())->load();
+    const bool isReverbOn = mParameters.getRawParameterValue(id::PEDAL_OUTPUT_REVERB_ENABLED.getParamID())->load();
 
-    const float inGain = mParameters.getRawParameterValue(id::INPUT_GAIN.getParamID())->load();
-    const float outGain = mParameters.getRawParameterValue(id::OUTPUT_GAIN.getParamID())->load();
+    for (int ch = 0; ch < numChannels; ++ch)
+        std::copy_n(inBuffer.getReadPointer(ch), numSamples, inputs[ch]);
 
+    if (isDelayOn) {
+        mDelayProcessor->compute(numSamples, inputs, duckingInput);
+        for (int ch = 0; ch < numChannels; ++ch)
+            std::copy_n(duckingInput[ch], numSamples, inputs[ch]);
+    }
+    if (isReverbOn) {
+        mReverbProcessor->compute(numSamples, inputs, duckingInput);
+        for (int ch = 0; ch < numChannels; ++ch)
+            std::copy_n(duckingInput[ch], numSamples, inputs[ch]);
+    }
+    for (int ch = 0; ch < numChannels; ++ch)
+        std::copy_n(inputs[ch], numSamples, inBuffer.getWritePointer(ch));
 
-    juce::AudioBuffer<float> dryBuffer;
-    dryBuffer.makeCopyOf(inBuffer);
-    inBuffer.applyGain(juce::Decibels::decibelsToGain ((float)inGain));
-    updateMeter(false, inBuffer, numIn);
-
-    inBuffer.applyGain(juce::Decibels::decibelsToGain ((float)outGain));
-    updateMeter(true, inBuffer, numOut);
 }
 

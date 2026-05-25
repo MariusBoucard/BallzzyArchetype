@@ -1,23 +1,92 @@
 #pragma once
 #include <juce_audio_processors_headless/juce_audio_processors_headless.h>
-
+#include "../Bones/CompressorPedalFaust.h"
 #include "../ParameterSetup.h"
 #include "../paramsDeclaration.h"
 #include "../../service/PresetManager.h"
+#include "../Bones/DelayPedalFaust.h"
+#include "../Bones/ReverbPedalFaust.h"
+#include "../faustParameterMappers/PedalDelayMap.h"
+#include "../faustParameterMappers/PedalReverbMap.h"
 
 
 //==============================================================================
-class OutputPedalProcessor final : public juce::AudioProcessor {
+class OutputPedalProcessor final : public juce::AudioProcessor,
+public juce::AudioProcessorValueTreeState::Listener
+
+{
 public:
     //==============================================================================
     OutputPedalProcessor(juce::AudioProcessorValueTreeState &inParameters, ParameterSetup &inParameterSetup, parametersDeclaration::Parameters inParametersDeclaration);
 
     ~OutputPedalProcessor() override;
+void writeFaustParametersToFile()
+{
+    std::vector<juce::String> params;
+
+    // Use smart pointers for automatic cleanup
+    std::unique_ptr<DelayPedal::DelayPedal> odDsp(new DelayPedal::DelayPedal());
+    std::unique_ptr<DelayPedal::MapUI> odUI(new DelayPedal::MapUI());
+
+    std::unique_ptr<ReverbPedal::ReverbPedal> fuzzDsp(new ReverbPedal::ReverbPedal());
+    std::unique_ptr<ReverbPedal::MapUI> fuzzUI(new ReverbPedal::MapUI());
+
+    // Build UIs
+    odDsp->buildUserInterface(odUI.get());
+    fuzzDsp->buildUserInterface(fuzzUI.get());
+
+    // Collect maps (assumes getFullpathMap() returns something like std::map<juce::String, someValue> or std::unordered_map)
+    // Adjust types if needed.
+    using MapType = decltype(odUI->getFullpathMap());
+        auto combinedMap = odUI->getFullpathMap();
+
+        auto mergeMap = [&](const decltype(combinedMap)& m)
+        {
+            for (const auto& kv : m)
+            {
+                if (combinedMap.find(kv.first) == combinedMap.end())
+                    combinedMap.insert(kv);
+            }
+        };
+
+        mergeMap(fuzzUI->getFullpathMap());
+
+
+    mergeMap(odUI->getFullpathMap());
+
+
+    // Write to desktop file
+    juce::File outputFile = juce::File::getSpecialLocation(juce::File::userDesktopDirectory)
+                                .getChildFile("faust_params.txt");
+    juce::FileOutputStream stream(outputFile);
+
+    if (stream.openedOk())
+    {
+        int i = 0;
+        for (const auto& kv : combinedMap)
+        {
+            const juce::String& name = kv.first;
+            params.push_back(name);
+            stream.writeText(juce::String(i) + ": " + name + "\n", false, false, nullptr);
+            ++i;
+        }
+        stream.flush();
+    }
+}
 
     void prepareToPlay(double inSampleRate, int inBlockSize) override {
         mSampleRate = inSampleRate;
         mBlockSize = inBlockSize;
         mParameterSetup.initParametersListener(*this);
+    if (!mDelayUi.get())        mDelayUi        = std::make_unique<DelayPedal::MapUI>();
+    if (!mReverbUi.get())        mReverbUi        = std::make_unique<ReverbPedal::MapUI>();
+    mDelayProcessor =  std::make_unique<DelayPedal::DelayPedal>();
+    mDelayProcessor->init(mSampleRate);
+    mDelayProcessor->buildUserInterface(mDelayUi.get());
+
+    mReverbProcessor =  std::make_unique<ReverbPedal::ReverbPedal>();
+    mReverbProcessor->init(mSampleRate);
+    mReverbProcessor->buildUserInterface(mReverbUi.get());
 
         inputs = new float*[2];
         for (int channel = 0; channel < 2; ++channel) {
@@ -42,8 +111,18 @@ public:
         }
 
     }
-
-
+    void parameterChanged(const juce::String& parameterID, float newValue) override {
+    auto faustPath = FaustParameterMapping::getPedalDelayPath(parameterID);
+    if (!faustPath.empty()) {
+        float finalValue = newValue;
+        mDelayUi->setParamValue(faustPath, finalValue);
+    }
+    auto compressorPath = FaustParameterMapping::getReverbPath(parameterID);
+    if (!compressorPath.empty()) {
+        float finalValue = newValue;
+        mReverbUi->setParamValue(compressorPath, finalValue);
+    }
+}
     void releaseResources() override {
 
         for (int channel = 0; channel < 2; ++channel) {
@@ -144,6 +223,11 @@ private:
     parametersDeclaration::Parameters mParametersDeclaration;
 
 private:
+    std::unique_ptr<DelayPedal::DelayPedal> mDelayProcessor;
+    std::unique_ptr<DelayPedal::MapUI> mDelayUi;
+    std::unique_ptr<ReverbPedal::ReverbPedal> mReverbProcessor;
+    std::unique_ptr<ReverbPedal::MapUI> mReverbUi;
+
     std::atomic<float> mRmsLevelLeft{0.0f};
     std::atomic<float> mRmsLevelRight{0.0f};
     std::atomic<float> mRmsOutputLevelLeft{0.0f};
