@@ -70,6 +70,7 @@ void AmpProcessor::processBlock(juce::AudioBuffer<float>& inBuffer, juce::MidiBu
     if (mIsNAMEnabled && mModel && inAmpOn)
     {
         // NAM expects mono float*; use channel 0, copy result back
+
         const float* readPtr  = inBuffer.getReadPointer(0);
         float*       writePtr = inBuffer.getWritePointer(0);
 

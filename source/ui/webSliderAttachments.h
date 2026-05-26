@@ -309,7 +309,7 @@ webPedalInputEqGainBell10Relay{id::PEDAL_INPUT_EQ_GAIN_BAND_10.getParamID()},
                 *param, webPedalOutputReverbHpFreqRelay, nullptr);
 
         if (auto *param = state.getParameter(id::AMP_NAM_NAME.getParamID()))
-            webAmpNAMNameSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
+            webAmpNAMNameSliderAttachment = std::make_unique<juce::WebComboBoxParameterAttachment>(
                 *param, webAmpNAMNameRelay, nullptr);
 
     }
@@ -476,7 +476,7 @@ private:
     juce::WebSliderRelay webAmpTrebleRelay;
     juce::WebSliderRelay webAmpPresenceRelay;
     juce::WebSliderRelay webAmpOutputGainRelay;
-    juce::WebSliderRelay webAmpNAMNameRelay;
+    juce::WebComboBoxRelay webAmpNAMNameRelay;
     // ==========================================================================
     // Amp Post EQ
     // ==========================================================================
@@ -590,7 +590,7 @@ private:
     std::unique_ptr<juce::WebSliderParameterAttachment> webAmpTrebleSliderAttachment;
     std::unique_ptr<juce::WebSliderParameterAttachment> webAmpPresenceSliderAttachment;
     std::unique_ptr<juce::WebSliderParameterAttachment> webAmpOutputGainSliderAttachment;
-    std::unique_ptr<juce::WebSliderParameterAttachment> webAmpNAMNameSliderAttachment;
+    std::unique_ptr<juce::WebComboBoxParameterAttachment> webAmpNAMNameSliderAttachment;
     // ==========================================================================
     // Amp Post EQ
     // ==========================================================================

@@ -27,7 +27,7 @@ juce_add_plugin(BallzzyArchetype
         NEEDS_MIDI_OUTPUT FALSE
         IS_MIDI_EFFECT FALSE
         EDITOR_WANTS_KEYBOARD_FOCUS FALSE
-
+        JUCE_WEB_BROWSER
         PLUGIN_NAME "Ballzzy Amp"
         PLUGIN_DESCRIPTION "Neural Amp Modeler Plugin"
         VST3_AUTO_MANIFEST FALSE
