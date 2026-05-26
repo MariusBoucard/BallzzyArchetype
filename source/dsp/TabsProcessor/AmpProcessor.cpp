@@ -92,7 +92,7 @@ void AmpProcessor::processBlock(juce::AudioBuffer<float>& inBuffer, juce::MidiBu
         // Compressor is already stereo — one instance, both channels at once
 
         mFaustToneStackProcessor->compute(numSamples, inputs, duckingInput);
-        for (int ch = 0; ch < numOut; ++ch)
+        for (int ch = 0; ch < numOut;  ++ch)
             std::copy_n(duckingInput[ch], numSamples, inputs[ch]);
         for (int ch = 0; ch < numOut; ++ch)
             std::copy_n(inputs[ch], numSamples, inBuffer.getWritePointer(ch));

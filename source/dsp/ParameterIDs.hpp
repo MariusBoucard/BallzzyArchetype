@@ -63,6 +63,8 @@ namespace id {
     const juce::ParameterID AMP_PRESENCE { "AMP_PRESENCE", 1};
     const juce::ParameterID AMP_OUTPUT_GAIN { "AMP_OUTPUT_GAIN", 1};
 
+    const juce::ParameterID AMP_NAM_NAME { "AMP_NAM_NAME",1 };
+
     const juce::ParameterID AMP_POST_EQ_ENABLED { "AMP_POST_EQ_ENABLED", 1};
     const juce::ParameterID AMP_POST_EQ_GAIN_BELL1 { "AMP_POST_EQ_GAIN_BELL1", 1};
     const juce::ParameterID AMP_POST_EQ_GAIN_BELL2 { "AMP_POST_EQ_GAIN_BELL2", 1};

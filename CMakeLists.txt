@@ -109,8 +109,10 @@ juce_add_binary_data(BallzzyArchetypeData
         SOURCES
         # Images
 
-        Source/ressources/namModels/Fender/Fender.nam
+        #Source/ressources/namModels/Fender/Fender.nam
         Source/ressources/namModels/Fender/Marshall.nam
+        Source/ressources/namModels/Fender/Fender_Deluxe_Reverb.nam
+        Source/ressources/namModels/Fender/Peavey_5150_Mesa_cab_SM57.nam
 )
 
 # Link binary data and JUCE modules to the plugin
@@ -175,12 +177,14 @@ target_sources(BallzzyArchetype
         #source/dsp/Bones/DuckingEngine.h
         # TODO : new faust bones soon
 
-        #  source/dsp/Bones/FuzzPedalFaust.h
-        # source/dsp/Bones/OverdrivePedalFaust.h
+        source/dsp/Bones/FuzzPedalFaust.h
+         source/dsp/Bones/OverdrivePedalFaust.h
         # wesh sans les bones ca marche ??!
         source/dsp/Bones/CompressorPedalFaust.h
-        #source/dsp/Bones/EqPedalFaust.h
-        #source/dsp/Bones/ReverbPedalFaust.h
+        source/dsp/Bones/EqPedalFaust.h
+        source/dsp/Bones/ReverbPedalFaust.h
+        source/dsp/Bones/DelayPedalFaust.h
+        source/dsp/Bones/AmpToneStackFaust.h
         # UI
         source/ui/gui.cpp
         source/ui/gui.h

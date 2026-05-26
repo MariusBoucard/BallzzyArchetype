@@ -26,6 +26,16 @@ public:
                                                         webPedalInputCompressorAttackRelay{id::PEDAL_INPUT_COMPRESSOR_ATTACK.getParamID()},
                                                         webPedalInputCompressorReleaseRelay{id::PEDAL_INPUT_COMPRESSOR_RELEASE.getParamID()},
                                                         webPedalInputCompressorMakeupGainRelay{id::PEDAL_INPUT_COMPRESSOR_MAKEUP_GAIN.getParamID()},
+    webPedalInputEqGainBell1Relay{id::PEDAL_INPUT_EQ_GAIN_BAND_1.getParamID()},
+webPedalInputEqGainBell2Relay{id::PEDAL_INPUT_EQ_GAIN_BAND_2.getParamID()},
+webPedalInputEqGainBell3Relay{id::PEDAL_INPUT_EQ_GAIN_BAND_3.getParamID()},
+webPedalInputEqGainBell4Relay{id::PEDAL_INPUT_EQ_GAIN_BAND_4.getParamID()},
+webPedalInputEqGainBell5Relay{id::PEDAL_INPUT_EQ_GAIN_BAND_5.getParamID()},
+webPedalInputEqGainBell6Relay{id::PEDAL_INPUT_EQ_GAIN_BAND_6.getParamID()},
+webPedalInputEqGainBell7Relay{id::PEDAL_INPUT_EQ_GAIN_BAND_7.getParamID()},
+webPedalInputEqGainBell8Relay{id::PEDAL_INPUT_EQ_GAIN_BAND_8.getParamID()},
+webPedalInputEqGainBell9Relay{id::PEDAL_INPUT_EQ_GAIN_BAND_9.getParamID()},
+webPedalInputEqGainBell10Relay{id::PEDAL_INPUT_EQ_GAIN_BAND_10.getParamID()},
                                                         webAmpEnabledRelay{id::AMP_ENABLED.getParamID()},
                                                         webAmpGainRelay{id::AMP_GAIN.getParamID()},
                                                         webAmpBassRelay{id::AMP_BASS.getParamID()},
@@ -33,7 +43,8 @@ public:
                                                         webAmpTrebleRelay{id::AMP_TREBLE.getParamID()},
                                                         webAmpPresenceRelay{id::AMP_PRESENCE.getParamID()},
                                                         webAmpOutputGainRelay{id::AMP_OUTPUT_GAIN.getParamID()},
-                                                        webAmpPostEqEnabledRelay{id::AMP_POST_EQ_ENABLED.getParamID()},
+    webAmpNAMNameRelay{id::AMP_NAM_NAME.getParamID()},
+    webAmpPostEqEnabledRelay{id::AMP_POST_EQ_ENABLED.getParamID()},
                                                         webAmpPostEqGainBell1Relay{id::AMP_POST_EQ_GAIN_BELL1.getParamID()},
                                                         webAmpPostEqGainBell2Relay{id::AMP_POST_EQ_GAIN_BELL2.getParamID()},
                                                         webAmpPostEqGainBell3Relay{id::AMP_POST_EQ_GAIN_BELL3.getParamID()},
@@ -138,6 +149,40 @@ public:
         if (auto *param = state.getParameter(id::PEDAL_INPUT_COMPRESSOR_MAKEUP_GAIN.getParamID()))
             webPedalInputCompressorMakeupGainSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
                 *param, webPedalInputCompressorMakeupGainRelay, nullptr);
+
+        if (auto *param = state.getParameter(id::PEDAL_INPUT_EQ_GAIN_BAND_1.getParamID()))
+            webPedalInputEqBand1GainSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
+                *param, webPedalInputEqGainBell1Relay, nullptr);
+
+        // TODOOOOO
+        if (auto *param = state.getParameter(id::PEDAL_INPUT_EQ_GAIN_BAND_2.getParamID()))
+            webPedalInputEqBand2GainSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
+                *param, webPedalInputEqGainBell2Relay, nullptr);
+
+        if (auto *param = state.getParameter(id::PEDAL_INPUT_EQ_GAIN_BAND_3.getParamID()))
+            webPedalInputEqBand3GainSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
+                *param, webPedalInputEqGainBell3Relay, nullptr);
+        if (auto *param = state.getParameter(id::PEDAL_INPUT_EQ_GAIN_BAND_4.getParamID()))
+            webPedalInputEqBand4GainSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
+                *param, webPedalInputEqGainBell4Relay, nullptr);
+        if (auto *param = state.getParameter(id::PEDAL_INPUT_EQ_GAIN_BAND_5.getParamID()))
+            webPedalInputEqBand5GainSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
+                *param, webPedalInputEqGainBell5Relay, nullptr);
+        if (auto *param = state.getParameter(id::PEDAL_INPUT_EQ_GAIN_BAND_6.getParamID()))
+            webPedalInputEqBand6GainSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
+                *param, webPedalInputEqGainBell6Relay, nullptr);
+        if (auto *param = state.getParameter(id::PEDAL_INPUT_EQ_GAIN_BAND_7.getParamID()))
+            webPedalInputEqBand7GainSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
+                *param, webPedalInputEqGainBell7Relay, nullptr);
+        if (auto *param = state.getParameter(id::PEDAL_INPUT_EQ_GAIN_BAND_8.getParamID()))
+            webPedalInputEqBand8GainSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
+                *param, webPedalInputEqGainBell8Relay, nullptr);
+        if (auto *param = state.getParameter(id::PEDAL_INPUT_EQ_GAIN_BAND_9.getParamID()))
+            webPedalInputEqBand9GainSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
+                *param, webPedalInputEqGainBell9Relay, nullptr);
+        if (auto *param = state.getParameter(id::PEDAL_INPUT_EQ_GAIN_BAND_10.getParamID()))
+            webPedalInputEqBand10GainSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
+                *param, webPedalInputEqGainBell10Relay, nullptr);
 
         if (auto *param = state.getParameter(id::AMP_ENABLED.getParamID()))
             webAmpEnabledToggleAttachment = std::make_unique<juce::WebToggleButtonParameterAttachment>(
@@ -263,6 +308,10 @@ public:
             webPedalOutputReverbHpFreqSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
                 *param, webPedalOutputReverbHpFreqRelay, nullptr);
 
+        if (auto *param = state.getParameter(id::AMP_NAM_NAME.getParamID()))
+            webAmpNAMNameSliderAttachment = std::make_unique<juce::WebSliderParameterAttachment>(
+                *param, webAmpNAMNameRelay, nullptr);
+
     }
 
     juce::WebBrowserComponent::Options addSlidersOptions(juce::WebBrowserComponent::Options options) {
@@ -292,6 +341,17 @@ public:
                 .withOptionsFrom(webPedalInputFuzzLevelRelay)
                 .withOptionsFrom(webPedalInputFuzzDriveRelay)
 
+                .withOptionsFrom(webPedalInputEqGainBell1Relay)
+        .withOptionsFrom(webPedalInputEqGainBell2Relay)
+        .withOptionsFrom(webPedalInputEqGainBell3Relay)
+        .withOptionsFrom(webPedalInputEqGainBell4Relay)
+        .withOptionsFrom(webPedalInputEqGainBell5Relay)
+        .withOptionsFrom(webPedalInputEqGainBell6Relay)
+        .withOptionsFrom(webPedalInputEqGainBell7Relay)
+        .withOptionsFrom(webPedalInputEqGainBell8Relay)
+        .withOptionsFrom(webPedalInputEqGainBell9Relay)
+        .withOptionsFrom(webPedalInputEqGainBell10Relay)
+
                 // Compressor Pedal
                 .withOptionsFrom(webPedalInputCompressorEnabledRelay)
                 .withOptionsFrom(webPedalInputCompressorThresholdRelay)
@@ -307,6 +367,7 @@ public:
                 .withOptionsFrom(webAmpTrebleRelay)
                 .withOptionsFrom(webAmpPresenceRelay)
                 .withOptionsFrom(webAmpOutputGainRelay)
+                .withOptionsFrom(webAmpNAMNameRelay)
 
                 // Amp Post EQ
                 .withOptionsFrom(webAmpPostEqEnabledRelay)
@@ -362,6 +423,18 @@ private:
     // ==========================================================================
 
     juce::WebToggleButtonRelay webPedalInputEqEnabledRelay;
+    juce::WebSliderRelay webPedalInputEqGainBell1Relay;
+    juce::WebSliderRelay webPedalInputEqGainBell2Relay;
+    juce::WebSliderRelay webPedalInputEqGainBell3Relay;
+    juce::WebSliderRelay webPedalInputEqGainBell4Relay;
+    juce::WebSliderRelay webPedalInputEqGainBell5Relay;
+    juce::WebSliderRelay webPedalInputEqGainBell6Relay;
+    juce::WebSliderRelay webPedalInputEqGainBell7Relay;
+    juce::WebSliderRelay webPedalInputEqGainBell8Relay;
+    juce::WebSliderRelay webPedalInputEqGainBell9Relay;
+    juce::WebSliderRelay webPedalInputEqGainBell10Relay;
+
+
 
 
     // ==========================================================================
@@ -403,7 +476,7 @@ private:
     juce::WebSliderRelay webAmpTrebleRelay;
     juce::WebSliderRelay webAmpPresenceRelay;
     juce::WebSliderRelay webAmpOutputGainRelay;
-
+    juce::WebSliderRelay webAmpNAMNameRelay;
     // ==========================================================================
     // Amp Post EQ
     // ==========================================================================
@@ -466,6 +539,18 @@ private:
     std::unique_ptr<juce::WebSliderParameterAttachment> webPedalInputEqGainSliderAttachment;
     std::unique_ptr<juce::WebSliderParameterAttachment> webPedalInputEqQSliderAttachment;
 
+     std::unique_ptr<juce::WebSliderParameterAttachment>  webPedalInputEqBand1GainSliderAttachment;
+    std::unique_ptr<juce::WebSliderParameterAttachment>  webPedalInputEqBand2GainSliderAttachment;
+    std::unique_ptr<juce::WebSliderParameterAttachment>  webPedalInputEqBand3GainSliderAttachment;
+    std::unique_ptr<juce::WebSliderParameterAttachment>  webPedalInputEqBand4GainSliderAttachment;
+    std::unique_ptr<juce::WebSliderParameterAttachment>  webPedalInputEqBand5GainSliderAttachment;
+    std::unique_ptr<juce::WebSliderParameterAttachment>  webPedalInputEqBand6GainSliderAttachment;
+    std::unique_ptr<juce::WebSliderParameterAttachment>  webPedalInputEqBand7GainSliderAttachment;
+    std::unique_ptr<juce::WebSliderParameterAttachment>  webPedalInputEqBand8GainSliderAttachment;
+    std::unique_ptr<juce::WebSliderParameterAttachment>  webPedalInputEqBand9GainSliderAttachment;
+    std::unique_ptr<juce::WebSliderParameterAttachment>  webPedalInputEqBand10GainSliderAttachment;
+
+
     // ==========================================================================
     // Overdrive Pedal
     // ==========================================================================
@@ -505,7 +590,7 @@ private:
     std::unique_ptr<juce::WebSliderParameterAttachment> webAmpTrebleSliderAttachment;
     std::unique_ptr<juce::WebSliderParameterAttachment> webAmpPresenceSliderAttachment;
     std::unique_ptr<juce::WebSliderParameterAttachment> webAmpOutputGainSliderAttachment;
-
+    std::unique_ptr<juce::WebSliderParameterAttachment> webAmpNAMNameSliderAttachment;
     // ==========================================================================
     // Amp Post EQ
     // ==========================================================================

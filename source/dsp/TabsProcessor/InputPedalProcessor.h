@@ -29,25 +29,34 @@ public:
         mSampleRate = inSampleRate;
         mBlockSize = inBlockSize;
        // mParameterSetup.initParametersListener(*this);
-        if (!mFuzzUi.get())        mFuzzUi        = std::make_unique<FuzzPedal::MapUI>();
-        if (!mFaustOverdriveUi.get())        mFaustOverdriveUi        = std::make_unique<OverdrivePedal::MapUI>();
+
+        for (int ch = 0; ch < MAX_CHANNELS; ++ch) {
+            if (!mFuzzUi[ch]) {
+                mFuzzUi[ch] = std::make_unique<FuzzPedal::MapUI>();
+            }
+            if (!mFaustOverdriveUi[ch]) {
+                mFaustOverdriveUi[ch] = std::make_unique<OverdrivePedal::MapUI>();
+            }
+            if (!mEqUi[ch]) {
+                mEqUi[ch] = std::make_unique<EqPedal::MapUI>();
+            }
+        }
         if (!mFaustCompressorUi.get())        mFaustCompressorUi        = std::make_unique<MapUI>();
-        if (!mEqUi.get())        mEqUi        = std::make_unique<EqPedal::MapUI>();
 
 
         for (int ch = 0; ch < MAX_CHANNELS; ++ch)
         {
             mFaustFuzzProcessors[ch] = std::make_unique<FuzzPedal::FuzzPedalEngine>();
             mFaustFuzzProcessors[ch]->init(mSampleRate);
-            mFaustFuzzProcessors[ch]->buildUserInterface(mFuzzUi.get());
+            mFaustFuzzProcessors[ch]->buildUserInterface(mFuzzUi.at(ch).get());
 
             mFaustOverdriveProcessors[ch] = std::make_unique<OverdrivePedal::OverdrivePedalEngine>();
             mFaustOverdriveProcessors[ch]->init(mSampleRate);
-            mFaustOverdriveProcessors[ch]->buildUserInterface(mFaustOverdriveUi.get());
+            mFaustOverdriveProcessors[ch]->buildUserInterface(mFaustOverdriveUi.at(ch).get());
 
             mEqPedalProcessors[ch] = std::make_unique<EqPedal::EqPedalEngine>();
             mEqPedalProcessors[ch]->init(mSampleRate);
-            mEqPedalProcessors[ch]->buildUserInterface(mEqUi.get());
+            mEqPedalProcessors[ch]->buildUserInterface(mEqUi.at(ch).get());
         }
 
 
@@ -84,7 +93,9 @@ public:
         auto faustPath = FaustParameterMapping::getInputEqPath(parameterID);
         if (!faustPath.empty()) {
             float finalValue = newValue;
-            mEqUi->setParamValue(faustPath, finalValue);
+            for (int i = 0; i < MAX_CHANNELS; ++i) {
+                mEqUi.at(i)->setParamValue(faustPath, finalValue);
+            }
         }
         auto compressorPath = FaustParameterMapping::getPedalCompressorPath(parameterID);
         if (!compressorPath.empty()) {
@@ -94,12 +105,16 @@ public:
         auto fuzzPath = FaustParameterMapping::getFuzzPath(parameterID);
         if (!fuzzPath.empty()) {
             float finalValue = newValue;
-            mFuzzUi->setParamValue(fuzzPath, finalValue);
+            for (int i = 0; i < MAX_CHANNELS; ++i) {
+                mFuzzUi.at(i)->setParamValue(fuzzPath, finalValue);
+            };
         }
         auto overdrivePath = FaustParameterMapping::getOverdrivePath(parameterID);
         if (!overdrivePath.empty()) {
             float finalValue = newValue;
-            mFaustOverdriveUi->setParamValue(overdrivePath, finalValue);
+            for (int i = 0; i < MAX_CHANNELS; ++i) {
+                mFaustOverdriveUi.at(i)->setParamValue(overdrivePath, finalValue);
+            }
         }
     }
 
@@ -290,9 +305,9 @@ private:
     std::array<std::unique_ptr<dsp>, MAX_CHANNELS> mFaustFuzzProcessors;
     std::array<std::unique_ptr<dsp>, MAX_CHANNELS> mFaustOverdriveProcessors;
     std::array<std::unique_ptr<dsp>, MAX_CHANNELS> mEqPedalProcessors;
-    std::unique_ptr<FuzzPedal::MapUI> mFuzzUi;
-    std::unique_ptr<OverdrivePedal::MapUI> mFaustOverdriveUi;
-    std::unique_ptr<EqPedal::MapUI> mEqUi;
+    std::array<std::unique_ptr<FuzzPedal::MapUI>, MAX_CHANNELS> mFuzzUi;
+    std::array<std::unique_ptr<OverdrivePedal::MapUI>, MAX_CHANNELS> mFaustOverdriveUi;
+   std::array< std::unique_ptr<EqPedal::MapUI>, MAX_CHANNELS> mEqUi;
 
 
 

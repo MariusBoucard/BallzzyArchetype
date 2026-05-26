@@ -1,6 +1,6 @@
 #pragma once
 #include <juce_audio_processors_headless/juce_audio_processors_headless.h>
-
+// TODO : a vérif mais je crois que cette classe peut etre enlevée pour clean le code.
 namespace parametersDeclaration{
     struct Parameters {
         struct inputEffectsParams {
@@ -60,6 +60,7 @@ namespace parametersDeclaration{
         juce::AudioParameterFloat* treble     { nullptr };
         juce::AudioParameterFloat* presence   { nullptr };
         juce::AudioParameterFloat* outputGain { nullptr };
+        juce::AudioParameterChoice* namName   { nullptr };
     } amplifier;
 
     struct postEqParams

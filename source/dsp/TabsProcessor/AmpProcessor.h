@@ -10,6 +10,11 @@
 #include "../Bones/AmpToneStackFaust.h"
 #include "../faustParameterMappers/AmpStackMap.h"
 
+static const juce::StringArray AMP_TYPE_ARRAY {
+    "Marshall JMP-50 Lead 1969 Plexi",
+    "Fender Deluxe Reverb",
+    "Peavey 5150"
+};
 //==============================================================================
 class AmpProcessor final : public juce::AudioProcessor,
                             public juce::AudioProcessorValueTreeState::Listener {
@@ -106,12 +111,60 @@ void writeFaustParametersToFile()
             float finalValue = newValue;
             mFaustToneStackUI->setParamValue(faustPath, finalValue);
         }
+    // Si jamais amp nam changed ?
+        if (parameterID.equalsIgnoreCase(id::AMP_NAM_NAME.getParamID())) {
+            // AudioParameterChoice — get the current choice string
+            if (juce::isPositiveAndBelow(newValue, AMP_TYPE_ARRAY.size()))
+                loadNAMFileFromName(AMP_TYPE_ARRAY[newValue]);
+        }
     }
     void setDirectNAMPath(const juce::File& path)
     {
         mDirectNAMPath = path;
         mParameters.state.setProperty("directNAMPath", path.getFullPathName(), nullptr);
     }
+
+    void loadNAMFileFromName(const juce::String& name)
+{
+    const void* data     = nullptr;
+    int         dataSize = 0;
+    juce::String suffix  = "Marshall.nam"; // used as the temp file name
+
+    if (name == "Marshall JMP-50 Lead 1969 Plexi")
+    {
+        data     = BinaryData::Marshall_nam;
+        dataSize = BinaryData::Marshall_namSize;
+        suffix   = "Marshall.nam";
+    }
+    else if (name == "Fender Deluxe Reverb")
+    {
+        data     = BinaryData::Fender_Deluxe_Reverb_nam;
+        dataSize = BinaryData::Fender_Deluxe_Reverb_namSize;
+        suffix   = "FenderDeluxeReverb.nam";
+    }
+    else if (name == "Peavey 5150")
+    {
+        data     = BinaryData::Peavey_5150_Mesa_cab_SM57_nam;
+        dataSize = BinaryData::Peavey_5150_Mesa_cab_SM57_namSize;
+        suffix   = "Peavey5150.nam";
+    }
+    else
+    {
+        DBG("loadNAMFileFromName: unknown amp name: " + name);
+        return;
+    }
+
+    juce::File tempFile = createTemporaryFileFromMemory(data, dataSize, suffix);
+
+    if (tempFile.existsAsFile()) {
+        mModel.release();
+        loadNAMFile(tempFile);
+        mModel->ResetAndPrewarm(mSampleRate,mBlockSize);
+    }
+    else
+        DBG("loadNAMFileFromName: failed to create temp file for: " + name);
+}
+
     void loadNAMFile(const juce::File& inNAMFile)
     {
         try

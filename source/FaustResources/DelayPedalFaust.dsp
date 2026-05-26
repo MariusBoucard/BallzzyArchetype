@@ -1,50 +1,32 @@
 import("stdfaust.lib");
 
+// Sans piongpong !
 // ==========================================
-// 1. UI DEFINITIONS
+// Constants
 // ==========================================
-delay_group(x) = hgroup("Stereo Delay Effect", x);
-
-del_time  = delay_group(vslider("Delay Time [unit:ms]", 300, 0, 2000, 1));
-del_fb    = delay_group(vslider("Feedback", 0.4, 0, 0.99, 0.01));
-del_mix   = delay_group(vslider("Mix", 0.5, 0, 1, 0.01));
-pingpong  = delay_group(checkbox("Ping Pong"));
+MAXDELAYSAMPLES = int(ma.SR * 4);
 
 // ==========================================
-// 2. DELAY UTILITIES
+// Parameters
 // ==========================================
-delay_samples = del_time * 0.001 * ma.SR;
-max_samples   = 2 * ma.SR;
+g(x)  = hgroup("Stereo Delay", x);
+dTime = g(hslider("Time [unit:s]", 0.3, 0.001, 4, 0.001));
+fb    = g(hslider("Feedback",      0.3, 0,     0.95, 0.01));
+mix   = g(hslider("Mix",           0.5, 0,     1,    0.01)) : si.smoo;
+
+dSamples = int(dTime * ma.SR);
 
 // ==========================================
-// 3. CORE DELAY LOOP (with Ping-Pong Routing)
+// Delay Core
 // ==========================================
-// Receives 4 inputs: (xL, xR, fL, fR)
-// Outputs 2 channels: (wetL, wetR)
-delay_step(xL, xR, fL, fR) = wetL, wetR
-with {
-    // Standard 'with' local definitions work perfectly for assignments
-    next_fL = select2(pingpong, fL, fR) * del_fb;
-    next_fR = select2(pingpong, fR, fL) * del_fb;
+// de.sdelay: smoothly crossfades between delay taps on time change — no clicks.
+// ~ *(fb): feeds the delayed output back into the input summing node.
+fbDelay = (+ : de.sdelay(MAXDELAYSAMPLES, 1024, dSamples)) ~ *(fb);
 
-    wetL = (xL + next_fL) : de.delay(max_samples, delay_samples);
-    wetR = (xR + next_fR) : de.delay(max_samples, delay_samples);
-};
+// One channel: split input into dry and wet paths, sum them
+channel = _ <: *(1 - mix), (fbDelay : *(mix)) :> _;
 
 // ==========================================
-// 4. MAIN PROCESSING BLOCK (Dry/Wet Mix)
+// Stereo: two independent delay instances
 // ==========================================
-// Mixes an original signal with its wet delay signal
-mix_channel(dry, wet) = (dry * (1.0 - del_mix)) + (wet * del_mix);
-
-// 1. Split inputs into 4 paths: (Left, Right, Left, Right)
-// 2. Keep the first pair dry, feed the second pair into the delay loop
-// 3. Re-route the 4 resulting streams into the stereo mixer
-process = _, _
-        : (split_dry_wet)
-        : ( _, _, (delay_step ~ (_, _)) )
-        : mix_routing;
-
-// Signal routing helpers
-split_dry_wet(x, y) = x, y, x, y;
-mix_routing(dL, dR, wL, wR) = mix_channel(dL, wL), mix_channel(dR, wR);
+process = channel, channel;

@@ -10,10 +10,10 @@ namespace FaustParameterMapping {
     inline const std::unordered_map<juce::String, std::string>& getPedalDelayMap() {
     // Attention au passage en mode sync comme on map sur le temps TODO !!!
         static const std::unordered_map<juce::String, std::string> map = {
-            {id::PEDAL_OUTPUT_DELAY_FEEDBACK.getParamID() , "/Stereo_Delay_Effect/Feedback"},
-            {id::PEDAL_OUTPUT_DELAY_MIX.getParamID() , "/Stereo_Delay_Effect/Mix"},
+            {id::PEDAL_OUTPUT_DELAY_FEEDBACK.getParamID() , "/Stereo_Delay/Feedback"},
+            {id::PEDAL_OUTPUT_DELAY_MIX.getParamID() , "/Stereo_Delay/Mix"},
             {id::PEDAL_OUTPUT_DELAY_PING_PONG.getParamID() , "/Stereo_Delay_Effect/Ping_Pong"},
-            {id::PEDAL_OUTPUT_DELAY_TIME.getParamID() , "/Stereo_Delay_Effect/Delay_Time"},
+            {id::PEDAL_OUTPUT_DELAY_TIME.getParamID() , "/Stereo_Delay/Time"},
         };
         return map;
     }

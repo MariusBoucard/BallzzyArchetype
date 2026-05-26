@@ -28,16 +28,16 @@ void addInputEffectLayout(juce::AudioProcessorValueTreeState::ParameterLayout& l
 
 
     auto inputEqEnabled = std::make_unique<juce::AudioParameterBool>(id::PEDAL_INPUT_EQ_ENABLED, "Input EQ enabled", false);
-    auto inputBell1    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_1,  "Input gain band 1",  -12,12,0);
-    auto inputBell2   = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_2,  "Input gain band 2",  -12,12,0);
-    auto inputBell3    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_3,  "Input gain band 3",  -12,12,0);
-    auto inputBell4   = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_4,  "Input gain band 4",  -12,12,0);
-    auto inputBell5    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_5,  "Input gain band 5",  -12,12,0);
-    auto inputBell6    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_6,  "Input gain band 6",  -12,12,0);
-    auto inputBell7    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_7,  "Input gain band 7",  -12,12,0);
-    auto inputBell8    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_8,  "Input gain band 8",  -12,12,0);
-    auto inputBell9    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_9,  "Input gain band 9",  -12,12,0);
-    auto inputBell10    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_10,  "Input gain band 10",  -12,12,0);
+    auto inputBell1    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_1,  "Input gain band 1",  -15,15,0);
+    auto inputBell2   = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_2,  "Input gain band 2",  -15,15,0);
+    auto inputBell3    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_3,  "Input gain band 3",  -15,15,0);
+    auto inputBell4   = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_4,  "Input gain band 4",  -15,15,0);
+    auto inputBell5    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_5,  "Input gain band 5",  -15,15,0);
+    auto inputBell6    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_6,  "Input gain band 6",  -15,15,0);
+    auto inputBell7    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_7,  "Input gain band 7",  -15,15,0);
+    auto inputBell8    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_8,  "Input gain band 8",  -15,15,0);
+    auto inputBell9    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_9,  "Input gain band 9",  -15,15,0);
+    auto inputBell10    = std::make_unique<juce::AudioParameterFloat    >(id::PEDAL_INPUT_EQ_GAIN_BAND_10,  "Input gain band 10",  -15,15,0);
 
 input_effects_params.inputEq.enabled = inputEqEnabled.get();
 input_effects_params.inputEq.freqBell1 = inputBell1.get();
@@ -66,10 +66,10 @@ layout.add(std::move(inputEqEnabled));
 
 // Overdrive
 auto odEnabled = std::make_unique<juce::AudioParameterBool>(id::PEDAL_INPUT_OVERDRIVE_ENABLED, "Overdrive enabled", false);
-auto odTone    = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_OVERDRIVE_TONE, "Overdrive tone", 0.0f, 1.0f, 0.5f);
-auto odDrive   = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_OVERDRIVE_DRIVE,"Overdrive drive", 0.0f, 1.0f, 0.5f);
-auto odLevel   = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_OVERDRIVE_LEVEL,"Overdrive level", 0.0f, 1.0f, 0.8f);
-auto odMix   = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_OVERDRIVE_MIX,"Overdrive Mix", 0.0f, 1.0f, 0.8f);
+auto odTone    = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_OVERDRIVE_TONE, "Overdrive tone", 0.0f, 100.0f, 50.f);
+auto odDrive   = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_OVERDRIVE_DRIVE,"Overdrive drive", 0.0f, 100.0f, 50.f);
+auto odLevel   = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_OVERDRIVE_LEVEL,"Overdrive level", -60.0f, 12.0f, 0.8f);
+auto odMix   = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_OVERDRIVE_MIX,"Overdrive Mix", 0.0f, 100.0f, 100.f);
 input_effects_params.overdrive.enabled = odEnabled.get();
 input_effects_params.overdrive.tone    = odTone.get();
 input_effects_params.overdrive.drive   = odDrive.get();
@@ -82,11 +82,11 @@ layout.add(std::move(odDrive));
 layout.add(std::move(odLevel));
     layout.add(std::move(odMix));
 
-// Fuzz
+// Fuzz // TODO CHECK BINDINGS ET AFFINER
 auto fuzzEnabled = std::make_unique<juce::AudioParameterBool>(id::PEDAL_INPUT_FUZZ_ENABLED, "Fuzz enabled", false);
-auto fuzzTone    = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_FUZZ_TONE, "Fuzz tone", 0.0f, 1.0f, 0.5f);
-auto fuzzLevel   = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_FUZZ_LEVEL,"Fuzz level", 0.0f, 1.0f, 0.8f);
-auto fuzzDrive   = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_FUZZ_DRIVE,"Fuzz drive", 0.0f, 1.0f, 0.7f);
+auto fuzzTone    = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_FUZZ_TONE, "Fuzz tone", 0.0f, 100.0f, 50.f);
+auto fuzzLevel   = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_FUZZ_LEVEL,"Fuzz level", 0.0f, 100.0f, 50.f);
+auto fuzzDrive   = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_INPUT_FUZZ_DRIVE,"Fuzz drive", 0.0f, 100.0f, 50.f);
 
 input_effects_params.fuzz.enabled = fuzzEnabled.get();
 input_effects_params.fuzz.tone    = fuzzTone.get();
@@ -155,8 +155,9 @@ void addAmpLayout(juce::AudioProcessorValueTreeState::ParameterLayout& layout,
     amp.outputGain = ampOut.get();
     layout.add(std::move(ampOut));
 
-
-
+    auto ampNAMName = std::make_unique<juce::AudioParameterChoice>(id::AMP_NAM_NAME, "NAM Amp name", AMP_TYPE_ARRAY,0);
+    amp.namName = ampNAMName.get();
+    layout.add(std::move(ampNAMName));
 }
 
     void addPostEqLayout(juce::AudioProcessorValueTreeState::ParameterLayout& layout,
@@ -171,7 +172,7 @@ void addAmpLayout(juce::AudioProcessorValueTreeState::ParameterLayout& layout,
     // 10-band post EQ gains
     auto makeBell = [&](const juce::ParameterID& pid, const char* name, float def)->std::unique_ptr<juce::AudioParameterFloat>
     {
-        return std::make_unique<juce::AudioParameterFloat>(pid, name, -12.0f, 12.0f, def);
+        return std::make_unique<juce::AudioParameterFloat>(pid, name, -15.0f, 15.0f, def);
     };
 
     auto b1 = makeBell(id::AMP_POST_EQ_GAIN_BELL1,  "Post EQ Bell 1", 0.0f); postEq.bellGain1  = b1.get();  layout.add(std::move(b1));
@@ -191,9 +192,9 @@ void addAmpLayout(juce::AudioProcessorValueTreeState::ParameterLayout& layout,
         parametersDeclaration::Parameters::outputEffectsParams& outputEffectsParams) {
     auto delayEnabled = std::make_unique<juce::AudioParameterBool>(id::PEDAL_OUTPUT_DELAY_ENABLED, "Delay enabled", false);
     auto delayTimeSync = std::make_unique<juce::AudioParameterBool>(id::PEDAL_OUTPUT_DELAY_TIME_SYNC, "Delay time sync", true);
-    auto delayTimeMs = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_OUTPUT_DELAY_TIME, "Delay time (ms)", 1.0f, 2000.0f, 500.0f);
-    auto delaySyncTimeEnabled = std::make_unique<juce::AudioParameterBool>(id::PEDAL_OUTPUT_DELAY_SYNC_TIME_ENABLED, "Delay sync time enabled", true);
-    auto delayFeedback = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_OUTPUT_DELAY_FEEDBACK, "Delay feedback", 0.0f, 0.98f, 0.4f);
+    auto delayTimeMs = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_OUTPUT_DELAY_TIME, "Delay time (ms)", 0.0f, 4000.0f, 1.0f);
+    auto delaySyncTimeEnabled = std::make_unique<juce::AudioParameterBool>(id::PEDAL_OUTPUT_DELAY_SYNC_TIME_ENABLED, "Delay sync time enabled", false);
+    auto delayFeedback = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_OUTPUT_DELAY_FEEDBACK, "Delay feedback", 0.0f, 0.95f, 0.4f);
     auto delayMix = std::make_unique<juce::AudioParameterFloat>(id::PEDAL_OUTPUT_DELAY_MIX, "Delay mix", 0.0f, 1.0f, 0.25f);
     auto delayPingPong = std::make_unique<juce::AudioParameterBool>(id::PEDAL_OUTPUT_DELAY_PING_PONG, "Delay ping-pong", false);
     outputEffectsParams.delay.enabled = delayEnabled.get();
