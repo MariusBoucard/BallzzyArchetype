@@ -113,7 +113,7 @@ void writeFaustParametersToFile()
         }
     // Si jamais amp nam changed ?
         if (parameterID.equalsIgnoreCase(id::AMP_NAM_NAME.getParamID())) {
-            // AudioParameterChoice — get the current choice string
+            // Audi oParameterChoice — get the current choice string
             if (juce::isPositiveAndBelow(newValue, AMP_TYPE_ARRAY.size()))
                 loadNAMFileFromName(AMP_TYPE_ARRAY[newValue]);
         }
